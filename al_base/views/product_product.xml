@@ -2,13 +2,20 @@
   <data>
     <!-- explicit list view definition -->
     
-    <record model="ir.ui.view" id="view_product.product.view.form.easy_inherit">
+    <record model="ir.ui.view" id="view_product.product_variant_easy_edit_view_inherit">
       <field name="name">Variantes de Productos</field>
       <field name="model">product.product</field>
+      <field name="inherit_id" ref="product.product_variant_easy_edit_view"/>
       <field name="arch" type="xml">
         <xpath expr="//field[@name='barcode']" position="after">
             <field name="al_sku" />
             <field name="al_dun" />
+        </xpath>
+        <xpath expr="//field[@name='barcode']" position="attributes">
+            <attribute name="string">Código de barras (EAN)</attribute>
+        </xpath>
+        <xpath expr="//field[@name='default_code']" position="attributes">
+            <attribute name="string">Referencia interna (SYSGESTION)</attribute>
         </xpath>
       </field>
     </record>
