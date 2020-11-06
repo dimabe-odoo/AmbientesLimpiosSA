@@ -2,7 +2,7 @@
   <data>
     <!-- explicit list view definition -->
     
-    <record model="ir.ui.view" id="view_product.product_variant_easy_edit_view_inherit">
+    <record model="ir.ui.view" id="view_product_variant_easy_edit_view_inherit">
       <field name="name">Variantes de Productos</field>
       <field name="model">product.product</field>
       <field name="inherit_id" ref="product.product_variant_easy_edit_view"/>
