@@ -1,5 +1,5 @@
 from odoo import models, api
-from ..utils.rut_helper import format_rut
+from ..utils.rut_helper import RutHelper
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
@@ -17,4 +17,4 @@ class ResPartner(models.Model):
         return super(ResPartner, self).write(values)
 
     def find_partner(self, rut):
-        return self.env['res.partner'].search([('vat','=',format_rut(rut))])
+        return self.env['res.partner'].search([('vat','=',RutHelper.format_rut(rut))])
