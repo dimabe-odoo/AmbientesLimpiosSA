@@ -7,7 +7,7 @@ class ResPartner(models.Model):
     @api.model
     def create(self, values):
         if self.find_partner(values['vat']):
-            raise models.ValidationError('No se puede crear el contacto ya existe uno con el Rut')
+            raise models.ValidationError('No se puede crear el contacto ya existe uno con el rut Rut {}'.format(values['vat']))
         return super(ResPartner, self).create(values)
 
     def write(self, values):
