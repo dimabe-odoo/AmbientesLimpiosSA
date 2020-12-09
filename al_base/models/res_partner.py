@@ -13,10 +13,10 @@ class ResPartner(models.Model):
     def write(self, values):
         exist = self.find_partner(values['vat'])
 
-       # if exist and exist.id != values['id']:
-        if exist:
-            raise models.ValidationError('{}  {}  =  {}'.format(exist,values['id'],exist.id))
-           # raise models.ValidationError('Ya existe un contacto con el Rut {}'.format(exist.id))
+       if exist and exist.id != values['id']:
+           raise models.ValidationError('{}'.format(values['id']))
+        #   raise models.ValidationError('Ya existe un contacto con el Rut {}'.format(exist.id))
+
         return super(ResPartner, self).write(values)
 
     def find_partner(self, rut):
