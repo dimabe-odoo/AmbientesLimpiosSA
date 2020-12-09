@@ -15,7 +15,7 @@ class ResPartner(models.Model):
 
         #if exist and exist.id != values['id']:
         if exist:
-            raise models.ValidationError('Ya existe un contacto con el Rut {}'.format(values['id']))
+            raise models.ValidationError('Ya existe un contacto con el Rut {}'.format(values))
 
         return super(ResPartner, self).write(values)
 
