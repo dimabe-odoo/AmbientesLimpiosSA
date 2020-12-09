@@ -12,11 +12,8 @@ class ResPartner(models.Model):
 
     def write(self, values):
         exist = self.find_partner(values['vat'])
-
-        #if exist and exist.id != values['id']:
-        if exist:
-            raise models.ValidationError('Ya existe un contacto con el Rut {}'.format(values))
-
+        if not exist:
+            raise models.ValidationError('No se puede editar el contacto')
         return super(ResPartner, self).write(values)
 
     def find_partner(self, rut):
