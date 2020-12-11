@@ -28,7 +28,10 @@ class ResPartner(models.Model):
         if rut:
             findP = self.env['res.partner'].search([('vat', '=', RutHelper.format_rut(rut))])
             if findP:
-                company = self.env['res.company'].search([('vat','=',RutHelper.format_rut(rut)),('partner_id','=',findP.id)])
+                if len(findP) > 1:
+                    company = self.env['res.company'].search([('vat','=',RutHelper.format_rut(rut)),('partner_id','in',findP.mapped('id'))])
+                else:
+                    company = self.env['res.company'].search([('vat','=',RutHelper.format_rut(rut)),('partner_id','=',findP.id)])
                 if company:
                     return None
             return self.env['res.partner'].search([('vat', '=', RutHelper.format_rut(rut))])
