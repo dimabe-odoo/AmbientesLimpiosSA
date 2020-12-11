@@ -7,6 +7,7 @@ class ResPartner(models.Model):
 
     @api.model
     def create(self, values):
+        models._logger.error(values)
         if 'vat' in values.keys():
             if self.find_partner(values['vat']):
                 raise models.ValidationError(
