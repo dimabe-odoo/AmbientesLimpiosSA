@@ -14,6 +14,7 @@ class ResPartner(models.Model):
 
         return super(ResPartner, self).create(values)
 
+    @api.model
     def write(self, values):
         exist = self.find_partner(values['vat'])
         if exist:
