@@ -25,5 +25,5 @@ class ResPartner(models.Model):
 
     def find_partner(self, rut):
         company = self.env['res.company'].search([]).mapped('partner_id').mapped('id')
-        models._logger.error(company)
+        models._logger.error('asdsadsadsadsa {}'.format(company))
         return self.env['res.partner'].search([('vat', '=', RutHelper.format_rut(rut)),('id','not in',company)])
