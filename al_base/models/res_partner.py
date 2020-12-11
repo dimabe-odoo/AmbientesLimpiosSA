@@ -12,7 +12,7 @@ class ResPartner(models.Model):
 
     def write(self, values):
         exist = self.find_partner(values['vat'])
-        if not exist:
+        if exist:
             raise models.ValidationError('No se puede editar el contacto')
         return super(ResPartner, self).write(values)
 
