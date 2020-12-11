@@ -17,7 +17,7 @@ class ResPartner(models.Model):
     @api.model
     def write(self, values):
         exist = self.find_partner(values['vat'])
-        models._logger.error(exist)
+        models._logger.error(values)
         if exist:
             raise models.ValidationError(
                 'No se puede editar ya que existe un contacto con el rut {}'.format(values['vat']))
