@@ -25,7 +25,9 @@ class ResPartner(models.Model):
         return super(ResPartner, self).write(values)
 
     def find_partner(self, rut):
-        company = self.env['res.company'].search([('vat','=',RutHelper.format_rut(rut))])
+        findP = self.env['res.partner'].search([('vat', '=', RutHelper.format_rut(rut))])
+
+        company = self.env['res.company'].search([('vat','=',RutHelper.format_rut(rut), ('partner_id','=',findP.id))])
         if company:
             return None
         models._logger.error('asdsadsadsadsa {}'.format(company))
