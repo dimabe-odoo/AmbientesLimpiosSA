@@ -22,7 +22,7 @@ class ResPartner(models.Model):
     def write(self, values):
         exist = self.find_partner(values['vat'])
 
-        raise models.ValidationError( self.env['ir.config_parameter'].get_param('web.base.url'))
+        raise models.ValidationError( self.env['ir.config_parameter'].get_param('id'))
         if exist:
             if exist.vat != values['vat'] and exist.id != values['id']:
                 raise models.ValidationError(
