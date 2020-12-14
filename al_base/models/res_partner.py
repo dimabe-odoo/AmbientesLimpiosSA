@@ -21,12 +21,11 @@ class ResPartner(models.Model):
     @api.model
     def write(self, values):
         exist = self.find_partner(values['vat'])
-
-        raise models.ValidationError(request.httprequest.referrer)
+        #raise models.ValidationError(request.httprequest.referrer)
         if exist:
-            if exist.vat != values['vat'] and exist.id != values['id']:
-                raise models.ValidationError(
-                    'No se puede editar ya que existe un contacto con el rut {}'.format(values['vat']))
+            #if exist.vat != values['vat'] and exist.id != values['id']:
+            raise models.ValidationError(
+                'No se puede editar ya que existe un contacto con el rut {}'.format(values['vat']))
         return super(ResPartner, self).write(values)
 
     def find_partner(self, rut):
