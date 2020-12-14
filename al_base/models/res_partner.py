@@ -18,7 +18,7 @@ class ResPartner(models.Model):
     def write(self, values):
         #firstVat = values['vat']
         exist = self.find_partner(values['vat'])
-        raise models.ValidationError('Exist vat: {} exist id: {} values actual: {} values id {}'.format(exist.vat,exist,values['vat'], values['id']))
+        raise models.ValidationError('Exist: {}  values: {}'.format(exist,values))
 
         if exist:
             if exist.vat != values['vat'] and exist.id != values['id']:
