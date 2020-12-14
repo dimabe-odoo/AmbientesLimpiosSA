@@ -17,7 +17,7 @@ class ResPartner(models.Model):
     @api.model
     def write(self, values):
         exist = self.find_partner(values['vat'])
-        raise models.ValidationError('Exist: {}  values actual: {}'.format(exist,values))
+        raise models.ValidationError('Exist vat: {} exist id: {} values actual: {} values id {}'.format(exist.vat,exist.id,values.vat, values.id))
 
         if exist:
             if exist.vat != values['vat'] and exist.id != values['id']:
@@ -27,12 +27,13 @@ class ResPartner(models.Model):
 
     def find_partner(self, rut):
         if rut:
-            findP = self.env['res.partner'].search([('vat', '=', RutHelper.format_rut(rut))])
-            if findP:
-                if len(findP) > 1:
-                    company = self.env['res.company'].search([('vat','=',RutHelper.format_rut(rut)),('partner_id','in',findP.mapped('id'))])
+            findPartner = self.env['res.partner'].search([('vat', '=', RutHelper.format_rut(rut))])
+            if findPartner:
+                if len(findPartner) > 1:
+                    company = self.env['res.company'].search([('vat','=',RutHelper.format_rut(rut)),('partner_id','in',findPartner.mapped('id'))])
                 else:
-                    company = self.env['res.company'].search([('vat','=',RutHelper.format_rut(rut)),('partner_id','=',findP.id)])
+                    company = self.env['res.company'].search([('vat','=',RutHelper.format_rut(rut)),('partner_id','=',findPartner.id)])
                 if company:
                     return None
-            return self.env['res.partner'].search([('vat', '=', RutHelper.format_rut(rut))])
+            return findPartner
+            #return self.env['res.partner'].search([('vat', '=', RutHelper.format_rut(rut))])
