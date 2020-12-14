@@ -1,6 +1,10 @@
 from odoo import models, api
 from ..utils.rut_helper import RutHelper
 
+from odoo.http import request
+from odoo import http
+
+
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
@@ -16,10 +20,9 @@ class ResPartner(models.Model):
 
     @api.model
     def write(self, values):
-        firstVat = values['vat']
         exist = self.find_partner(values['vat'])
-        raise models.ValidationError('primer rut: {}  - Exist: {}  values: {}'.format(firstVat,exist.vat,values))
 
+        raise models.ValidationError( self.env['ir.config_parameter'].get_param('web.base.url'))
         if exist:
             if exist.vat != values['vat'] and exist.id != values['id']:
                 raise models.ValidationError(
