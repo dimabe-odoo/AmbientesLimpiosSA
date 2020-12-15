@@ -1,11 +1,6 @@
 from odoo import models, api
 from ..utils.rut_helper import RutHelper
 
-from odoo.http import request
-from odoo import http
-
-
-
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
@@ -15,13 +10,12 @@ class ResPartner(models.Model):
             if self.find_partner(values['vat']):
                 raise models.ValidationError(
                     'No se puede crear el contacto ya existe uno con el rut Rut {}'.format(values['vat']))
-
         return super(ResPartner, self).create(values)
 
     @api.model
     def write(self, values):
         exist = self.find_partner(values['vat'])
-        #raise models.ValidationError(request.httprequest.referrer)
+        raise models.ValidationError(self.id)
         if exist:
             #if exist.vat != values['vat'] and exist.id != values['id']:
             raise models.ValidationError(
