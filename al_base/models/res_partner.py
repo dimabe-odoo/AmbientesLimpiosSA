@@ -14,12 +14,13 @@ class ResPartner(models.Model):
 
     @api.model
     def write(self, values):
-        exist = self.find_partner(values['vat'])
-        raise models.ValidationError(self.id)
-        if exist:
-            #if exist.vat != values['vat'] and exist.id != values['id']:
-            raise models.ValidationError(
-                'No se puede editar ya que existe un contacto con el rut {}'.format(values['vat']))
+        currentContact = self.get_partner(self.id)
+        existVat = self.find_partner(values['vat'])
+
+        if existVat:
+            if currentContact.vat != values['vat']:
+                raise models.ValidationError(
+                    'No se puede editar ya que existe un contacto con el rut {}'.format(values['vat']))
         return super(ResPartner, self).write(values)
 
     def find_partner(self, rut):
@@ -34,3 +35,6 @@ class ResPartner(models.Model):
                     return None
             return findPartner
             #return self.env['res.partner'].search([('vat', '=', RutHelper.format_rut(rut))])
+    def get_partner(self, id):
+        if id:
+            return self.env['res.partner'].search(['id','=', id])
