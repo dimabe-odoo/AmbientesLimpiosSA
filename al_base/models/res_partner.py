@@ -21,6 +21,8 @@ class ResPartner(models.Model):
             if currentContact.vat != values['vat']:
                 raise models.ValidationError(
                     'No se puede editar ya que existe un contacto con el rut {}'.format(values['vat']))
+            else:
+                return super(ResPartner, self).write(values)
         return super(ResPartner, self).write(values)
 
     def find_partner(self, rut):
