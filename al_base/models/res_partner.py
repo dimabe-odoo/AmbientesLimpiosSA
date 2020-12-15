@@ -36,7 +36,7 @@ class ResPartner(models.Model):
                 if company:
                     return None
             return findPartner
-            #return self.env['res.partner'].search([('vat', '=', RutHelper.format_rut(rut))])
+
     def get_partner(self, id):
         if id:
-            return self.env['res.partner'].search(['id','=', id])
+            return self.env['res.partner'].search([('id','=', id)])
