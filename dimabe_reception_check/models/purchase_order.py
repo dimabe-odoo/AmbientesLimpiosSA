@@ -58,13 +58,13 @@ class PurchaseOrder(models.Model):
         self.hes_sent_count = self.hes_sent_count + 1
         return self
 
-    def action_view_invoice(self):
 
-        for order in self:
-            if order.has_service:
-                if order.hes_number == 0:
-                    raise ValidationError('debe validar que recibió el servicio')
-                if order.hes_sent_count == 0:
-                    raise ValidationError('no ha enviado el número hes al proveedor')
+    #def action_view_invoice(self, invoices=False):
+     #   for order in self:
+      #      if order.has_service:
+       #         if order.hes_number == 0:
+        #            raise ValidationError('debe validar que recibió el servicio')
+         #       if order.hes_sent_count == 0:
+          #          raise ValidationError('no ha enviado el número hes al proveedor')
 
-        return super(PurchaseOrder, self).action_view_invoice()
+        #return super(PurchaseOrder, self).action_view_invoice(invoices)
