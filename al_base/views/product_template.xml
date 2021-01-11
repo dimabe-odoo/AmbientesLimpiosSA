@@ -12,10 +12,10 @@
             <field name="al_dun" />
         </xpath>
         <xpath expr="//field[@name='barcode']" position="attributes">
-            <attribute name="string">Código de barras (EAN)</attribute>
+            <attribute name="string">Código de barras (SKU)</attribute>
         </xpath>
         <xpath expr="//field[@name='default_code']" position="attributes">
-            <attribute name="string">Referencia interna (SYSGESTION)</attribute>
+            <attribute name="string">Referencia interna (EAN)</attribute>
         </xpath>
       </field>
     </record>
