@@ -17,8 +17,8 @@ class ResPartner(models.Model):
     def write(self, values):
         currentPartner = self.get_partner(self.id)
         existVat = self.find_partner(values['vat'])
-        models._logger.error(values['child_ids'])
-        if not values['child_ids']:
+        models._logger.error('child_ids' not in values.keys())
+        if not values.keys():
             if existVat:
                 if currentPartner.vat != values['vat']:
                     raise models.ValidationError(
