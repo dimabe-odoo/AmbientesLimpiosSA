@@ -1,6 +1,7 @@
 from odoo import models, api
 from ..utils.rut_helper import RutHelper
 
+
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
@@ -19,7 +20,7 @@ class ResPartner(models.Model):
         existVat = self.find_partner(values['vat'])
         if existVat:
             if len(existVat) > 1:
-                return super(ResPartner,self).write(values)
+                return super(ResPartner, self).write(values)
             if currentPartner.vat != values['vat']:
                 raise models.ValidationError(
                     'No se puede editar ya que existe un contacto con el rut {}'.format(values['vat']))
@@ -33,13 +34,15 @@ class ResPartner(models.Model):
             findPartner = self.env['res.partner'].search([('vat', '=', RutHelper.format_rut(rut))])
             if findPartner:
                 if len(findPartner) > 1:
-                    company = self.env['res.company'].search([('vat','=',RutHelper.format_rut(rut)),('partner_id','in',findPartner.mapped('id'))])
+                    company = self.env['res.company'].search(
+                        [('vat', '=', RutHelper.format_rut(rut)), ('partner_id', 'in', findPartner.mapped('id'))])
                 else:
-                    company = self.env['res.company'].search([('vat','=',RutHelper.format_rut(rut)),('partner_id','=',findPartner.id)])
+                    company = self.env['res.company'].search(
+                        [('vat', '=', RutHelper.format_rut(rut)), ('partner_id', '=', findPartner.id)])
                 if company:
                     return None
             return findPartner
 
     def get_partner(self, id):
         if id:
-            return self.env['res.partner'].search([('id','=', id)])
+            return self.env['res.partner'].search([('id', '=', id)])
