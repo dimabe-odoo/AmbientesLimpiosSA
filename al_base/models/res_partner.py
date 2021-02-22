@@ -21,7 +21,8 @@ class ResPartner(models.Model):
         if 'child_ids' not in list(values.keys()):
             if existVat:
                 if not existVat.parent_id:
-                    if currentPartner.vat != values['vat']:
+                    if currentPartner.vat != values[
+                        'vat'] and existVat.l10n_latam_identification_type_id.id != currentPartner.l10n_latam_identification_type_id.id:
                         raise models.ValidationError(
                             'No se puede editar ya que existe un contacto con el rut {}'.format(values['vat']))
                 else:
@@ -30,7 +31,8 @@ class ResPartner(models.Model):
 
     def find_partner(self, rut):
         if rut:
-            findPartner = self.env['res.partner'].search([('vat', '=', RutHelper.format_rut(rut)),('type','!=','contact')])
+            findPartner = self.env['res.partner'].search(
+                [('vat', '=', RutHelper.format_rut(rut)), ('type', '!=', 'contact')])
             if findPartner:
                 if len(findPartner) > 1:
                     company = self.env['res.company'].search(
