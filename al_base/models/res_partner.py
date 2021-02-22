@@ -30,7 +30,7 @@ class ResPartner(models.Model):
 
     def find_partner(self, rut):
         if rut:
-            findPartner = self.env['res.partner'].search([('vat', '=', RutHelper.format_rut(rut))])
+            findPartner = self.env['res.partner'].search([('vat', '=', RutHelper.format_rut(rut)),('parent_id','=',None)])
             if findPartner:
                 if len(findPartner) > 1:
                     company = self.env['res.company'].search(
