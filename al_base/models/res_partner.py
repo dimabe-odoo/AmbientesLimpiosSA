@@ -17,7 +17,7 @@ class ResPartner(models.Model):
     def write(self, values):
         currentPartner = self.get_partner(self.id)
         existVat = self.find_partner(values['vat'])
-        if values.keys() in 'child_ids':
+        if 'child_ids' in values.keys():
             return super(ResPartner,self).write(values)
         if existVat:
             if currentPartner.vat != values['vat']:
