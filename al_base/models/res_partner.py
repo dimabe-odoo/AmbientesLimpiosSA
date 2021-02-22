@@ -17,7 +17,7 @@ class ResPartner(models.Model):
     def write(self, values):
         currentPartner = self.get_partner(self.id)
         existVat = self.find_partner(values['vat'])
-        raise models.ValidationError(existVat.partner_id)
+        raise models.ValidationError(existVat.parent_id)
         if 'child_ids' not in values.keys():
             if existVat and not existVat.type != 'contact':
                 if currentPartner.vat != values['vat']:
