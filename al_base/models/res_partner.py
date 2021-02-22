@@ -17,9 +17,7 @@ class ResPartner(models.Model):
     def write(self, values):
         currentPartner = self.get_partner(self.id)
         existVat = self.find_partner(values['vat'])
-        direction = values['child_ids'] if values['child_ids'] else []
-        if len(direction) > 0:
-            return super(ResPartner, self).write(values)
+        raise models.ValidationError(existVat.type)
         if existVat and not existVat.type != 'contact':
             if currentPartner.vat != values['vat']:
                 raise models.ValidationError(
