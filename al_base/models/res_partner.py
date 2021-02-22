@@ -18,7 +18,7 @@ class ResPartner(models.Model):
         currentPartner = self.get_partner(self.id)
         existVat = self.find_partner(values['vat'])
         if len(existVat) > 1:
-            raise models.ValidationError(existVat.mapped('type'))
+            raise models.ValidationError('other' in existVat.mapped('type'))
         if existVat and not existVat.type == 'contact':
             if currentPartner.vat != values['vat']:
                 raise models.ValidationError(
