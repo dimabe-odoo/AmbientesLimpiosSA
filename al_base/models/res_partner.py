@@ -17,15 +17,14 @@ class ResPartner(models.Model):
     def write(self, values):
         currentPartner = self.get_partner(self.id)
         existVat = self.find_partner(values['vat'])
-        raise models.ValidationError(existVat.parent_id)
-        if 'child_ids' not in values.keys():
-            if existVat and not existVat.type != 'contact':
-                if currentPartner.vat != values['vat']:
-                    raise models.ValidationError(
-                        'No se puede editar ya que existe un contacto con el rut {}'.format(values['vat']))
+        raise models.ValidationError(values['child_ids'])
+        if existVat and not existVat.type != 'contact':
+            if currentPartner.vat != values['vat']:
+                raise models.ValidationError(
+                    'No se puede editar ya que existe un contacto con el rut {}'.format(values['vat']))
 
-                else:
-                    return super(ResPartner, self).write(values)
+            else:
+                return super(ResPartner, self).write(values)
         return super(ResPartner, self).write(values)
 
     def find_partner(self, rut):
