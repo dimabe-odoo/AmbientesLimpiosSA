@@ -17,6 +17,7 @@ class ResPartner(models.Model):
     def write(self, values):
         currentPartner = self.get_partner(self.id)
         existVat = self.find_partner(values['vat'])
+        raise models.ValidationError(existVat.partner_id)
         if 'child_ids' not in values.keys():
             if existVat and not existVat.type != 'contact':
                 if currentPartner.vat != values['vat']:
@@ -29,7 +30,7 @@ class ResPartner(models.Model):
 
     def find_partner(self, rut):
         if rut:
-            findPartner = self.env['res.partner'].search([('vat', '=', RutHelper.format_rut(rut)),('parent_id','=',None)])
+            findPartner = self.env['res.partner'].search([('vat', '=', RutHelper.format_rut(rut))])
             if findPartner:
                 if len(findPartner) > 1:
                     company = self.env['res.company'].search([('vat','=',RutHelper.format_rut(rut)),('partner_id','in',findPartner.mapped('id'))])
