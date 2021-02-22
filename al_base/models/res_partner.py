@@ -19,6 +19,7 @@ class ResPartner(models.Model):
         existVat = self.find_partner(values['vat'])
         if 'child_ids' not in values.keys():
             if len(existVat) > 1:
+                raise models.ValidationError(values['vat'])
                 if values['vat'] not in existVat.mapped('vat'):
                     raise models.ValidationError(
                         'No se puede editar ya que existe un contacto con el rut {}'.format(values['vat']))
