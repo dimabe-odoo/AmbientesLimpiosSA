@@ -19,9 +19,7 @@ class ResPartner(models.Model):
         currentPartner = self.get_partner(self.id)
         existVat = self.find_partner(values['vat'])
         if existVat:
-            if len(existVat) > 1:
-                return super(ResPartner, self).write(values)
-            if currentPartner.vat != values['vat']:
+            if currentPartner.vat != values['vat'] and len(existVat) > 1:
                 raise models.ValidationError(
                     'No se puede editar ya que existe un contacto con el rut {}'.format(values['vat']))
 
