@@ -14,20 +14,20 @@ class ResPartner(models.Model):
                         'No se puede crear el contacto ya existe uno con el rut Rut {}'.format(values['vat']))
         return super(ResPartner, self).create(values)
 
-    @api.model
-    def write(self, values):
-        currentPartner = self.get_partner(self.id)
-        existVat = self.find_partner(values['vat'])
-        if 'child_ids' not in list(values.keys()):
-            if existVat:
-                if not existVat.parent_id:
-                    if currentPartner.vat != values[
-                        'vat'] and existVat.l10n_latam_identification_type_id.id != currentPartner.l10n_latam_identification_type_id.id:
-                        raise models.ValidationError(
-                            'No se puede editar ya que existe un contacto con el rut {}'.format(values['vat']))
-                else:
-                    return super(ResPartner, self).write(values)
-        return super(ResPartner, self).write(values)
+    # @api.model
+    # def write(self, values):
+    #     currentPartner = self.get_partner(self.id)
+    #     existVat = self.find_partner(values['vat'])
+    #     if 'child_ids' not in list(values.keys()):
+    #         if existVat:
+    #             if not existVat.parent_id:
+    #                 if currentPartner.vat != values[
+    #                     'vat'] and existVat.l10n_latam_identification_type_id.id != currentPartner.l10n_latam_identification_type_id.id:
+    #                     raise models.ValidationError(
+    #                         'No se puede editar ya que existe un contacto con el rut {}'.format(values['vat']))
+    #             else:
+    #                 return super(ResPartner, self).write(values)
+    #     return super(ResPartner, self).write(values)
 
     def find_partner(self, rut):
         if rut:
