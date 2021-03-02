@@ -12,12 +12,10 @@ class ResPartner(models.Model):
                 if self.find_partner(values['vat']):
                     raise models.ValidationError(
                         'No se puede crear el contacto ya existe uno con el rut Rut {}'.format(values['vat']))
-        if values['country_id'] != self.env.ref('base.cl').id:
-            return
         city_id = self.env['res.city'].search([('id','=',values['city_id'])])
         if city_id.state_id.parent_id:
             values['state_id'] = city_id.state_id.parent_id.id
-        if values['state_id'] == self.env.ref('base.state_cl_13').id:
+        if values['state_id'] == self.env.ref('base.state_cl_13'):
             values['real_city'] = 'Santiago'
         else:
             values['real_city'] = values['city'] = city_id.name
