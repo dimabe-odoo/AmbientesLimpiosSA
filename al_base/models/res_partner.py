@@ -5,13 +5,13 @@ from ..utils.rut_helper import RutHelper
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
-    @api.model
-    def create(self, values):
-        if 'contact' in values.values():
-            if 'vat' in values.keys():
-                if self.find_partner(values['vat']):
-                    raise models.ValidationError(
-                        'No se puede crear el contacto ya existe uno con el rut Rut {}'.format(values['vat']))
+    # @api.model
+    # def create(self, values):
+    #     if 'contact' in values.values():
+    #         if 'vat' in values.keys():
+    #             if self.find_partner(values['vat']):
+    #                 raise models.ValidationError(
+    #                     'No se puede crear el contacto ya existe uno con el rut Rut {}'.format(values['vat']))
 
     # @api.model
     # def write(self, values):
