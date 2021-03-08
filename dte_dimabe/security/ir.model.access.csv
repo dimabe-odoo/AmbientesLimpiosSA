@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_dimabe_custom_economic_activity,dimabe_billing_rut.custom_economic_activity,model_custom_economic_activity,,1,1,1,1
