@@ -36,7 +36,7 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_address_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='mobile']" position="after">
+                <xpath expr="//field[@name='email']" position="before">
                     <field name="comercionet_box" placeholder="Casilla Comercionet"/>
                 </xpath>
             </field>
