@@ -24,9 +24,6 @@
                     <attribute name="required">1</attribute>
                 </xpath>
 
-                <xpath expr="//field[@name='category_id']" position="after">
-                    <field name="comercionet_box" placeholder="Casilla Comercionet"/>
-                </xpath>
             </field>
         </record>
 
@@ -36,7 +33,7 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_address_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='email']" position="before">
+                <xpath expr="//field[@name='street']" position="before">
                     <field name="comercionet_box" placeholder="Casilla Comercionet"/>
                 </xpath>
             </field>
