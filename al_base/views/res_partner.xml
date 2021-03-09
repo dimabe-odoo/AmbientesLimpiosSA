@@ -24,7 +24,7 @@
                     <attribute name="required">1</attribute>
                 </xpath>
 
-                <xpath expr="/html/body/div[27]/div/div/main/div/div/div/div/div/div[2]/table[1]/tbody/tr[1]/td[2]/input" position="after">
+                <xpath expr="//field[@name='name']" position="after">
                     <field name="comercionet_box" placeholder="Casilla Comercionet"/>
                 </xpath>
 
