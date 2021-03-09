@@ -1,9 +1,11 @@
-from odoo import models, api
+from odoo import models, api, fields
 from ..utils.rut_helper import RutHelper
 
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
+
+    comercionet_box = fields.Char('Casilla Comercionet')
 
     # @api.model
     # def create(self, values):

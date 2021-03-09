@@ -27,6 +27,10 @@
                 <xpath expr="//field[@name='state_id']" position="attributes">
                     <attribute name="required">1</attribute>
                 </xpath>
+
+                <xpath expr="//field[@name='category_id']" position="after">
+                    <field name="comercionet_box" placeholder="Casilla Comercionet"/>
+                </xpath>
             </field>
         </record>
     </data>
