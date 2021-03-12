@@ -2,3 +2,4 @@
 
 from . import res_partner
 from . import custom_economic_activity
+from . import res_company
