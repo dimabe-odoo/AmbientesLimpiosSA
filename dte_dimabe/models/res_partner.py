@@ -11,3 +11,4 @@ class ResPartner(models.Model):
     def onChangeMailDte(self):
         if emailValidator(self.mail_dte) == False:
             raise models.ValidationError(f'El email {self.mail_dte} no es válido')
+        
