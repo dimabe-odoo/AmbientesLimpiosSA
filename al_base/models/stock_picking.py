@@ -6,6 +6,6 @@ class StockPicking(models.Model):
 
     def button_validate(self):
         if (self.partner_id and self.partner_id.picking_warn and self.partner_id.picking_warn == 'block') or (self.partner_id.parent_id and self.partner_id.parent_id.picking_warn and self.partner_id.parent_id.picking_warn == 'block'):
-            raise models.ValidationError(self.partner_id.picking_warn_msg)
+            raise models.ValidationError(self.partner_id.picking_warn_msg if self.partner_id.picking_warn_msg else self.partner_id.parent_id.picking_warn_msg)
 
         return super(StockPicking, self).button_validate()
