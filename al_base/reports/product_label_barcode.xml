@@ -11,7 +11,7 @@
                             <br/>
                             <div style="width:380px;height:70px; border: 4px solid; margin: 0 auto;">
                                 <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', product.al_dun, 600, 100)"
-                                            />
+                                   style="width:380px;height:70px;" />
                             </div>
                             <br/>
                             <span t-field="product.al_dun"/>
