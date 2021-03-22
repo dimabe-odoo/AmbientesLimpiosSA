@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <template id="product_label_barcode" inherit_id="product.report_producttemplatebarcode">
+            <xpath expr="//div[@class='page']" position="replace">
+                <div class="page">
+                    <t t-foreach="docs" t-as="product">
+                        <span t-field="product.name"/>
+                        <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', product.al_dun, 600, 100)"
+                                        style="width:350px;height:60px;"/>
+                    </t>
+                </div>
+            </xpath>
+        </template>
+    </data>
+</odoo>

@@ -26,7 +26,8 @@
         #'security/ir.model.access.csv',
         'views/product_product.xml',
         'views/product_template.xml',
-        'views/res_partner.xml'
+        'views/res_partner.xml',
+        'reports/product_label_barcode.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
