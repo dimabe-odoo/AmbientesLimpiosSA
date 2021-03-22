@@ -8,7 +8,7 @@
                         <span t-field="product.name"/>
                         <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', product.al_dun, 600, 100)"
                                         style="width:350px;height:60px;"/>
-                        <span t-esc="request.env['stock.production.lot'].search([('product_id.id','=',product.id)]).name"/>
+                        <span t-esc="request.env['stock.production.lot'].search([('product_id.id','=',product.id)])[0].name"/>
                     </t>
                 </div>
             </xpath>
