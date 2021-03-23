@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <template id="purchase_order" inherit_id="purchase.report_purchaseorder_document">
+            <xpath expr="//div[@class='page']" position="replace">
+                <div class="page">
+                    <t t-foreach="docs" t-as="d">
+                        <div style="width: 100%;">
+                            <div style="width: 70%; display: inline-block;">
+                                <table>
+                                    <tr>
+                                        <td colspan="3">
+                                            <span t-field="res_company.name" style="font-size: 18px;"/>
+                                            <p t-field="res_company.l10n_cl_activity_description"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 20%px; border: 1px solid">
+                                        </td>
+                                        <td style="width: 60%px">
+                                            <span t-field="res_company.street"><br/>
+                                            Mesa Central: <span t-field="res_company.phone"/><br/>
+                                            E-mail:<span t-field="res_company.email"/><br/>
+                                            <span t-field="website">
+                                        </td>
+                                        <td style="width: 20%px; border: 1px solid">
+
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div style="width: 30%; display: inline-block;">
+                                <table style="border:4px solid; border-color: #ff0000">
+                                    <tr>
+                                        <td style="text-align:center;color:#ff0000; font-weight: bold;">
+                                            R.U.T
+                                            <span style="color:#ff0000;" t-field="res_company.vat"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:center;color:#ff0000; font-weight: bold;">
+                                            ÓRDEN DE COMPRA
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:center;color:#ff0000; font-weight: bold;">
+                                            N°
+                                            
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <br/>
+                        <div style="width:100%;margin:0 auto;border:1px solid; border-radius: 5px; ">
+                            <table style="width:98%;margin 0 auto;font-size:11px; padding: 6px;" cellspacing="1">
+                                <tr>
+                                    <tr>
+                                        <td>
+                                            <strong>SEÑORES:</strong>
+                                        </td>
+                                        <td style="text-align:left;">
+                                            <t t-if="d.type_of_dispatch == 'nac'">
+                                                <span t-field="d.partner_id"/>
+                                            </t>
+                                            <t t-if="d.type_of_dispatch == 'exp'">
+                                                <span t-field="d.customs_department"/>
+                                            </t>
+                                        </td>
+                                        <td style="text-align:left;">
+                                            <strong>FECHA:</strong>
+                                        </td>
+                                        <td style="text-align:left;">
+                                            <span t-esc="d.create_date.date()"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left;">
+                                            <strong>DIRECCION:</strong>
+                                        </td>
+                                        <td style="text-align:left;">
+                                            <span t-field="d.partner_id.street"/>
+                                        </td>
+                                        <td style="text-align:left;">
+                                            <strong>COTIZACIÓN:</strong>
+                                        </td>
+                                        <td style="text-align:left;">
+                                            
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left;">
+                                            <strong>CIUDAD:</strong>
+                                        </td>
+                                        <td style="text-align:left;">
+                                            <span t-field="d.partner_id.city_id.name"></span>
+                                        </td>
+                                        <td style="text-align:left;">
+                                            <strong>FECHA COT. :</strong>
+                                        </td>
+                                        <td style="text-align:left;">
+                                           
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left;">
+                                            <strong>RUT:</strong>
+                                        </td>
+                                        <td style="text-align:left;">
+                                            <span t-field="d.partner_id.vat"/>
+                                        </td>
+                                        <td style="text-align:left;">
+                                            <strong>FONO:</strong>
+                                        </td>
+                                        <td style="text-align:left;">
+                                            <span t-field="d.partner_id.phone"/>
+                                        </td>
+                                        <td>
+                                            <strong>FAX:</strong>
+                                        </td>
+                                        <td>
+                                           
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left;">
+                                            <strong>AT. :</strong>
+                                        </td>
+                                        <td style="text-align:left;">
+
+                                        </td>
+                                    </tr>
+                                </tr>
+                            </table>
+                        </div>
+                        <div style="width:100%;margin:0 auto;height:600px;border:1px solid; border-radius: 5px; margin-top:4px;">
+                            <table style="width:100%;font-size:11px;" cellspacing="0">
+                                <tr>
+                                    <th style="width:10%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
+                                        ITEM
+                                    <th>
+                                    <th style="width:10%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
+                                        CANTIDAD
+                                    </th>
+                                    <th style="width:60%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
+                                        DESCRIPCIÓN
+                                    </th>
+                                    <th style="width:10%;border-right:1px solid; border-bottom:1px solid;padding-top: 6px;">
+                                        VALOR UNIT.
+                                    </th>
+                                    <th style="width:10%;border-bottom:1px solid;padding-top: 6px;">TOTAL</th>
+                                </tr>
+                                <t t-foreach="d.order_line" t-as="line">
+                                    <tr>
+                                        <td></td>
+                                        <td><span t-field="line.product_qty"/></td>
+                                        <td><span t-field="line.name"/></td>
+                                        <td><span t-field="line.price_unit"/></td>
+                                        <td><span t-field="line.price_subtotal"/></td>
+                                    </tr>
+                                </t>
+                            </table>
+                        </div>
+                        <div style="margin-top: 4px; width:100%; min-height:80px">
+                            <div style="width:60%; height:80px; border:1px solid; border-radius: 5px; float:left;padding-top:2px;">
+                                <table style="font-size:11px; padding: 6px;" cellspacing="0">
+                                    <tr>
+                                        <th>FECHA DE ENTREGA</th>
+                                        <td style="width: 5px">:</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th>COND. DE VENTA</th>
+                                        <td>:</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th>OBSERVACIÓN</th>
+                                        <td style="width: 5px">:</td>
+                                        <td></td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div style="width:38%; border:1px solid; border-radius: 5px; float:right;">
+                                <table style="font-size:11px; padding: 6px;" cellspacing="0">
+                                    <tr>
+                                        <th style="border-right: 1px solid;text-align: left">
+                                            SUBTOTAL
+                                        </th>
+                                        <td style="text-align: left;">
+                                            <span style="margin-left:4px;">$</span>
+                                        </td>
+                                        <td style="text-align: right;width:70%;">
+                                            <span t-field="d.amount_untaxed"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th style="border-right: 1px solid;text-align: left">
+                                            DESCUENTOS
+                                        </th>
+                                        <td style="text-align: left;">
+                                            <span style="margin-left:4px;">$</span>
+                                        </td>
+                                        <td style="text-align: right;width:70%;">
+                                            <span>0</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th style="border-right: 1px solid;text-align: left; right;width:30%;">
+                                            NETO
+                                        </th>
+                                        <td style="text-align: left;">
+                                            <span style="margin-left:4px;">$</span>
+                                        </td>
+                                        <td style="text-align: right;width:70%;">
+                                            <span t-field="d.amount_untaxed"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th style="border-right: 1px solid;text-align: left">
+                                            19% I.V.A
+                                        </th>
+                                        <td style="text-align: left;">
+                                            <span style="margin-left:4px;">$</span>
+                                        </td>
+                                        <td style="text-align: right;width:70%;">
+                                            <span t-field="d.amount_tax"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th style="border-right: 1px solid;text-align: left">
+                                            TOTAL ORDEN DE COMPRA
+                                        </th>
+                                        <td style="text-align: left; width:70%;">
+                                            <span style="margin-left:4px;">$</span>
+                                        </td>
+                                        <td style="text-align: right;width:70%;">
+                                            <span t-field="d.amount_total"></span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </xpath>
+        </template>
+    </data>
+</odoo>
