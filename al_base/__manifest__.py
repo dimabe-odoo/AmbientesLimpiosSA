@@ -28,7 +28,8 @@
         'views/product_template.xml',
         'views/res_partner.xml',
         'reports/product_label_barcode.xml',
-        'reports/purchase_order.xml'
+        'reports/purchase_order.xml',
+        'views/res_company.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
