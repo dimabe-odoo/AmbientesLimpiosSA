@@ -5,7 +5,7 @@
                 <div class="page">
                     <t t-foreach="docs" t-as="d">
                         <div style="width: 100%;">
-                            <div style="width: 49%; height: 120px; display: inline-block;">
+                            <div style="width: 49%; height: 130px; display: inline-block;">
                                 <table style="margin-left: 60px;">
                                     <tr>
                                         <td colspan="3" style="text-align: center;">
@@ -14,19 +14,19 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td style="width: 20%; border: 1px solid">
+                                        <td style="width: 10%;">
                                             <img t-att-src="'data:image/png;base64,%s' % to_text(res_company.logo)"
-                                            style="width: 100px; max-height: 60px"/>
+                                            style="max-width: 100px; max-height: 60px"/>
                                         </td>
-                                        <td style="width: 60%; font-size: 10px; text-align: center;">
+                                        <td style="width: 80%; font-size: 10px; text-align: center;">
                                             <span t-field="res_company.street"/><br/>
                                             Mesa Central: <span t-field="res_company.phone"/><br/>
                                             E-mail:<span t-field="res_company.email"/><br/>
                                             <span t-field="res_company.website"/>
                                         </td>
-                                        <td style="width: 20%; border: 1px solid">
+                                        <td style="width: 10%;">
                                             <img t-att-src="'data:image/png;base64,%s' % to_text(res_company.certificate_logo)"
-                                            style="width: 100px; max-height: 60px" />
+                                            style="max-width: 100px; max-height: 60px" />
                                         </td>
                                     </tr>
                                 </table>
@@ -35,7 +35,7 @@
                                 <table style="border:4px solid; border-color: #ff0000; float: right; width: 60%; height: 120px;">
                                     <tr>
                                         <td style="text-align:center;color:#ff0000; font-weight: bold;">
-                                            R.U.T
+                                            R.U.T.:
                                             <span style="color:#ff0000;" t-field="res_company.vat"/>
                                         </td>
                                     </tr>
@@ -47,7 +47,7 @@
                                     </tr>
                                     <tr>
                                         <td style="text-align:center;color:#ff0000; font-weight: bold;">
-                                            ÓRDEN DE COMPRA
+                                            ORDEN DE COMPRA
                                         </td>
                                     </tr>
                                     <tr>
@@ -79,7 +79,7 @@
                                             <strong>FECHA:</strong>
                                         </td>
                                         <td style="text-align:left;">
-                                            <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d %m %Y')"/>
+                                            <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y')"/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -101,13 +101,13 @@
                                             <strong>CIUDAD:</strong>
                                         </td>
                                         <td style="text-align:left;">
-                                            <span t-field="d.partner_id.city_id.name"></span>
+                                            <span style="text-transform: uppercase;" t-field="d.partner_id.city_id.name"></span>
                                         </td>
                                         <td style="text-align:left;">
                                             <strong>FECHA COT. :</strong>
                                         </td>
                                         <td style="text-align:left;">
-                                            <span t-esc="d.create_date.date()"/>
+                                            <span t-esc="d.create_date.date().strftime('%d-%m-%Y')"/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -163,17 +163,27 @@
                                 </tr>
                                 <t t-foreach="d.order_line" t-as="line">
                                     <tr>
-                                        <td></td>
-                                        <td><span t-field="line.product_qty"/></td>
-                                        <td><span t-field="line.name"/></td>
-                                        <td><span t-field="line.price_unit"/></td>
-                                        <td><span t-field="line.price_subtotal"/></td>
+                                        <td style="border-right:1px solid;border-bottom:1px solid;text-align:center;">
+                                            <span t-esc="line_index + 1"/>
+                                        </td>
+                                        <td style="border-right:1px solid;border-bottom:1px solid;text-align:right;padding-right:4px;">
+                                            <span t-field="line.product_qty"/>
+                                        </td>
+                                        <td style="border-right:1px solid;border-bottom:1px solid;text-align:left;padding-right:4px;padding-left:4px;">
+                                            <span t-field="line.name"/>
+                                        </td>
+                                        <td style="border-right:1px solid;border-bottom:1px solid;text-align:right;padding-right:4px;">
+                                            <span t-field="line.price_unit"/>
+                                        </td>
+                                        <td style="border-right:1px solid;border-bottom:1px solid;text-align:right;padding-right:4px;">
+                                            <span t-field="line.price_subtotal"/>
+                                        </td>
                                     </tr>
                                 </t>
                             </table>
                         </div>
-                        <div style="margin-top: 4px; width:100%; height:80px; border:1px solid; border-radius: 5px;">
-                            <div style="width:50%; height:80px; float:left;padding-top:2px;">
+                        <div style="margin-top: 4px; width:100%; min-height:100px; border:1px solid; border-radius: 5px;">
+                            <div style="width:50%; min-height:100px; float:left;padding-top:2px;">
                                 <table style="font-size:11px; padding: 6px;" cellspacing="0">
                                     <tr>
                                         <th style="text-align: left;">FECHA DE ENTREGA</th>
