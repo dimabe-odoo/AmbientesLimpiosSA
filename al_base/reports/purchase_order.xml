@@ -5,12 +5,12 @@
                 <div class="page">
                     <t t-foreach="docs" t-as="d">
                         <div style="width: 100%;">
-                            <div style="width: 70%; display: inline-block;">
+                            <div style="width: 49%; display: inline-block;">
                                 <table>
                                     <tr>
                                         <td colspan="3">
                                             <span t-field="res_company.name" style="font-size: 12px;"/>
-                                            <p style="font-size: 10px;" t-field="res_company.l10n_cl_activity_description"/>
+                                            <p style="font-size: 10px; text-align: center;" t-field="res_company.l10n_cl_activity_description"/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -18,7 +18,7 @@
                                             <img t-att-src="'data:image/png;base64,%s' % to_text(res_company.logo)"
                                             style="width: 100px"/>
                                         </td>
-                                        <td style="width: 60%;">
+                                        <td style="width: 60%; font-size: 10px; text-align: center;">
                                             <span t-field="res_company.street"/><br/>
                                             Mesa Central: <span t-field="res_company.phone"/><br/>
                                             E-mail:<span t-field="res_company.email"/><br/>
@@ -31,8 +31,8 @@
                                     </tr>
                                 </table>
                             </div>
-                            <div style="width: 30%; display: inline-block;">
-                                <table style="border:4px solid; border-color: #ff0000">
+                            <div style="width: 50%; display: inline-block;">
+                                <table style="border:4px solid; border-color: #ff0000; float: right; width: 60%; height: 120px;">
                                     <tr>
                                         <td style="text-align:center;color:#ff0000; font-weight: bold;">
                                             R.U.T
@@ -67,8 +67,7 @@
                         </div>
                         <br/>
                         <div style="width:100%;margin:0 auto;border:1px solid; border-radius: 5px; ">
-                            <table style="width:98%;margin 0 auto;font-size:11px; padding: 6px;" cellspacing="1">
-                                <tr>
+                            <table style="width:98%;margin: 0 auto;font-size:11px; padding: 6px;" cellspacing="1">
                                     <tr>
                                         <td>
                                             <strong>SEÑORES:</strong>
@@ -108,7 +107,7 @@
                                             <strong>FECHA COT. :</strong>
                                         </td>
                                         <td style="text-align:left;">
-                                           
+                                        
                                         </td>
                                     </tr>
                                     <tr>
@@ -124,11 +123,13 @@
                                         <td style="text-align:left;">
                                             <span t-field="d.partner_id.phone"/>
                                         </td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        
                                         <td>
                                             <strong>FAX:</strong>
-                                        </td>
-                                        <td>
-                                           
                                         </td>
                                     </tr>
                                     <tr>
@@ -139,7 +140,6 @@
 
                                         </td>
                                     </tr>
-                                </tr>
                             </table>
                         </div>
                         <div style="width:100%;margin:0 auto;height:600px;border:1px solid; border-radius: 5px; margin-top:4px;">
@@ -170,22 +170,22 @@
                                 </t>
                             </table>
                         </div>
-                        <div style="margin-top: 4px; width:100%; min-height:80px">
+                        <div style="margin-top: 4px; width:100%; height:80px">
                             <div style="width:50%; height:80px; border:1px solid; border-radius: 5px; float:left;padding-top:2px;">
                                 <table style="font-size:11px; padding: 6px;" cellspacing="0">
                                     <tr>
-                                        <th>FECHA DE ENTREGA</th>
+                                        <th style="text-align: left;">FECHA DE ENTREGA</th>
                                         <td style="width: 5px">:</td>
                                         <td></td>
                                     </tr>
                                     <tr>
-                                        <th>COND. DE VENTA</th>
+                                        <th style="text-align: left;">COND. DE VENTA</th>
                                         <td>:</td>
                                         <td></td>
                                     </tr>
                                     <tr>
-                                        <th>OBSERVACIÓN</th>
-                                        <td style="width: 5px">:</td>
+                                        <th style="text-align: left;">OBSERVACIÓN</th>
+                                        <td>:</td>
                                         <td></td>
                                     </tr>
                                 </table>
@@ -194,7 +194,7 @@
                             <div style="width:48%; border:1px solid; border-radius: 5px; float:right;">
                                 <table style="font-size:11px; padding: 6px;" cellspacing="0">
                                     <tr>
-                                        <th style="border-right: 1px solid;text-align: left">
+                                        <th style="border-right: 1px solid;text-align: left; width: 50%">
                                             SUBTOTAL
                                         </th>
                                         <td style="text-align: left;">
