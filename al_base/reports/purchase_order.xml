@@ -59,7 +59,7 @@
                                     <tr>
                                         <td style="text-align:center;color:#ff0000; font-weight: bold;">
                                             N°
-                                            
+                                            <span t-field="d.id"/>
                                         </td>
                                     </tr>
                                 </table>
@@ -93,7 +93,7 @@
                                             <strong>COTIZACIÓN:</strong>
                                         </td>
                                         <td style="text-align:left;">
-                                            <span t-esc="d.name"/>
+                                            <span t-esc="d.partner_ref"/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -147,19 +147,19 @@
                         <div style="width:100%;margin:0 auto;height:600px;border:1px solid; border-radius: 5px; margin-top:4px;">
                             <table style="width:100%;font-size:11px;" cellspacing="0">
                                 <tr>
-                                    <th style="width:10%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
+                                    <th style="width:8%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
                                         ITEM
                                     </th>
                                     <th style="width:10%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
                                         CANTIDAD
                                     </th>
-                                    <th style="width:60%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
+                                    <th style="width:58%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
                                         DESCRIPCIÓN
                                     </th>
-                                    <th style="width:10%;border-right:1px solid; border-bottom:1px solid;padding-top: 6px;">
+                                    <th style="width:12%;border-right:1px solid; border-bottom:1px solid;padding-top: 6px;">
                                         VALOR UNIT.
                                     </th>
-                                    <th style="width:10%;border-bottom:1px solid;padding-top: 6px;">TOTAL</th>
+                                    <th style="width:12%;border-bottom:1px solid;padding-top: 6px;">TOTAL</th>
                                 </tr>
                                 <t t-foreach="d.order_line" t-as="line">
                                     <tr>
@@ -175,7 +175,7 @@
                                         <td style="border-right:1px solid;border-bottom:1px solid;text-align:right;padding-right:4px;">
                                             <span t-field="line.price_unit"/>
                                         </td>
-                                        <td style="border-right:1px solid;border-bottom:1px solid;text-align:right;padding-right:4px;">
+                                        <td style="border-bottom:1px solid;text-align:right;padding-right:4px;">
                                             <span t-field="line.price_subtotal"/>
                                         </td>
                                     </tr>
@@ -193,12 +193,12 @@
                                     <tr>
                                         <th style="text-align: left;">COND. DE VENTA</th>
                                         <td>:</td>
-                                        <td></td>
+                                        <td style="text-transform: uppercase;">/<span t-field="payment_term_id.name"></td>
                                     </tr>
                                     <tr>
                                         <th style="text-align: left;">OBSERVACIÓN</th>
                                         <td>:</td>
-                                        <td></td>
+                                        <td><span t-field="d.notes"/></td>
                                     </tr>
                                 </table>
                             </div>
@@ -284,7 +284,7 @@
         <field name="dpi">90</field>
     </record>
 
-    <report id="action_custom_purchase_order" string="Órden de Compra (Custom)" model="purchase.order" report_type="qweb-pdf"
+    <report id="action_custom_purchase_order" string="Órden de Compra" model="purchase.order" report_type="qweb-pdf"
             name="al_base.custom_purchase_order" menu="True" paperformat="paper_format_letter_custom"
     />
 </odoo>
