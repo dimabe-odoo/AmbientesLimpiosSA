@@ -2,6 +2,7 @@
 <odoo>
     <data>
         <template id="purchase_order" inherit_id="purchase.report_purchaseorder_document">
+                <div class="page">
                     <t t-foreach="docs" t-as="d">
                         <div style="width: 100%;">
                             <div style="width: 70%; display: inline-block;">
@@ -251,6 +252,7 @@
                             </div>
                         </div>
                     </t>
+                </div>
         </template>
     </data>
 </odoo>
