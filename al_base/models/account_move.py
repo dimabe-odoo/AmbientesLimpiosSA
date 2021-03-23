@@ -8,6 +8,6 @@ class AccountMove(models.Model):
         if 'sale_id' in values.keys():
             sale_order = self.env['sale.order'].search([('id','=',values['sale_id'])])
             if sale_order.l10n_latam_document_type_id:
-                vals.l10n_latam_document_type_id = sale_order.l10n_latam_document_type_id.id
+                values['l10n_latam_document_type_id'] = sale_order.l10n_latam_document_type_id.id
 
         return super(AccountMove, self).create(values)
