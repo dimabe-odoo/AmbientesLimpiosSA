@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'product', 'stock'],
+    'depends': ['base', 'product', 'stock', 'sale'],
 
     # always loaded
     'data': [
@@ -27,6 +27,7 @@
         'views/product_product.xml',
         'views/product_template.xml',
         'views/res_partner.xml',
+        'views/sale_order.xml',
         'reports/product_label_barcode.xml',
         'reports/purchase_order.xml'
     ],
