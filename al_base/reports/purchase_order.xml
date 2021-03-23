@@ -21,7 +21,7 @@
                                             <span t-field="res_company.street"/><br/>
                                             Mesa Central: <span t-field="res_company.phone"/><br/>
                                             E-mail:<span t-field="res_company.email"/><br/>
-                                            <span t-field="website"/>
+                                            <span t-field="res_company.website"/>
                                         </td>
                                         <td style="width: 20%px; border: 1px solid">
 
