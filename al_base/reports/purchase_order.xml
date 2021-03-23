@@ -193,7 +193,7 @@
                                     <tr>
                                         <th style="text-align: left;">COND. DE VENTA</th>
                                         <td>:</td>
-                                        <td style="text-transform: uppercase;">/<span t-field="d.payment_term_id.name"></td>
+                                        <td style="text-transform: uppercase;">/<span t-field="d.payment_term_id.name"/></td>
                                     </tr>
                                     <tr>
                                         <th style="text-align: left;">OBSERVACIÓN</th>
