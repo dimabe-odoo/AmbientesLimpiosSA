@@ -6,8 +6,8 @@ class AccountInvoice(models.Model):
     def create(self, vals_list):
         for vals in vals_list:
             if vals.sale_id:
-                sale_order = self.env['sale.order'].search([('id','=',vals['sale_id'])])
+                sale_order = self.env['sale.order'].search([('id','=',vals.sale_id.id)])
                 if sale_order.l10n_latam_document_type_id:
-                    vals.l10n_latam_document_type_id = sale_order.l10n_latam_document_type_id
+                    vals.l10n_latam_document_type_id = sale_order.l10n_latam_document_type_id.id
 
         return super(AccountInvoice, self).create(vals_list)
