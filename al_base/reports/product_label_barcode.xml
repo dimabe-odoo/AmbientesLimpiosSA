@@ -15,9 +15,11 @@
                             <span t-field="principal.al_dun"/>
                             <br/>
                             <div style="text-align: right">
-                                <span>VENC:</span><span t-esc="request.env['stock.production.lot'].search([('product_id.id','=',product.id)])[0].expiration_date.strftime('%m %Y')" />
-                                <br/>
-                                <span t-esc="request.env['stock.production.lot'].search([('product_id.id','=',product.id)])[0].name" />
+                                <t t-if="product.tracking == 'lot'">
+                                    <span>VENC:</span><span t-esc="request.env['stock.production.lot'].search([('product_id.id','=',product.id)])[0].expiration_date.strftime('%m %Y')" />
+                                    <br/>
+                                    <span t-esc="request.env['stock.production.lot'].search([('product_id.id','=',product.id)])[0].name" />
+                                </t>
                             </div>
                         </t>
                     </t>
