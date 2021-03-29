@@ -5,6 +5,7 @@ class AccountMove(models.Model):
 
     @api.model
     def create(self, values):
+        
         if values['invoice_origin']:
             sale_order = self.env['sale.order'].search([('name','=',values['invoice_origin'])])
             if sale_order.l10n_latam_document_type_id:
