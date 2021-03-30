@@ -30,7 +30,8 @@
         'views/sale_order.xml',
         'reports/product_label_barcode.xml',
         'reports/purchase_order.xml',
-        'views/res_company.xml'
+        'views/res_company.xml',
+        'views/stock_picking.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
