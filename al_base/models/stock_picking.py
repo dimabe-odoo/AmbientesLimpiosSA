@@ -27,7 +27,7 @@ class StockPicking(models.Model):
                 if product.tracking == 'lot':
                     lot = self.get_last_lot()
                     if lot:
-                        created_lot = self.env['stock_production_lot'].sudo().create({
+                        created_lot = self.env['stock.production.lot'].sudo().create({
                             'name': lot,
                             'product_id': item.product_id.id,
                             'product_qty': item.qty_done
@@ -35,5 +35,5 @@ class StockPicking(models.Model):
                         item.write({
                             'lot_id': created_lot.id
                         })
-                        
+
         return super(StockPicking, self).button_validate()  
