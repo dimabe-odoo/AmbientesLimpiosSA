@@ -1,5 +1,4 @@
 from odoo import models, fields
-from datetime import date
 
 
 class StockMoveLine(models.Model):

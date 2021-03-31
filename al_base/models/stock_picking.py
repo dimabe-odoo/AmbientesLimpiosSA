@@ -1,4 +1,5 @@
 from odoo import models
+from datetime import date
 from ..utils.lot_generator import generate_lot
 
 
