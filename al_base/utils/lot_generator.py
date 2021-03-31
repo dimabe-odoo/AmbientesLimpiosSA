@@ -7,7 +7,7 @@ def add_zeros(init, to):
 def generate_lot(currentLot = None):
     now = date.today() 
     if currentLot is None:
-        return add_zeros(1, 5) + '1-' + now.strftime('%y%m')
+        return add_zeros(1, 5) + '1-' + now.strftime('%y%m%d')
 
     sequence = currentLot.split('-')[0]
     sequence = int(sequence) + 1
@@ -15,6 +15,6 @@ def generate_lot(currentLot = None):
 
     next_lot = add_zeros(len(str(sequence)), max_lenght)
 
-    next_lot += '{}-{}'.format(str(sequence), now.strftime('%y%m')) 
+    next_lot += '{}-{}'.format(str(sequence), now.strftime('%y%m%d')) 
 
     return next_lot 
