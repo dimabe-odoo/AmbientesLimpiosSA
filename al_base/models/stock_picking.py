@@ -30,7 +30,7 @@ class StockPicking(models.Model):
                         created_lot = self.env['stock.production.lot'].sudo().create({
                             'name': lot,
                             'product_id': item.product_id.id,
-                            'product_qty': item.qty_done
+                            'product_qty': item.qty_done,
                             'company_id': self.env.user.company_id.id
                         })
                         item.write({
