@@ -24,13 +24,14 @@ class StockPicking(models.Model):
 
         for item in self.move_line_nosuggest_ids:
                 product = item.product_id
-                if product.tracking == 'lot':
+                if not item.lot_id and product.tracking == 'lot':
                     lot = self.get_last_lot()
                     if lot:
                         created_lot = self.env['stock.production.lot'].sudo().create({
                             'name': lot,
                             'product_id': item.product_id.id,
                             'product_qty': item.qty_done
+                            'company_id': self.env.user.company_id.id
                         })
                         item.write({
                             'lot_id': created_lot.id
