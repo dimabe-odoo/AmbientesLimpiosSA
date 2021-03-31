@@ -4,8 +4,11 @@ def add_zeros(init, to):
     return ''.join(['0' for i in range(init, to)])
 
 
-def generate_lot(currentLot):
+def generate_lot(currentLot = None):
     now = date.today() 
+    if currentLot is None:
+        return add_zeros(1, 5) + '1-' + now.strftime('%y%m')
+
     sequence = currentLot.split('-')[0]
     sequence = int(sequence) + 1
     max_lenght = len(str(sequence)) + 1 if len(str(sequence)) > 5 else 5;
@@ -16,3 +19,7 @@ def generate_lot(currentLot):
 
     return next_lot 
 
+
+print(generate_lot('000010-2103'))
+
+print(generate_lot())
