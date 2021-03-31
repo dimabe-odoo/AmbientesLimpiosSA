@@ -9,7 +9,7 @@ class StockPicking(models.Model):
 
     def get_last_lot(self):
         now = date.today()
-        last_lot = self.env['stock.production.lot'].sudo().search([('-', 'in', 'name')])[0]
+        last_lot = self.env['stock.production.lot'].sudo().search([('name', 'like', '-')])[0]
         if last_lot:
             lot = last_lot.name
             if len(lot.split('-')) == 2:
