@@ -9,7 +9,7 @@ class StockPicking(models.Model):
 
     def get_last_lot(self):
         now = date.today()
-        last_lot = self.env['stock.production.lot'].sudo().search([('name', 'like', '-')])[0]
+        last_lot = self.env['stock.production.lot'].sudo().search([('name', 'like', '-')], order='id desc')[0]
         if last_lot:
             lot = last_lot.name
             if len(lot.split('-')) == 2:
@@ -21,7 +21,7 @@ class StockPicking(models.Model):
     def button_validate(self):
         if (self.partner_id and self.partner_id.picking_warn and self.partner_id.picking_warn == 'block') or (self.partner_id.parent_id and self.partner_id.parent_id.picking_warn and self.partner_id.parent_id.picking_warn == 'block'):
             raise models.ValidationError(self.partner_id.picking_warn_msg if self.partner_id.picking_warn_msg else self.partner_id.parent_id.picking_warn_msg)
-
+        
         for item in self.move_line_nosuggest_ids:
                 product = item.product_id
                 if not item.lot_id and product.tracking == 'lot':
