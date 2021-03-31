@@ -18,8 +18,3 @@ def generate_lot(currentLot = None):
     next_lot += '{}-{}'.format(str(sequence), now.strftime('%y%m')) 
 
     return next_lot 
-
-
-print(generate_lot('000010-2103'))
-
-print(generate_lot())
