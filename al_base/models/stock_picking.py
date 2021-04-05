@@ -7,6 +7,7 @@ class StockPicking(models.Model):
 
     _inherit = 'stock.picking'
 
+
     def get_last_lot(self):
         now = date.today()
         last_lot = self.env['stock.production.lot'].sudo().search([('name', 'like', '-')], order='id desc')[0]
@@ -24,7 +25,7 @@ class StockPicking(models.Model):
         
         for item in self.move_line_nosuggest_ids:
                 product = item.product_id
-                if not item.lot_id and product.tracking == 'lot':
+                if not item.lot_id and product.tracking == 'lot': # todo: validar que se genere cuando sea recepcion el tipo de movimiento
                     lot = self.get_last_lot()
                     if lot:
                         created_lot = self.env['stock.production.lot'].sudo().create({
