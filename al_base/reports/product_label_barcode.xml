@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <template id="product_label_barcode" inherit_id="product.report_producttemplatebarcode">
+            <xpath expr="//div[@class='page']" position="replace">
+                <div class="page">
+                    <div style="width:400px;height:200px; text-align: center; border: 1px solid; padding: 4px;">
+                    <t t-foreach="docs" t-as="principal">
+                        <t t-foreach="principal.product_variant_ids" t-as="product">
+                            <span t-field="product.name"/>
+                            <br/>
+                            <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', principal.al_dun, 600, 100)"
+                                style="width:380px;height:90px; border: 4px solid;"/>
+                            <br/>
+                            <span t-field="principal.al_dun"/>
+                            <br/>
+                            <div style="text-align: right">
+                                <t t-if="product.tracking == 'lot'">
+                                    <span>VENC:</span><span t-esc="request.env['stock.production.lot'].search([('product_id.id','=',product.id)])[0].expiration_date.strftime('%m %Y')" />
+                                    <br/>
+                                    <span t-esc="request.env['stock.production.lot'].search([('product_id.id','=',product.id)])[0].name" />
+                                </t>
+                            </div>
+                        </t>
+                    </t>
+                    </div>
+                </div>
+            </xpath>
+        </template>
+    </data>
+</odoo>

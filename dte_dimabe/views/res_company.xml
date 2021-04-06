@@ -1,0 +1,23 @@
+<odoo>
+  <data>
+    <record id="view_company_form_inherit" model="ir.ui.view">
+      <field name="name">formulario de compañía</field>
+      <field name="model">res.company</field>
+      <field name="inherit_id" ref="base.view_company_form" />
+      <field name="arch" type="xml">
+        <xpath expr="//form[1]/sheet[1]/notebook[1]" position="inside">
+          <page name="dte_tab" string="DTE">
+              <group name="sii_info" cols="">
+                  <field name="resolution_date" placeholder="Fecha Resolución" colspan="3" style="width: 29%"/>
+                  <field name="resolution_number" placeholder="Núm. Resolución" colspan="3" style="width: 29%"/>
+                  <field name="economic_activities" placeholder="Giros" colspan="8" />
+                  <field name="dte_url" placeholder="URL Portal de Facturacion" colspan="3" style="width: 29%"/>
+                  <field name="dte_customer_code" placeholder="Código Cliente" colspan="3" style="width: 29%"/>
+                  <field name="dte_hash" placeholder="ApiKey Cliente" colspan="3" style="width: 29%"/>
+              </group>
+          </page>
+        </xpath>
+      </field>
+    </record>
+  </data>
+</odoo>

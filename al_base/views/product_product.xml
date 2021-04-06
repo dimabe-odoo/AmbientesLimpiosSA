@@ -15,7 +15,8 @@
             <attribute name="string">Código de barras (EAN)</attribute>
         </xpath>
         <xpath expr="//field[@name='default_code']" position="attributes">
-            <attribute name="string">Referencia interna (SYSGESTION)</attribute>
+            <attribute name="string">SKU</attribute>
+            <attribute name="required">1</attribute>
         </xpath>
       </field>
     </record>

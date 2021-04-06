@@ -15,13 +15,14 @@
             <attribute name="string">Código de barras (EAN)</attribute>
         </xpath>
         <xpath expr="//field[@name='default_code']" position="attributes">
-            <attribute name="string">Referencia interna (SYSGESTION)</attribute>
+            <attribute name="string">SKU</attribute>
+            <attribute name="attrs">{'required': [('product_variant_count','=',1)], 'invisible': [('product_variant_count','>',1)]}</attribute>
         </xpath>
       </field>
     </record>
 
     <!-- actions opening views on models -->
-    <!--
+    <!-- 	
     <record model="ir.actions.act_window" id="my_module.action_window">
       <field name="name">my_module window</field>
       <field name="res_model">my_module.my_module</field>
