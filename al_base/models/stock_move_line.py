@@ -1,4 +1,4 @@
-from odoo import models, fields
+from odoo import models, fields, api
 
 
 class StockMoveLine(models.Model):
@@ -6,8 +6,19 @@ class StockMoveLine(models.Model):
 
     supplier_lot = fields.Char('Lote Proveedor')
 
-    is_loteable = fields.Boolean(compute='_compute_is_loteable')
-
-    def _compute_is_loteable(self):
-        return self.product_id.tracking == 'lot'
-
+    @api.onchange('product_id')
+    def on_change_product_id(self):
+        for item in self:
+            if item.product_id.tracking == 'lot':
+                res = {
+                    'readonly': {
+                        'supplier_lot': 0
+                    }
+                }
+            else:
+                res = {
+                    'readonly': {
+                        'supplier_lot' : 1
+                    }
+                }
+            return res
