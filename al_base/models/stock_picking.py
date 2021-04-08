@@ -22,7 +22,7 @@ class StockPicking(models.Model):
     def button_validate(self):
         if (self.partner_id and self.partner_id.picking_warn and self.partner_id.picking_warn == 'block') or (self.partner_id.parent_id and self.partner_id.parent_id.picking_warn and self.partner_id.parent_id.picking_warn == 'block'):
             raise models.ValidationError(self.partner_id.picking_warn_msg if self.partner_id.picking_warn_msg else self.partner_id.parent_id.picking_warn_msg)
-        if self.picking_type_id.code == 'IN':
+        if self.picking_type_id.sequence_code == 'IN':
             for item in self.move_line_nosuggest_ids:
                     product = item.product_id
                     if not item.lot_id and product.tracking == 'lot': # todo: validar que se genere cuando sea recepcion el tipo de movimiento
