@@ -9,8 +9,9 @@ class StockMoveLine(models.Model):
     is_loteable = fields.Boolean()
     
     def create(self,values):
-        if 'product_id' in values.keys():
-            product = self.env['product.product'].search([('id','=',values['product_id'])])
-            values['is_loteable'] = product.tracking == 'lot'
-        return super(StockMoveLine, self).create(values)
+        for value in values:
+            if 'product_id' in value.keys():
+                product = self.env['product.product'].search([('id', '=', values['product_id'])])
+                values['is_loteable'] = product.tracking == 'lot'
+            return super(StockMoveLine, self).create(values)
 
