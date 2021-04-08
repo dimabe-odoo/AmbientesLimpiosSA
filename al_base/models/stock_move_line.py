@@ -7,7 +7,15 @@ class StockMoveLine(models.Model):
     supplier_lot = fields.Char('Lote Proveedor')
 
     is_loteable = fields.Boolean()
-    
+
+    @api.onchange('product_id')
+    def onchange_product_id(self):
+        if self.product_id.tracking == 'lot':
+            self.is_loteable = True
+        else:
+            self.is_loteable = False
+
+
     def create(self,values):
         for value in values:
             if 'product_id' in value.keys():
