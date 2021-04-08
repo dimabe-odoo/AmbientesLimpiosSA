@@ -13,3 +13,4 @@ class StockMoveLine(models.Model):
             product = self.env['product.product'].search([('id','=',values['product_id'])])
             values['is_loteable'] = product.tracking == 'lot'
         return super(StockMoveLine, self).create(values)
+
