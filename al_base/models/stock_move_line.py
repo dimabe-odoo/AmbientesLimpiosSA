@@ -10,10 +10,7 @@ class StockMoveLine(models.Model):
 
     @api.onchange('product_id')
     def onchange_product_id(self):
-        if self.product_id.tracking == 'lot':
-            self.is_loteable = True
-        else:
-            self.is_loteable = False
+        self.is_loteable = self.product_id.tracking == 'lot'
 
 
     def create(self,values):
