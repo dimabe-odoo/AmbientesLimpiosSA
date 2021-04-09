@@ -32,7 +32,8 @@ class StockPicking(models.Model):
                                 'name': lot,
                                 'product_id': item.product_id.id,
                                 'product_qty': item.qty_done,
-                                'company_id': self.env.user.company_id.id
+                                'company_id': self.env.user.company_id.id,
+                                'supplier_lot': item.supplier_lot if item.supplier_lot else ''
                             })
                             item.write({
                                 'lot_id': created_lot.id

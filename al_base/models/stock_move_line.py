@@ -12,6 +12,10 @@ class StockMoveLine(models.Model):
     def onchange_product_id(self):
         self.is_loteable = self.product_id.tracking == 'lot'
 
+    @api.onchange('lot_name')
+    def onchange_lot_name(self):
+        self.supplier_lot if self.lot_id.supplier_lot else ''
+
 
     # def create(self,values):
     #     for value in values:
