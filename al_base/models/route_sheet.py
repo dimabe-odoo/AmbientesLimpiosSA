@@ -1,6 +1,6 @@
 from odoo import fields, models
 from odoo.models import Model
-from odoo.fields import Many2one, One2many, Selection,Char,Date,DateTime
+from odoo.fields import Many2one, One2many, Selection,Char,Date,Datetime
 
 
 class RouteSheet(Model):
