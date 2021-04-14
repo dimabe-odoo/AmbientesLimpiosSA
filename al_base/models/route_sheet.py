@@ -18,9 +18,9 @@ class RouteSheet(Model):
 
     state = Selection([('draft','Borrador'),('incoming','Despachado'),('done','Entregado')],string="Estado",readonly=True)
 
-    dispatch_date = DateTime('Fecha de Despacho')
+    dispatch_date = Datetime('Fecha de Despacho')
 
-    date_done = DateTime('Fecha Realizado')
+    date_done = Datetime('Fecha Realizado')
 
     def add_picking(self):
         self.picking_id.write({
