@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="custom_pallet_form" model="ir.ui.view">
+            <field name="name">custom.pallet.form</field>
+            <field name="model">custom.pallet</field>
+            <field name="arch" type="xml">
+                <form string="ModelTitle">
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name"/>
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+<!--                            <group>-->
+<!--                                <field name="lot_id"/>-->
+<!--                            </group>-->
+                            <group>
+                                <field name="product_ids"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="custom_pallet_tree_view" model="ir.ui.view">
+            <field name="name">custom.pallet.tree</field>
+            <field name="model">custom.pallet</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+<!--                    <field name="lot_id"/>-->
+                    <field name="product_ids"/>
+                </tree>
+            </field>
+        </record>
+
+
+
+        <record id="custom_pallet_action" model="ir.actions.act_window">
+            <field name="name">ModelTitle</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">custom.pallet</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="Pallets" id="custom_pallet_menuitem" parent="stock.menu_stock_inventory_control" action="custom_pallet_action"/>
+
+    </data>
+</odoo>

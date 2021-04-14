@@ -1,4 +1,4 @@
-from odoo import models
+from odoo import models, fields, api
 from datetime import date
 from ..utils.lot_generator import generate_lot
 
@@ -7,6 +7,9 @@ class StockPicking(models.Model):
 
     _inherit = 'stock.picking'
 
+    sheet_id = fields.Many2one('route.sheet',string="Hoja de Ruta",auto_join=True)
+
+    l10n_latam_document_type_id = fields.Many2one('l10n_latam.document.type', string="Tipo de Documento")
 
     def get_last_lot(self):
         now = date.today()
@@ -17,7 +20,13 @@ class StockPicking(models.Model):
                 return generate_lot(lot)
         return generate_lot()
 
-
+    @api.model
+    def create(self,values):
+        res = super(StockPicking, self).create(values)
+        sale = self.env['sale.order'].search([('name','=',res.origin)])
+        if sale:
+            res.l10n_latam_document_type_id = sale.l10n_latam_document_type_id
+        return res
 
     def button_validate(self):
         if (self.partner_id and self.partner_id.picking_warn and self.partner_id.picking_warn == 'block') or (self.partner_id.parent_id and self.partner_id.parent_id.picking_warn and self.partner_id.parent_id.picking_warn == 'block'):

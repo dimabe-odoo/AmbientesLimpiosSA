@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <template id="report_route_report_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="web.html_container">
+                        <div class="page">
+                            <div style="width:100%;">
+                            </div>
+                        </div>
+                </t>
+            </t>
+        </t>
+    </template>
+    <report id="action_report_route_sheet" string="Hoja de Ruta" model="route.sheet" report_type="qweb-pdf"
+            name="al_base.report_route_report_template" menu="True" paperformat="paper_format_letter_custom"
+    />
+</data>
+        </odoo>

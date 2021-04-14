@@ -15,6 +15,30 @@
                 </xpath>    
             </field>
         </record>
+
+        <record id="view_stock_picking_tree" model="ir.ui.view">
+            <field name="name">Stock Picking Tree Inherit</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.vpicktree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='origin']" position="after">
+                    <field name="l10n_latam_document_type_id" widget="many2onebutton"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_stock_picking_search" model="ir.ui.view">
+            <field name="name">Stock Picking Search Inherit</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_internal_search"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='origin']" position="after">
+                    <field name="l10n_latam_document_type_id"/>
+                    <filter name="Factura Electronica" domain="[('l10n_latam_document_type_id.code','=',33)]"/>
+                    <filter name="Boleta Electronica" domain="[('l10n_latam_document_type_id.code','=',39)]"/>
+                </xpath>
+            </field>
+        </record>
     </data> 
 
 </odoo>
