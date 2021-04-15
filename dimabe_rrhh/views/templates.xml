@@ -1,6 +1,6 @@
 <odoo>
     <data>
-        <menuitem name="Previsionales" parent="hr_payroll.menu_hr_payroll_root" id="hr_pension_menu"/>
+        <menuitem name="Previsionales" parent="hr_work_entry_contract.menu_hr_payroll_root" id="hr_pension_menu"/>
 <!--
         <template id="listing">
           <ul>
