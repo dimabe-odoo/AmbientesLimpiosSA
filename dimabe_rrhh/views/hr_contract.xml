@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="hr_contract_form_inherit" model="ir.ui.view">
+            <field name="name">hr_contract_form_inherit</field>
+            <field name="model">hr.contract</field>
+            <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='department_id']" position="before">
+                    <field name="type_id" required="1"/>
+                </xpath>
+                <xpath expr="//page[@name='information']" position="inside">
+                    <group>
+                        <field name="collation_amount"/>
+                        <field name="mobilization_amount"/>
+                        <field name="viatic_amount"/>
+                        <field name="legal_gratification"/>
+                    </group>
+                </xpath>
+                <xpath expr="//page[@name='information']" position="after">
+                    <page string="Carga Familiar">
+                        <group string="Cargas" style="width:50%;">
+                            <field name="section_id" options="{'no_quick_create':True,'no_create':True}"/>
+                            <field name="section_amount"/>
+                            <field name="simple_charge"/>
+                            <field name="maternal_charge"/>
+                            <field name="disability_charge"/>
+                        </group>
+                    </page>
+                    <page string="Datos Previsionales" name="afp_page">
+                        <group string="AFP" style="width:50%;">
+                            <field name="not_afp"/>
+                            <field name="not_afp_sis"/>
+                            <field name="afp_id" attrs="{'invisible':[('not_afp','=',True)]}"/>
+                            <field name="is_pensionary" attrs="{'invisible':[('not_afp','=',True)]}"/>
+                            <field name="type_pensionary" attrs="{'invisible':['|',('is_pensionary','=',False),('not_afp','=',True)]}"/>
+                        </group>
+                        <group string="Salud" style="width:50%;">
+                            <field name="is_fonasa"/>
+                            <field name="isapre_id" attrs="{'invisible':[('is_fonasa','=',True)]}"/>
+                            <field name="currency_isapre_id" attrs="{'invisible':[('is_fonasa','=',True)]}"/>
+                            <field name="isapre_agreed_quotes_uf" attrs="{'invisible':[('is_fonasa','=',True)]}"/>
+                            <field name="fun_number" attrs="{'invisible':[('is_fonasa','=',True)]}"/>
+                            <field name="own_account_isapre" attrs="{'invisible':[('is_fonasa','=',True)]}"/>
+                        </group>
+                        <group string="CCAF" style="width:50%;">
+                            <field name="have_saving_ccaf"/>
+                            <field name="saving_ccaf" attrs="{'invisible':[('have_saving_ccaf','=',False)]}"/>
+                        </group>
+                        <group string="Seguro Complementario" style="width:50%;">
+                            <field name="supplementary_insurance_type_id" invisible="1"/>
+                            <field name="supplementary_insurance_id" domain="[('data_type_id','=',supplementary_insurance_type_id)]"  context="{'default_data_type_id':supplementary_insurance_type_id}"/>
+                            <field name="currency_supplementary_insurance_id" />
+                            <field name="supplementary_insurance_agreed_quotes_uf"/>
+                        </group>
+                        <group string="APV" style="width:50%">
+                            <field name="apv_type_id" invisible="1"/>
+                            <field name="apv_id" domain="[('data_type_id','=',apv_type_id)]" context="{'default_data_type_id':apv_type_id}"/>
+                            <field name="apv_currency"/>
+                            <field name="apv_amount"/>
+                            <field name="apv_payment_term"/>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
