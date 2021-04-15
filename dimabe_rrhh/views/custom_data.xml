@@ -1,5 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
+    <record id="custom_data_form_view" model="ir.ui.view">
+        <field name="name">custom_data.form</field>
+        <field name="model">custom.data</field>
+        <field name="arch" type="xml">
+            <form>
+                <div class="oe_title">
+                    <label for="name"/>
+                    <h1>
+                        <field name="name"/>
+                    </h1>
+                </div>
+                <group>
+                    <group>
+                        <field name="value"/>
+                    </group>
+                </group>
+            </form>
+        </field>
+    </record>
+
     <record id="custom_data_tree_view" model="ir.ui.view">
         <field name="name">custom_data.tree</field>
         <field name="model">custom.data</field>
@@ -11,27 +32,7 @@
             </tree>
         </field>
     </record>
-    <record id="custom_data_form_view" model="ir.ui.view">
-        <field name="name">custom_data_form</field>
-        <field name="model">custom.data</field>
-        <field name="arch" type="xml">
-            <form>
-                <sheet>
-                    <div class="oe_title">
-                        <label for="name"/>
-                        <h1>
-                            <field name="name"/>
-                        </h1>
-                    </div>
-                    <group>
-                        <group>
-                            <field name="value"/>
-                        </group>
-                    </group>
-                </sheet>
-            </form>
-        </field>
-    </record>
+    
 
     <record model="ir.actions.act_window" id="custom_data_act_window">
         <field name="name">Tramos</field>

@@ -39,7 +39,7 @@
         'views/views.xml',
         'views/templates.xml',
         'views/custom_benefits_rrhh.xml',
-        #'views/custom_data.xml',
+        'views/custom_data.xml',
         'views/custom_indicators.xml',
         'views/hr_contract.xml',
         'views/hr_salary_rule.xml',

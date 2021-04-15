@@ -1,27 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
         <record id="custom_benefits_rrhh_form_view" model="ir.ui.view">
             <field name="name">custom_benefits_rrhh.form</field>
             <field name="model">custom.benefits.rrhh</field>
             <field name="arch" type="xml">
                 <form>
-                    <sheet>
-                        <div class="oe_title">
-                            <label for="name"/>
-                            <h1>
-                                <field name="name"/>
-                            </h1>
-                        </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
                         <group>
-                            <group>
-                                <field name="code"/>
-                            </group>
-                            <group>
-                                <field name="data_type_id"/>
-                            </group>
+                            <field name="code"/>
                         </group>
-                    </sheet>
+                        <group>
+                            <field name="data_type_id"/>
+                        </group>
+                    </group>
                 </form>
             </field>
         </record>
@@ -45,6 +42,4 @@
 
         <menuitem string="Beneficios RRHH" id="custom_benefits_rrhh_menu"
                   parent="hr_work_entry_contract.menu_hr_payroll_configuration" action="custom_benefits_rrhh_act_window"/>
-
-    </data>
 </odoo>
