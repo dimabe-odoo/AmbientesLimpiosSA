@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!--<record id="custom_data_tree_view" model="ir.ui.view">
+    <record id="custom_data_tree_view" model="ir.ui.view">
         <field name="name">custom_data.tree</field>
         <field name="model">custom.data</field>
         <field name="arch" type="xml">
@@ -11,7 +11,6 @@
             </tree>
         </field>
     </record>
--->
     <record id="custom_data_form_view" model="ir.ui.view">
         <field name="name">custom_data_form</field>
         <field name="model">custom.data</field>
