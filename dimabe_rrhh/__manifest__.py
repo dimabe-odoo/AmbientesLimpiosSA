@@ -24,6 +24,7 @@
 
     # always loaded
     'data': [
+        'security/ir.model.access.csv',
         'data/custom_data_demo.xml',
         'data/custom_data_apv.xml',
         'data/custom_data_afp.xml',
@@ -35,7 +36,6 @@
         'data/custom_employee_type.xml',
         'data/custom_isapre.xml',
         'data/hr_payslip_input_type.xml',
-        'security/ir.model.access.csv',
         'views/custom_indicators.xml',
         'views/custom_benefits_rrhh.xml',
         'views/custom_data.xml',
