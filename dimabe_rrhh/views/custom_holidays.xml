@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-    <data>
         <record id="seq_custom_holidays" model="ir.sequence">
             <field name="name">custom.holidays</field>
             <field name="code">custom.holidays</field>
@@ -46,5 +45,5 @@
                   parent="hr_payroll.menu_hr_payroll_root"
                   action="custom_holidays_action"
         />
-    </data>
+
 </odoo>

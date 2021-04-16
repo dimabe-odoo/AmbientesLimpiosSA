@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-
         <record id="custom_isapre_form_view" model="ir.ui.view">
             <field name="name">custom_isapre.form</field>
             <field name="model">custom.isapre</field>
@@ -50,5 +48,4 @@
 
         <menuitem name="ModelTitle" id="custom_isapre_menu" parent="hr_payroll.menu_hr_payroll_root" action="custom_isapre_act_window"/>
 
-    </data>
 </odoo>

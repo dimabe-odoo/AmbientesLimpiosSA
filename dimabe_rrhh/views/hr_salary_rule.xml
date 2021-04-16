@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-
         <record id="hr_salary_rule_form_inherit" model="ir.ui.view">
             <field name="name">hr_salary_rule_form_inherit</field>
             <field name="model">hr.salary.rule</field>
@@ -19,5 +17,4 @@
                 </xpath>
             </field>
         </record>
-    </data>
 </odoo>
