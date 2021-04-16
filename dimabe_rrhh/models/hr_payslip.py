@@ -4,6 +4,8 @@ from odoo import models, fields, api
 class HrPaySlip(models.Model):
     _inherit = 'hr.payslip'
 
+    worked_days_line_ids = fields.One2many('hr.payslip.worked_days', 'payslip_id', states={'draft': [('readonly', False)], 'verify': [('readonly', False)]})
+
     indicator_id = fields.Many2one('custom.indicators', string='Indicadores')
 
     salary_id = fields.Many2one('hr.salary.rule', 'Agregar Entrada')
