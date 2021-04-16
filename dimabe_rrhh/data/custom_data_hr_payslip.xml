@@ -448,7 +448,7 @@ else:
             <field name="name">AFP por Pagar</field>
             <field name="struct_id" ref="custom_hr_payroll_structure_cl"/>
             <field name="code">AFP</field>
-            <field name="sequence"25</field>
+            <field name="sequence">25</field>
             <field name="category_id" ref="custom_hr_salary_rule_subtotal"/>
             <field name="condition_select">none</field>
             <field name="appears_on_payslip" eval="False"/>
