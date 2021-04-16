@@ -228,9 +228,9 @@ else:
             <field name="sequence">15</field>
             <field name="category_id" ref="custom_hr_salary_rule_category_not_taxable"/>
             <field name="condition_select">python</field>
-            <field name="condition_python">result = contract.otro_no_imp > 0</field>
+            <field name="condition_python">result = (inputs.AGUI and inputs.AGUI.amount > 0)</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">result = round((contract.otro_no_imp / 30) * worked_days.WORK100.number_of_days)</field>
+            <field name="amount_python_compute">result = inputs.AGUI.amount > 0</field>
         </record>
 
         <record id="custom_hr_salary_rule_viatic" model="hr.salary.rule">
