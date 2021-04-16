@@ -43,9 +43,9 @@
         'views/wizard_hr_payslip.xml',
         'views/hr_department.xml',
         'views/hr_employee.xml',
-        'views/custom_indicators.xml',
-        'views/custom_benefits_rrhh.xml',
-        'views/custom_data.xml',
+        #'views/custom_indicators.xml',
+        #'views/custom_benefits_rrhh.xml',
+        #'views/custom_data.xml',
         'report/report_payslip.xml'
     ],
     # only loaded in demonstration mode
