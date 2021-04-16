@@ -3,6 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 from odoo.addons import decimal_precision as dp
 from datetime import datetime
+from ..utils.taxe_unique import getTaxeUniques
 
 
 class CustomIndicators(models.Model):
@@ -200,6 +201,16 @@ class CustomIndicators(models.Model):
                         'type':'10',
                         'indicator_id':self.id
                     })
+
+        taxes = getTaxeUniques(self.get_month(self.month))
+        for item in taxes:
+            self.env['custom.unique.tax'].create({
+                'salary_from': item['from'],
+                'salary_to': item['to'],
+                'factor': item['factor'],
+                'amount_to_reduce': item['discount'],
+                'indicator_id' : self.id
+            })
 
     def get_household_allowance_data(self,table):
         data = []
