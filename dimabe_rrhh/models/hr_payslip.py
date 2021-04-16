@@ -75,27 +75,28 @@ class HrPaySlip(models.Model):
                     })
             item.salary_id = None
     
-    @api.model
-    def _get_worked_day_lines(self):
-        res = super(HrPaySlip, self)._get_worked_day_lines()
-        temp = 0 
-        days = 0
-        attendances = {}
-        leaves = []
-        if len(res) > 0:
-            for line in res:
-                if line.get('code') == 'WORK100':
-                    attendances = line
-                else:
-                    leaves.append(line)
-            for leave in leaves:
-                temp += leave.get('number_of_days') or 0
-        attendances['number_of_days'] = days
-        attendances['work_entry_type_id'] = 1
-        attendances['amount'] = self.contract_id.wage
-        res = []
-        res.append(attendances)
-        res.extend(leaves)
-        return res
+
+    #@api.model
+    #def _get_worked_day_lines(self):
+    #    res = super(HrPaySlip, self)._get_worked_day_lines()
+    #    temp = 0 
+    #    days = 0
+    #    attendances = {}
+    #    leaves = []
+    #    if len(res) > 0:
+    #        for line in res:
+    #            if line.get('code') == 'WORK100':
+    #                attendances = line
+    #           else:
+    #                leaves.append(line)
+    #        for leave in leaves:
+    #            temp += leave.get('number_of_days') or 0
+    #    attendances['number_of_days'] = days
+    #    attendances['work_entry_type_id'] = 1
+    #    attendances['amount'] = self.contract_id.wage
+    #    res = []
+    #    res.append(attendances)
+    #    res.extend(leaves)
+    #    return res
 
     
