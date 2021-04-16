@@ -36,7 +36,6 @@
         'data/custom_isapre.xml',
         'data/hr_payslip_input_type.xml',
         'security/ir.model.access.csv',
-        'views/views.xml',
         'views/templates.xml',
         'views/custom_benefits_rrhh.xml',
         'views/custom_data.xml',
