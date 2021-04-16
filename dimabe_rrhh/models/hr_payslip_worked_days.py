@@ -12,6 +12,8 @@ class HrPayslipWorkedDays(models.Model):
     def _onchange_pof_days(self):
         for item in self:
             item.amount = item.payslip_id.contract_id.wage / 30 * item.number_of_days
+            week_on_month = int(30 / 7)
+            days_of_week = item.payslip_id.contract_id.resource_calendar_id.attendances_ids
             item.number_of_hours = item.payslip_id.contract_id.resource_calendar_id.full_time_required_hours / item.payslip_id.contract_id.resource_calendar_id.hours_per_day * item.number_of_days
 
     
