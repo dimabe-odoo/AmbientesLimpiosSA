@@ -39,6 +39,5 @@
         <field name="view_id" ref="custom_data_tree_view"/>
     </record>
 
-    <menuitem string="Tramos" id="custom_menu" parent="hr_work_entry_contract.menu_hr_payroll_configuration"
-              action="custom_data_act_window"/>
+    <menuitem string="Tramos" id="custom_menu" parent="hr_work_entry_contract.menu_hr_payroll_configuration" action="custom_data_act_window"/>
 </odoo>

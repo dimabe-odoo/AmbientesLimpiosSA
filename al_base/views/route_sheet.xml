@@ -47,7 +47,6 @@
             </field>
         </record>
 
-
         <record id="route_sheet_act_window" model="ir.actions.act_window">
             <field name="name">Hoja de Ruta</field>
             <field name="type">ir.actions.act_window</field>
