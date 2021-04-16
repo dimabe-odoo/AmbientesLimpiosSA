@@ -20,3 +20,4 @@ from . import wizard_hr_payslip
 from . import hr_department
 from . import hr_employee
 from . import custom_employee_type
+from . import hr_payslip_worked_days
