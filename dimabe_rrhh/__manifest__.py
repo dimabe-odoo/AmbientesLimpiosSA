@@ -20,7 +20,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','hr','hr_payroll'],
+    'depends': ['base','hr','hr_payroll', 'resource'],
 
     # always loaded
     'data': [
@@ -46,7 +46,8 @@
         'views/custom_benefits_rrhh.xml',
         'views/custom_data.xml',
         'views/templates.xml',
-        'report/report_payslip.xml'
+        'report/report_payslip.xml',
+        'views/resource_calendar.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
