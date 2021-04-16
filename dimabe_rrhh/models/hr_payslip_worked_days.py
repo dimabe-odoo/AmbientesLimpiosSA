@@ -4,4 +4,4 @@ class HrPayslipWorkedDays(models.Model):
 
     _inherit = 'hr.payslip.worked_days'
 
-    number_of_days = fields.float(readonly=False)
+    number_of_days = fields.Float(readonly=False)
