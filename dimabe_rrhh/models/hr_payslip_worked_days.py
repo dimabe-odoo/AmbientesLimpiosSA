@@ -15,6 +15,6 @@ class HrPayslipWorkedDays(models.Model):
             
             days_not_working = item.payslip_id.contract_id.resource_calendar_id.full_days_on_month - item.number_of_days
 
-            item.number_of_hours = item.payslip_id.contract_id.resource_calendar_id.effective_days_on_month - days_not_working * item.payslip_id.contract_id.resource_calendar_id.hours_per_day
+            item.number_of_hours = (item.payslip_id.contract_id.resource_calendar_id.effective_days_on_month - days_not_working) * item.payslip_id.contract_id.resource_calendar_id.hours_per_day
 
     
