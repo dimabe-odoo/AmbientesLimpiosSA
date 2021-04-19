@@ -10,17 +10,17 @@
             <field name="name">Payroll Rate</field>
             <field name="digits">0</field>
         </record>
-        <record id="custom_work_entry_cl" model="hr.work.entry.type">
+        <!--<record id="custom_work_entry_cl" model="hr.work.entry.type">
             <field name="name">Tipo Entrada Chile</field>
             <field name="code">CL</field>
             <field name="round_days">NO</field>
-        </record>
+        </record>-->
         <record id="custom_hr_payroll_structure_type_cl" model="hr.payroll.structure.type">
             <field name="name">Codigo del Trabajo Chile</field>
             <field name="country_id">46</field>
             <field name="wage_type">monthly</field>
             <field name="default_schedule_pay">monthly</field>
-            <field name="default_work_entry_type_id" ref="custom_work_entry_cl"/>
+            <field name="default_work_entry_type_id" ref="hr_work_entry.work_entry_type_attendance"/>
         </record>
         <record id="custom_hr_payroll_structure_cl" model="hr.payroll.structure">
             <field name="name">Codigo del Trabajo Chile</field>
@@ -77,7 +77,7 @@
             <field name="category_id" ref="custom_hr_salary_rule_category_taxable"/>
             <field name="struct_id" ref="custom_hr_payroll_structure_cl"/>
             <field name="condition_select">python</field>
-            <field name="condition_python">result = payslip.indicator_id.mapped('data_ids').filtered(lambda a: a.type == '5')[0].value > contract.wage</field>
+            <field name="condition_python">result = payslip.indicator_id and payslip.indicator_id.mapped('data_ids').filtered(lambda a: a.type == '5')[0].value > contract.wage</field>
             <field name="amount_select">code</field>
             <field name="amount_python_compute">result = round(((payslip.indicator_id.mapped('data_ids').filtered(lambda a: a.type == '5')[0].value - contract.wage) / 30) * worked_days.WORK100.number_of_days)</field>
         </record>
@@ -110,7 +110,7 @@
             <field name="code">GRAT</field>
             <field name="category_id" ref="custom_hr_salary_rule_category_taxable"/>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">minimum = payslip.indicator_id.mapped('data_ids').filtered(lambda a: a.name == 'Trab. Dependientes e Independientes').value 
+            <field name="amount_python_compute">minimum = payslip.indicator_id and payslip.indicator_id.mapped('data_ids').filtered(lambda a: a.name == 'Trab. Dependientes e Independientes').value 
 
 GRATI = round(categories.IMP *25/100)
 if contract.type_id.code==4:
@@ -264,7 +264,7 @@ else:
             <field name="category_id" ref="custom_hr_salary_rule_forecast"/>
             <field name="condition_select">none</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">rate=payslip.indicator_id.mapped('data_ids').filtered(lambda a : a.type == '9' and ('Afp ' +contract.afp_id.name).upper() in a.name.upper()).percentage_value
+            <field name="amount_python_compute">rate= payslip.indicator_id and payslip.indicator_id.mapped('data_ids').filtered(lambda a : a.type == '9' and ('Afp ' +contract.afp_id.name).upper() in a.name.upper()).percentage_value
 maximum = payslip.indicator_id.mapped('data_ids').filtered(lambda a: a.type =='4' and 'AFP' in a.name).value
 total_imp = categories.IMP
 if contract.is_pensionary or contract.not_afp:
