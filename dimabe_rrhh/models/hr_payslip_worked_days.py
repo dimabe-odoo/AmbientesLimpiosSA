@@ -19,7 +19,7 @@ class HrPayslipWorkedDays(models.Model):
     def _compute_amount(self):
         for item in self:
             item.amount = item.payslip_id.contract_id.wage / 30 * item.number_of_days
-            return super(HrPayslipWorkedDays)._compute_amount()
+            return super(HrPayslipWorkedDays, self)._compute_amount()
 
 
     
