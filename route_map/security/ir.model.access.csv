@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_al_route_map,route_map.route_map,model_route_map,,1,1,1,1
+access_al_route_map_line,route_map.route_map_line,model_route_map_line,,1,1,1,1
