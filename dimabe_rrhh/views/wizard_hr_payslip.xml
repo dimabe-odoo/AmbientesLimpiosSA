@@ -43,19 +43,17 @@
     <record id="action_payslip_menu" model="ir.actions.act_window">
         <field name="name">Libro de Remuneraciones</field>
         <field name="res_model">wizard.hr.payslip</field>
-        <field name="view_mode">form</field>
+        <field name="view_type">form</field>
         <field name="view_id" ref="wizard_hr_payslip_report_view"/>
         <field name="target">new</field>
-        <field name="type">ir.actions.act_window</field>
     </record>
 
     <record id="action_payslip_previred_menu" model="ir.actions.act_window">
         <field name="name">Archivo Previred</field>
         <field name="res_model">wizard.hr.payslip</field>
-        <field name="view_mode">form</field>
+        <field name="view_type">form</field>
         <field name="view_id" ref="wizard_hr_payslip_report_previred_view"/>
         <field name="target">new</field>
-        <field name="type">ir.actions.act_window</field>
     </record>
     
     <menuitem name="Libro de Remuneraciones"  id="remuneration_book_item" parent="hr_payroll.menu_hr_payroll_report" action="action_payslip_menu"/>
