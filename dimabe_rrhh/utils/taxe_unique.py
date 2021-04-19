@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from datetime import date
 import requests
+from odoo import models
 
 def cleanNumber(val):
     return val.replace('$', '').replace(' ', '').replace('.', '').replace(',', '.')
@@ -41,3 +42,5 @@ def getTaxeUniques(month):
                             taxeValue['discount'] = float(cleanNumber(val.text))
                 taxes.append(taxeValue)
         return taxes
+    else:
+        raise models.ValidationError(f'Error {res.status_code} Problema al comunicarse con SII')
