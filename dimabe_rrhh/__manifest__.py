@@ -36,6 +36,7 @@
         'data/hr_payslip_input_type.xml',
         'data/custom_employee_type.xml',
         'data/custom_isapre.xml',
+        'views/templates.xml',
         'views/hr_contract.xml',
         'views/hr_salary_rule.xml',
         'views/hr_payslip.xml',
@@ -45,7 +46,6 @@
         'views/custom_indicators.xml',
         'views/custom_benefits_rrhh.xml',
         'views/custom_data.xml',
-        'views/templates.xml',
         'report/report_payslip.xml',
         'views/resource_calendar.xml'
     ],
