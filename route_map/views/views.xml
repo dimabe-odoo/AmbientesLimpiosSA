@@ -1,0 +1,60 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+<!--
+    <record model="ir.ui.view" id="route_map.list">
+      <field name="name">route_map list</field>
+      <field name="model">route_map.route_map</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </tree>
+      </field>
+    </record>
+-->
+
+    <!-- actions opening views on models -->
+<!--
+    <record model="ir.actions.act_window" id="route_map.action_window">
+      <field name="name">route_map window</field>
+      <field name="res_model">route_map.route_map</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+-->
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="route_map.action_server">
+      <field name="name">route_map server</field>
+      <field name="model_id" ref="model_route_map_route_map"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+<!--
+    <menuitem name="route_map" id="route_map.menu_root"/>
+-->
+    <!-- menu categories -->
+<!--
+    <menuitem name="Menu 1" id="route_map.menu_1" parent="route_map.menu_root"/>
+    <menuitem name="Menu 2" id="route_map.menu_2" parent="route_map.menu_root"/>
+-->
+    <!-- actions -->
+<!--
+    <menuitem name="List" id="route_map.menu_1_list" parent="route_map.menu_1"
+              action="route_map.action_window"/>
+    <menuitem name="Server to list" id="route_map" parent="route_map.menu_2"
+              action="route_map.action_server"/>
+-->
+  </data>
+</odoo>

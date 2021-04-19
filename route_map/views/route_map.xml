@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="route_map_form_view" model="ir.ui.view">
+            <field name="name">route_map.form</field>
+            <field name="model">route.map</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button type="object" name="action_dispatch" string="Despachar"
+                                attrs="{'invisible':[('state','!=','draft')]}"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="driver_id"/>
+                            <h1>
+                                <field name="driver_id"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="truck_id"/>
+                                <field name="sell"/>
+                                <field name="add_more"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="disaptch" string="Despachos">
+                                <field name="picking_id" attrs="{'invisible': [('state','!=','draft')]}"/>
+                                <button type="object" name="add_picking" string="Agregar"
+                                        attrs="{'invisible': [('state','!=','draft')]}"/>
+                                <field name="dispatch_ids" attrs="{'readonly':['|',('state','!=','draft'),('add_more','=',False)]}">
+                                    <tree editable="bottom" delete="false" create="false">
+                                        <button type="object" name="button_done" string="Entregar"
+                                                attrs="{'column_invisible':[('parent.state','=','draft')],'invisible': [('state','=','done')]}"/>
+                                        <field name="dispatch_id" readonly="1"/>
+                                        <field name="sale_id" readonly="1"/>
+                                        <field name="address_to_delivery" readonly="1"/>
+                                        <field name="date_done" readonly="1"/>
+                                        <field name="state" readonly="1" widget="badget"
+                                               statusbar_visible="to_delivered,done"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Observaciones" name="observations">
+                                <group>
+                                    <field name="observations" />
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="route_map_tree_view" model="ir.ui.view">
+            <field name="name">route_map.tree</field>
+            <field name="model">route.map</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="driver_id"/>
+                    <field name="truck_id"/>
+                    <field name="dispatch_date"/>
+                    <field name="date_done"/>
+                    <field name="dispatch_ids" widget="many2many_tags"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="route_map_act_window" model="ir.actions.act_window">
+            <field name="name">Hoja de Ruta</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">route.map</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="Hoja de Ruta" id="route_map_menu" parent="sale.sale_menu_root"
+                  action="route_map_act_window"/>
+
+    </data>
+</odoo>

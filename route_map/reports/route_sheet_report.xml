@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <template id="report_route_report_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="web.html_container">
+                        <div class="page">
+                            <div style="width:100px;border:1px solid;"></div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+        <record id="report_route_map" model="ir.actions.report">
+            <field name="name">Hoja de Ruta</field>
+            <field name="model">route.map</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">route_map.report_route_report_template</field>
+            <field name="report_file">report_route_report_template</field>
+            <field name="binding_model_id" ref="route_map.model_route_map" />
+            <field name="binding_type">report</field>
+        </record>
+
+    </data>
+</odoo>
