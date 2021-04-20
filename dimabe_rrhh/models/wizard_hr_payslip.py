@@ -100,7 +100,8 @@ class WizardHrPayslip(models.TransientModel):
                 worksheet.write(row, col, pay.contract_id.department_id.analytic_account_id.name)
             else:
                 worksheet.write(row, col, '')
-            long_const = max(payslips.mapped('contract_id').mapped('department_id').mapped('analytic_account_id').mapped('name'),key=len)
+            #long_const = max(payslips.mapped('contract_id').mapped('department_id').mapped('analytic_account_id').mapped('name'),key=len)
+            long_const = max(payslips.mapped('contract_id').mapped('analytic_account_id').mapped('name'),key=len)
             worksheet.set_column(row, col, len(long_const))
             col += 1
             worksheet.write(12, 4, 'Dias Trabajados:', bold_format)
