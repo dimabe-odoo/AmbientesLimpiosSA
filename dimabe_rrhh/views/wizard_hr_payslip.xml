@@ -56,6 +56,6 @@
         <field name="target">new</field>
     </record>
     
-    <menuitem name="Libro de Remuneraciones" parent="hr_payroll.menu_hr_payroll_report" action="action_payslip_menu" id="remuneration_book_item"/>
-    <menuitem name="Previred" parent="hr_pension_menu" action="action_payslip_previred_menu" id="previred_item"/>
+    <menuitem name="Libro de Remuneraciones"  id="remuneration_book_item" parent="hr_payroll.menu_hr_payroll_report" action="action_payslip_menu"/>
+    <menuitem name="Previred" id="previred_item" parent="hr_pension_menu" action="action_payslip_previred_menu" />
 </odoo>
