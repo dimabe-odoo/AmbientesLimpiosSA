@@ -15,6 +15,9 @@
                 <xpath expr="//field[@name='worked_days_line_ids']/tree//field[@name='number_of_days']" position="attributes">
                     <attribute name="readonly">0</attribute>
                 </xpath>
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="personal_movements"/>
+                </xpath>
                 <xpath expr="//page[1]" position="after">
                     <page string="Prevision">
                         <group string="Indicadores">
