@@ -15,11 +15,11 @@ class HrPayslipWorkedDays(models.Model):
 
             item.number_of_hours = (item.payslip_id.contract_id.resource_calendar_id.effective_days_on_month - days_not_working) * item.payslip_id.contract_id.resource_calendar_id.hours_per_day
 
-    @api.depends('number_of_days')
-    def _compute_amount(self):
-        for item in self:
-            item.amount = item.payslip_id.contract_id.wage / 30 * item.number_of_days
-            return super(HrPayslipWorkedDays, self)._compute_amount()
+    #@api.depends('number_of_days')
+    #def _compute_amount(self):
+    #    for item in self:
+    #        item.amount = item.payslip_id.contract_id.wage / 30 * item.number_of_days
+    #        return super(HrPayslipWorkedDays, self)._compute_amount()
 
 
     

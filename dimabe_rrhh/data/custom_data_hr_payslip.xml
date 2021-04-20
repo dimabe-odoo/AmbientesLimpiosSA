@@ -183,11 +183,7 @@ else:
             <field name="condition_select">python</field>
             <field name="condition_python">result = ((contract.simple_charge != 0) or (contract.maternal_charge != 0) or (contract.disability_charge != 0)) and (contract.is_pensionary is False)</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">if worked_days.WORK100.number_of_days > 25:
-    days = 30
-else:
-    days = worked_days.WORK100.number_of_days
-            
+            <field name="amount_python_compute">days = worked_days.WORK100.number_of_days   
 charges = contract.simple_charge + contract.maternal_charge + contract.disability_charge 
 if worked_days.WORK100.number_of_days == 0:
     result = 0
