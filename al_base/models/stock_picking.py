@@ -7,7 +7,6 @@ class StockPicking(models.Model):
 
     _inherit = 'stock.picking'
 
-    sheet_id = fields.Many2one('route.sheet',string="Hoja de Ruta",auto_join=True)
 
     l10n_latam_document_type_id = fields.Many2one('l10n_latam.document.type', string="Tipo de Documento")
 
