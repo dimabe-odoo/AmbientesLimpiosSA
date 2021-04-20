@@ -108,6 +108,8 @@
             <field name="name">Gratificación Legal</field>
             <field name="sequence">8</field>
             <field name="code">GRAT</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = contract.legal_gratification is False</field>
             <field name="category_id" ref="custom_hr_salary_rule_category_taxable"/>
             <field name="amount_select">code</field>
             <field name="amount_python_compute">minimum = payslip.indicator_id and payslip.indicator_id.mapped('data_ids').filtered(lambda a: a.name == 'Trab. Dependientes e Independientes').value 
@@ -307,16 +309,15 @@ else:
             <field name="condition_select">python</field>
             <field name="condition_python">result = contract.apv_amount > 0</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">if contract.apv_amount > 0:
-if contract.apv_currency == 'clp':
+            <field name="amount_python_compute">if contract.apv_currency == 'clp':
     rate = 1
-elif contract.apv_currency == 'uf'
+elif contract.apv_currency == 'uf':
     rate = payslip.indicator_id.mapped('data_ids').filtered(lambda a: a.type == '1' and a.last_month is True).value
 else:
     rate = 0
 
-maximum = payslip.indicator_id.mapped('data_ids').filtered(lambda a: 'Mensual' in a.name  and a.type=='6')
-if round(contract.apv_amount * rate) > round(maximum):
+maximum = payslip.indicator_id.mapped('data_ids').filtered(lambda a: 'Mensual' in a.name  and a.type=='6').value
+if (contract.apv_amount * rate) > maximum:
     result = round(payslip.indicator_id.maximum)
 else:
     result = round(contract.apv_amount * rate)</field>
@@ -640,6 +641,18 @@ else:
             <field name="condition_python">result =  inputs.PCCAF and inputs.PCCAF.amount > 0</field>
             <field name="amount_select">code</field>
             <field name="amount_python_compute">result = inputs.PCCAF.amount</field>
+        </record>
+
+        <record id="custom_hr_salary_rule_ccaf_loan_amount" model="hr.salary.rule">
+            <field name="name">Ahorro CCAF</field>
+            <field name="struct_id" ref="custom_hr_payroll_structure_cl"/>
+            <field name="code">PCCAF</field>
+            <field name="sequence">38</field>
+            <field name="category_id" ref="custom_hr_salary_rule_category_other_discount"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result =  contract.have_saving_ccaf is True</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = contract.saving_ccaf</field>
         </record>
 
        <record id="custom_hr_salary_rule_other_discount_amount" model="hr.salary.rule">
