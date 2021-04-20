@@ -187,11 +187,10 @@ else:
 charges = contract.simple_charge + contract.maternal_charge + (2 * contract.disability_charge) 
 if worked_days.WORK100.number_of_days == 0 or (payslip.personal_movements == '3' or payslip.personal_movements == '6'):
     result = 0
-elif worked_days.WORK100.number_of_days < 25:
+elif 25 > worked_days.WORK100.number_of_days:
     result = charges * contract.section_amount / 30 * days
 else:
-    result = charges * contract.section_amount
-            </field>
+    result = charges * contract.section_amount</field>
         </record>
 
         <record id="custom_hr_salary_rule_collation" model="hr.salary.rule">
