@@ -60,5 +60,5 @@
               action="action_payslip_menu" id="remuneration_book_item"/>
 
     <menuitem name="Previred" parent="hr_pension_menu" action="action_payslip_previred_menu"
-              id="previred_item"/>
+              id="previred_item" sequence="80"/>
 </odoo>
