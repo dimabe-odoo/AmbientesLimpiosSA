@@ -4,7 +4,9 @@ from .api_env import secret, algorithm
 
 
 def generate_token(user_id):
+    exp = datetime.datetime.utcnow() + datetime.timedelta(days=12)
     payload = {
+        'exp': exp,
         'iat': datetime.datetime.utcnow(),
         'sub': user_id,
     }
