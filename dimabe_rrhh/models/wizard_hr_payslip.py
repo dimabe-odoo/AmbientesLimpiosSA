@@ -28,7 +28,8 @@ class WizardHrPayslip(models.TransientModel):
     date_to = fields.Date('Fecha Final', required=True, default=lambda self: str(
         datetime.now() + relativedelta.relativedelta(months=+1, day=1, days=-1))[:10])
 
-    def print_report_xlsx(self):
+    def generate_remuneration_book(self):
+        raise models.ValidationError(f'in print xls book remuneration {indicator_id.name} {company_id.name}')
         file_name = 'temp'
         workbook = xlsxwriter.Workbook(file_name)
         worksheet = workbook.add_worksheet(self.company_id.name)

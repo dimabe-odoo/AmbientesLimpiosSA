@@ -12,8 +12,7 @@
                     </group>
                 </group>
                 <footer>
-                    <button name="print_report_xlsx" string="Generar XLSX" type="object" default_focus="1"
-                            class="oe_highlight"/>
+                    <button name="generate_remuneration_book" string="Generar XLSX" type="object" class="oe_highlight"/>
                     <button string="Cancel" class="btn btn-secondary" special="cancel"/>
                 </footer>
             </form>
