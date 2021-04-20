@@ -15,6 +15,8 @@ class HrPaySlip(models.Model):
 
     net_salary = fields.Char('Alcance Liquido', compute="_compute_net_salary")
 
+    worked_days_line_ids = fields.One2many(readonly=False)
+
     personal_movements = fields.Selection((('0', 'Sin Movimiento en el Mes'),
      ('1', 'Contratación a plazo indefinido'),
      ('2', 'Retiro'),
