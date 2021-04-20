@@ -14,8 +14,12 @@ class RouteMapLine(models.Model):
 
     date_done = fields.Datetime('Fecha de Entrega')
 
-    state = fields.Selection([('to_delivered', 'Por Despacho'), ('done', 'Realizado')], string='Estado',
+    state = fields.Selection([('cancel','Cancelado'),('to_delivered', 'Por Despacho'), ('done', 'Realizado')], string='Estado',
                              default='to_delivered')
+
+    image_ids = fields.One2many('ir.attachment','res_id')
+
+    observation = fields.Text('Observaciones')
 
     partner_id = fields.Many2one('res.partner', string="Cliente", related='dispatch_id.partner_id')
 
