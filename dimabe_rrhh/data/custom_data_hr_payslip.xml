@@ -106,7 +106,7 @@
         </record>
         <record id="custom_hr_salary_rule_legal_gratification" model="hr.salary.rule">
             <field name="name">Gratificación Legal</field>
-            <field name="sequence">8</field>
+            <field name="sequence">7</field>
             <field name="code">GRAT</field>
             <field name="condition_select">python</field>
             <field name="condition_python">result = contract.legal_gratification is False</field>
@@ -127,7 +127,7 @@ else:
         <record id="custom_hr_salary_rule_production_bonus" model="hr.salary.rule">
             <field name="name">Bono de Produccion</field>
             <field name="code">PROD</field>
-            <field name="sequence">7</field>
+            <field name="sequence">8</field>
             <field name="struct_id" ref="custom_hr_payroll_structure_cl"/>
             <field name="condition_select">python</field>
             <field name="category_id" ref="custom_hr_salary_rule_category_taxable"/>
