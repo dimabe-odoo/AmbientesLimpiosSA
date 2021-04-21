@@ -16,11 +16,13 @@ class RouteMapController(http.Controller):
                     'Address': line.address_to_delivery,
                     'LatitudeDestiny': line.partner_id.partner_latitude,
                     'LongitudeDestiny': line.partner_id.partner_longitude,
+                    'State':line.state
                 })
             res = {
                 'Id': map_id.id,
                 'Sell': map_id.sell,
-                'Lines': lines
+                'Lines': lines,
+                'State':map_id.state
             }
             return res
         else:
