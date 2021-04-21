@@ -165,101 +165,105 @@
                             <tr>
                                 <td>
                                     <t t-if="l.code=='PREV'">
-                                        <span t-esc="d.indicator_id.data_id.filtered(lambda a: a.name.upper() == f'TASA AFP {d.contract_id.afp_id.name.upper()}').percentage_show">
-                                            <span t-field="d.contract_id.afp_id.name"/>
-                                            <span t-field="l.name"/>
-                                        </t>
-                                        <t t-if="l.code=='SECE'">
-                                            <span t-field="l.name"/>:
-                                            <t t-if="d.contract_id.code == '1'">
-                                                <span t-esc="d.indicator_idd.data_id.filtered(lambda a: a.name =='Contrato Plazo Indefinido Trabajador').percentage_value"/>
-                                            </t>
-                                            <t t-if="d.contract_id.code == '3'">
-                                                <span t-esc="d.indicator_idd.data_id.filtered(lambda a: a.name =='Plazo Indefinido 11 años o más').percentage_value"/>
-                                            </t>
-                                        </t>
-                                        <t t-if="l.code=='APV'">
-                                            <span t-field="l.name"/>
-                                            <span t-field="d.contract_id.apv_amount"/>
-                                            <t t-if="d.contract_id.apv_currency == 'uf'">
-                                UF
-                              </t>
-                                            <t t-if="d.contract_id.apv_currency == 'clp'">
-                                Peso $
-                              </t>
-                                        </t>
-                                        <t t-if="l.code == 'IMPUNI'">
-                                            <!--Falta Logica para obtener %-->
-                                            <span name="l.name"/>
-                                        </t>
-                                        <t t-else="">
-                                            <span name="l.name"/>
-                                        </t>
-                                    </td>
-                                    <td></td>
-                                    <td>
-                                        <span t-field="l.total"/>
-                                    </td>
-                                </tr>
-                            </t>
-                        </t>
-                        <tr style="font-weight: bold;">
-                            <td style="padding-left: 6px; border-top: 2px solid #0080bf;">TOTALES</td>
-                            <td style="border-top: 2px solid #0080bf;"></td>
-                            <td style="padding-left: 6px; border-top: 2px solid #0080bf;"></td>
-                        </tr>
-                        <tr style="background-color: #004080; font-weight: bold; color: white;">
-                            <td style="padding: 6px;">LIQUIDO A PAGAR</td>
-                            <td></td>
-                            <td>
-                                <span t-esc="d.line_ids.filtered(lambda a: a.code = 'LIQ').total"/>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-                <div style="width:100%;margin:0 auto;border:2px solid #0080bf; border-radius: 5px; margin-top:4px;">
-                    <table style="width:100%;font-size:11px;" cellspacing="0" >
-                        <tr>
-                            <td style="padding: 6px;">Recibí conforme la suma de:</td>
-                            <td style="padding: 6px;">$
-                                <span t-esc="d.line_ids.filtered(lambda a: a.code = 'LIQ').total"/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 6px;">Por remuneraciones correspondientes a:</td>
-                            <td style="padding: 6px;">
-                                <span t-field="d.indicator_id"/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 6px;">Son: </td>
-                            <td style="padding: 6px;">
-                                <t t-foreach="d.line_ids.filtered(lambda line: line.appears_on_payslip)" t-as="p">
-                                    <t t-if="('LIQ' == p.code) and (p.amount>0)">
-                                        <span t-esc="o.company_id.currency_id.amount_to_text(p.amount)" />
+                                        <span t-esc="d.indicator_id.data_id.filtered(lambda a: a.name.upper() == f'TASA AFP {d.contract_id.afp_id.name.upper()}').percentage_show"/>
+                                        <span t-field="d.contract_id.afp_id.name"/>
+                                        <span t-field="l.name"/>
                                     </t>
+                                    <t t-if="l.code=='SECE'">
+                                        <span t-field="l.name"/>:
+                                        <t t-if="d.contract_id.code == '1'">
+                                            <span t-esc="d.indicator_idd.data_id.filtered(lambda a: a.name =='Contrato Plazo Indefinido Trabajador').percentage_value"/>
+                                        </t>
+                                        <t t-if="d.contract_id.code == '3'">
+                                            <span t-esc="d.indicator_idd.data_id.filtered(lambda a: a.name =='Plazo Indefinido 11 años o más').percentage_value"/>
+                                        </t>
+                                    </t>
+                                    <t t-if="l.code=='APV'">
+                                        <span t-field="l.name"/>
+                                        <span t-field="d.contract_id.apv_amount"/>
+                                        <t t-if="d.contract_id.apv_currency == 'uf'">
+                                          UF
+                                        </t>
+                                        <t t-if="d.contract_id.apv_currency == 'clp'">
+                                          Peso $
+                                        </t>
+                                    </t>
+                                    <t t-if="l.code == 'IMPUNI'">
+                                        <!--Falta Logica para obtener %-->
+                                        <span name="l.name"/>
+                                    </t>
+                                    <t t-else="">
+                                        <span name="l.name"/>
+                                    </t>
+                                </td>
+                                <td></td>
+                                <td>
+                                    <span t-field="l.total"/>
+                                </td>
+                            </tr>
+                        </t>
+                    </t>
+                    <tr style="font-weight: bold;">
+                        <td style="padding-left: 6px; border-top: 2px solid #0080bf;">TOTALES</td>
+                        <td style="border-top: 2px solid #0080bf;"></td>
+                        <td style="padding-left: 6px; border-top: 2px solid #0080bf;"></td>
+                    </tr>
+                    <tr style="background-color: #004080; font-weight: bold; color: white;">
+                        <td style="padding: 6px;">LIQUIDO A PAGAR</td>
+                        <td></td>
+                        <td>
+                            <span t-esc="d.line_ids.filtered(lambda a: a.code = 'LIQ').total"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div style="width:100%;margin:0 auto;border:2px solid #0080bf; border-radius: 5px; margin-top:4px;">
+                <table style="width:100%;font-size:11px;" cellspacing="0" >
+                    <tr>
+                        <td style="padding: 6px;">Recibí conforme la suma de:</td>
+                        <td style="padding: 6px;">$
+                            <span t-esc="d.line_ids.filtered(lambda a: a.code = 'LIQ').total"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 6px;">Por remuneraciones correspondientes a:</td>
+                        <td style="padding: 6px;">
+                            <span t-field="d.indicator_id"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 6px;">Son: </td>
+                        <td style="padding: 6px;">
+                            <t t-foreach="d.line_ids.filtered(lambda line: line.appears_on_payslip)" t-as="p">
+                                <t t-if="('LIQ' == p.code) and (p.amount>0)">
+                                    <span t-esc="o.company_id.currency_id.amount_to_text(p.amount)" />
                                 </t>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-                <div style="width: 100%;">
-                            <p>Certifico el haber recibido conforme la remuneración menusal de parte de mi empleador y lo libero de cualquier reclamo
+                            </t>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div style="width: 100%;">
+                <p>Certifico el haber recibido conforme la remuneración menusal de parte de mi empleador y lo libero de cualquier reclamo
                                 por error u omisión en la presenta liquidación
                             </p>
-                        </div>
-                        <div style="width: 100%;  float: right; text-align: right;margin-top: 80px;">
-                            <table style="width: 100%;">
-                                <tr style="text-align: center;">
-                                    <td style="width: 50%;"></td>
-                                    <td style="width: 50%;"><hr style="width: 100%; border:2px solid #0080bf; float: right;" /></td>
-                                </tr>
-                                <tr style="text-align: center;">
-                                    <td style="width: 50%;"></td>
-                                    <td style="width: 50%;"><span style="font-size: 14px; font-weight: bold;" t-field="d.employee_id"></td>
-                                </tr>
-                            </table>
-                        </div>
+            </div>
+            <div style="width: 100%;  float: right; text-align: right;margin-top: 80px;">
+                <table style="width: 100%;">
+                    <tr style="text-align: center;">
+                        <td style="width: 50%;"></td>
+                        <td style="width: 50%;">
+                            <hr style="width: 100%; border:2px solid #0080bf; float: right;" />
+                        </td>
+                    </tr>
+                    <tr style="text-align: center;">
+                        <td style="width: 50%;"></td>
+                        <td style="width: 50%;">
+                            <span style="font-size: 14px; font-weight: bold;" t-field="d.employee_id">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </t>
         </template>
         <record id="paper_format_letter_custom" model="report.paperformat">
