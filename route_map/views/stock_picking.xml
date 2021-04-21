@@ -10,7 +10,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='origin']" position="after">
                     <field name="map_id"
-                           attrs="{'invisible': [('state','!=','done'),('map_id','=',None),('picking_type_id.sequence_code','=','OUT')]}"/>
+                           attrs="{'invisible': [('state','!=','done'),('map_id','=',None)]}"/>
                 </xpath>
             </field>
         </record>
