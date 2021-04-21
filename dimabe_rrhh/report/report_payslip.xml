@@ -188,7 +188,6 @@
                                         </t>
                                     </t>
                                     <t t-if="l.code == 'IMPUNI'">
-                                        <!--Falta Logica para obtener %-->
                                         <span name="l.name"/>
                                     </t>
                                     <t t-else="">
