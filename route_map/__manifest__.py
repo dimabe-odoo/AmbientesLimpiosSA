@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 {
     'name': "route_map",
@@ -28,7 +29,8 @@
         'views/views.xml',
         'views/templates.xml',
         'views/route_map.xml',
-        'reports/route_sheet_report.xml'
+        'reports/route_sheet_report.xml',
+        'views/stock_picking.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

@@ -4,9 +4,9 @@ from odoo.http import request
 
 class RouteMapController(http.Controller):
 
-    @http.route('/api/route_map', type='json', auth='token', method='GET', cors='*')
+    @http.route('/api/route_map', type='json', method='GET', cors='*')
     def get_route_map(self, driver_id):
-        map_id = request.env['route.map'].sudo().search([('driver_id.id', '=', driver_id)])
+        map_id = request.env['route.map'].sudo().search([('driver_id.id', '=', driver_id), ('state', '!=', 'done')])
         if map_id:
             lines = []
             for line in map_id.dispatch_ids:
@@ -26,16 +26,22 @@ class RouteMapController(http.Controller):
         else:
             return {"message": "No tiene ninguna ruta activa"}
 
-    @http.route('/api/add_image', type='json', method='POST', cors='*')
-    def add_image(self, binary_image, line_id):
+    @http.route('/api/add_image', type='json', auth='token', cors='*')
+    def add_image(self, binary, line_id):
         line = request.env['route.map.line'].sudo().search([('id', '=', line_id)])
-        request.env['ir.attachment'].create({
-            'name': line.dispatch_id.name,
-            'type': 'binary',
-            'db_datas': binary_image
+        request.env['ir.attachment'].sudo().create({
+            'res_id': line.id
         })
 
-    @http.route('/api/done', type='json',auth='token', method='GET', cors='*')
+    @http.route('/api/setobservation', type='json', auth='token', cors='*')
+    def setobservation(self, observation, line_id):
+        for item in self:
+            line = request.env['route.map.line'].sudo().search([('id', '=', line_id)])
+            line.sudo().write({
+                'driver_observations':observation
+            })
+
+    @http.route('/api/done', type='json', method='GET', cors='*')
     def make_done_line(self, line_id):
         line = request.env['route.map.line'].sudo().search([('id', '=', line_id)])
         if line:
