@@ -4,7 +4,7 @@ from odoo.http import request
 
 class RouteMapController(http.Controller):
 
-    @http.route('/api/route_map', type='json', method='GET', cors='*')
+    @http.route('/api/route_map', type='json',auth='token', method='GET', cors='*')
     def get_route_map(self, driver_id):
         map_id = request.env['route.map'].sudo().search([('driver_id.id', '=', driver_id), ('state', '!=', 'done')])
         if map_id:
@@ -15,7 +15,7 @@ class RouteMapController(http.Controller):
                     'Destiny': line.partner_id.name,
                     'Address': line.address_to_delivery,
                     'LatitudeDestiny': line.partner_id.partner_latitude,
-                    'LongitudeDestiny': line.partner_id.partner_longitude
+                    'LongitudeDestiny': line.partner_id.partner_longitude,
                 })
             res = {
                 'Id': map_id.id,
