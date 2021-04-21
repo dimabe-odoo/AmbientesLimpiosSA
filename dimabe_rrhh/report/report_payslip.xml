@@ -210,7 +210,7 @@
                         <td style="padding: 6px;">LIQUIDO A PAGAR</td>
                         <td></td>
                         <td>
-                            <span t-esc="d.line_ids.filtered(lambda a: a.code = 'LIQ').total"/>
+                            <span t-esc="d.line_ids.filtered(lambda a: a.code == 'LIQ').total"/>
                         </td>
                     </tr>
                 </table>
@@ -220,7 +220,7 @@
                     <tr>
                         <td style="padding: 6px;">Recibí conforme la suma de:</td>
                         <td style="padding: 6px;">$
-                            <span t-esc="d.line_ids.filtered(lambda a: a.code = 'LIQ').total"/>
+                            <span t-esc="d.line_ids.filtered(lambda a: a.code == 'LIQ').total"/>
                         </td>
                     </tr>
                     <tr>
