@@ -6,6 +6,8 @@ class HrPayslipWorkedDays(models.Model):
 
     number_of_days = fields.Float(readonly=False)
 
+    amount = fields.Monetary(readonly=False)
+
     @api.onchange('number_of_days')
     def _onchange_number_of_days(self):
         for item in self:
