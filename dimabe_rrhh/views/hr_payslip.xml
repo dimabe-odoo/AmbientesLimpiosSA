@@ -15,7 +15,7 @@
                 <xpath expr="//field[@name='worked_days_line_ids']/tree//field[@name='number_of_days']" position="attributes">
                     <attribute name="readonly">0</attribute>
                 </xpath>
-                <xpath expr="//field[@name='move_id']" position="after">
+                <xpath expr="//field[@name='paid']" position="before">
                     <field name="account_analytic_id"/>
                 </xpath>
                 <xpath expr="//field[@name='name']" position="after">
