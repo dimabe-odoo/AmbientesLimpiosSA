@@ -83,25 +83,42 @@ class WizardHrPayslip(models.TransientModel):
             worksheet.set_column(row, col, len(long_rut))
             col += 1
             worksheet.write(12, 2, 'N° Centro de Costo', bold_format)
-            if pay.account_analytic_id.code:
+
+            if pay.account_analytic_id.code and self.env.user.company_id.analitic_account == '1':
                 worksheet.write(row, col, pay.account_analytic_id.code)
-            elif pay.contract_id.department_id.analytic_account_id.code:
+            elif pay.contract_id.analytic_account_id.code and self.env.user.company_id.analitic_account == '2':
+                worksheet.write(row, col, pay.contract_id.analytic_account_id.code)
+            elif pay.contract_id.department_id.analytic_account_id.code and self.env.user.company_id.analitic_account == '3':
                 worksheet.write(row, col, pay.contract_id.department_id.analytic_account_id.code)
             else:
                 worksheet.write(row, col, '')
-            # Cuenta Analitica Por Departamento long_const = max(payslips.mapped('contract_id').mapped('department_id').mapped('analytic_account_id').mapped('name'),key=len)
-            long_const = max(payslips.mapped('contract_id').mapped('analytic_account_id').mapped('name'),key=len)
+
+            if self.env.user.company_id.analitic_account == '1':
+                long_const = max(payslips.mapped('account_analytic_id').mapped('name'),key=len)
+            elif self.env.user.company_id.analitic_account == '2':
+                long_const = max(payslips.mapped('contract_id').mapped('analytic_account_id').mapped('name'),key=len)
+            elif self.env.user.company_id.analitic_account == '3':
+                long_const = max(payslips.mapped('contract_id').mapped('department_id').mapped('analytic_account_id').mapped('name'),key=len)
+
             worksheet.set_column(row, col, len(long_const))
             col += 1
             worksheet.write(12, 3, 'Centro de Costo:', bold_format)
-            if pay.account_analytic_id:
+            if pay.account_analytic_id and self.env.user.company_id.analitic_account == '1':
                 worksheet.write(row, col, pay.account_analytic_id.name)
-            elif pay.contract_id.department_id.analytic_account_id:
+            elif pay.contract_id.analytic_account_id and self.env.user.company_id.analitic_account == '2':
+                worksheet.write(row, col, pay.contract_id.analytic_account_id.name)
+            elif pay.contract_id.department_id.analytic_account_id and self.env.user.company_id.analitic_account == '3':
                 worksheet.write(row, col, pay.contract_id.department_id.analytic_account_id.name)
             else:
                 worksheet.write(row, col, '')
-            #long_const = max(payslips.mapped('contract_id').mapped('department_id').mapped('analytic_account_id').mapped('name'),key=len)
-            long_const = max(payslips.mapped('contract_id').mapped('analytic_account_id').mapped('name'),key=len)
+
+            if self.env.user.company_id.analitic_account == '1':
+                long_const = max(payslips.mapped('account_analytic_id').mapped('name'),key=len)
+            elif self.env.user.company_id.analitic_account == '2':
+                long_const = max(payslips.mapped('contract_id').mapped('analytic_account_id').mapped('name'),key=len)
+            elif self.env.user.company_id.analitic_account == '3':
+                long_const = max(payslips.mapped('contract_id').mapped('department_id').mapped('analytic_account_id').mapped('name'),key=len)
+
             worksheet.set_column(row, col, len(long_const))
             col += 1
             worksheet.write(12, 4, 'Dias Trabajados:', bold_format)

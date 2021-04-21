@@ -494,8 +494,7 @@ else:
             <field name="amount_select">code</field>
             <field name="amount_python_compute">result = round((((rate / 30) * (worked_days.WORK100.number_of_days)) * contract.isapre_agreed_quotes_uf  - round(SALUD))</field>
         </record>
-
-
+        
         <record id="custom_hr_salary_isapre_to_pay_amount" model="hr.salary.rule">
             <field name="name">Isapres por Pagar</field>
             <field name="struct_id" ref="custom_hr_payroll_structure_cl"/>
