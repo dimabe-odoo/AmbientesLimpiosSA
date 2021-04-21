@@ -41,7 +41,7 @@ class RouteMapController(http.Controller):
                 'driver_observations':observation
             })
 
-    @http.route('/api/done', type='json', method='GET', cors='*')
+    @http.route('/api/done', type='json',auth='token', method='GET', cors='*')
     def make_done_line(self, line_id):
         line = request.env['route.map.line'].sudo().search([('id', '=', line_id)])
         if line:
