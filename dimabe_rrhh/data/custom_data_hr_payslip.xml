@@ -428,14 +428,14 @@ else:
             <field name="appears_on_payslip" eval="False"/>
             <field name="condition_python">result = contract.supplementary_insurance_agreed_quotes_uf > 0</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">if contract.currency_supplementary_insurance_id == 'uf':
+            <field name="amount_python_compute">if contract.currency_supplementary_insurance_id.name == 'UF':
     rate = payslip.indicator_id.mapped('data_ids').filtered(lambda a: a.type == '1' and a.last_month is True).value
-elif contract.currency_supplementary_insurance_id == 'clp':
+elif contract.currency_supplementary_insurance_id.name == 'CLP':
     rate = 1
 else:
     rate = 0
 
-maximum = payslip.indicator_id.mapped('data_ids').filtered(lambda a: 'Mensual' in a.name  and a.type=='6')
+maximum = payslip.indicator_id.mapped('data_ids').filtered(lambda a: 'Mensual' in a.name  and a.type=='6').value
 
 if round(contract.supplementary_insurance_agreed_quotes_uf*rate) > round(maximum):
     result = round(maximum)

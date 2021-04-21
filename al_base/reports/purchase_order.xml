@@ -107,7 +107,7 @@
                                             <strong>FECHA COT. :</strong>
                                         </td>
                                         <td style="text-align:left;">
-                                            <span t-esc="d.create_date.date().strftime('%d-%m-%Y')"/>
+                                            <span t-esc="d.date_planned"/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -180,12 +180,15 @@
                                     <tr>
                                         <th style="text-align: left;">FECHA DE ENTREGA</th>
                                         <td style="width: 5px">:</td>
-                                        <td><span t-field="d.date_planned"/></td>
+                                        <td><span t-field="d.date_delivered"/></td>
                                     </tr>
                                     <tr>
                                         <th style="text-align: left;">COND. DE VENTA</th>
                                         <td>:</td>
-                                        <td style="text-transform: uppercase;">/<span t-field="d.payment_term_id.name"/></td>
+                                        <td style="text-transform: uppercase;">
+                                            <span t-esc="d.payment_term_id.l10n_cl_sii_code[3:]"/>
+                                            /<span t-field="d.payment_term_id.name"/>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th style="text-align: left;">OBSERVACIÓN</th>
