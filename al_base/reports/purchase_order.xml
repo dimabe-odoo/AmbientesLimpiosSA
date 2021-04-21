@@ -195,7 +195,7 @@
                                             <t t-if="d.payment_term_id.l10n_cl_sii_code == 3">
                                                 Otro
                                             </t>
-                                            <span t-field="d.payment_term_id.l10n_cl_sii_code">
+                                            <span t-field="d.payment_term_id.l10n_cl_sii_code"/>
                                             /<span t-field="d.payment_term_id.name"/>
                                         </td>
                                     </tr>
