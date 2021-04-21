@@ -6,7 +6,7 @@ class RouteMapController(http.Controller):
 
     @http.route('/api/route_map', type='json',auth='token', method='GET', cors='*')
     def get_route_map(self, driver_id):
-        map_id = request.env['route.map'].sudo().search([('driver_id.id', '=', driver_id), ('state', '!=', 'done')])
+        map_id = request.env['route.map'].sudo().search([('driver_id.id', '=', driver_id), ('state', '!=', 'done')],order='create_date',limit=1)
         if map_id:
             lines = []
             for line in map_id.dispatch_ids:
