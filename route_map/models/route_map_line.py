@@ -1,4 +1,3 @@
-
 import datetime
 
 from odoo import models, fields, api
@@ -24,6 +23,8 @@ class RouteMapLine(models.Model):
 
     image_ids = fields.One2many('ir.attachment', 'res_id')
 
+    dispatch_date = fields.Datetime('Fecha de Despacho')
+
     company_observations = fields.Text('Observaciones Compañia')
 
     driver_observations = fields.Text('Observaciones Conductor')
@@ -34,9 +35,7 @@ class RouteMapLine(models.Model):
 
     is_delivered = fields.Boolean('Esta entregado?')
 
-    qty_to_delivery = fields.Float('Cantidad a Entregar')
-
-    product_ids = fields.Many2many('product.product')
+    product_line_ids = fields.One2many('product.line', 'line_id')
 
     def compute_display_name(self):
         for item in self:

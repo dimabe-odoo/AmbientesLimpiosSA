@@ -28,7 +28,7 @@
                         </group>
                         <notebook>
                             <page name="disaptch" string="Despachos">
-                                <field name="picking_id" attrs="{'invisible': [('state','!=','draft')]}" domain="[('picking_type_id.sequence_code','=','OUT')]"/>
+                                <field name="picking_id" attrs="{'invisible': [('state','!=','draft')]}" domain="[('picking_type_id.sequence_code','=','OUT'),('state','=','done')]"/>
                                 <button type="object" name="add_picking" string="Agregar"
                                         attrs="{'invisible': [('state','!=','draft')]}"/>
                                 <field name="dispatch_ids" attrs="{'readonly':['|',('state','!=','draft'),('add_more','=',False)]}">
@@ -77,8 +77,9 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-        <menuitem name="Hoja de Ruta" id="route_map_menu" parent="sale.sale_menu_root"
-                  action="route_map_act_window"/>
+        <menuitem name="Hoja de Ruta" id="route_map_parent_menu" parent="sale.sale_menu_root"/>
+
+        <menuitem name="Hojas de Ruta" id="route_map_menu" parent="route_map.route_map_parent_menu" action="route_map.route_map_act_window"/>
 
     </data>
 </odoo>

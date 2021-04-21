@@ -9,11 +9,11 @@ class RouteMap(Model):
 
     display_name = fields.Char('Nombre a mostrar', compute='compute_display_name')
 
-    truck_id = fields.Many2one('fleet.vehicle', string='Camion',required=True)
+    truck_id = fields.Many2one('fleet.vehicle', string='Camion', required=True)
 
     driver_id = fields.Many2one('res.partner', string='Conductor', related='truck_id.driver_id')
 
-    picking_id = fields.Many2one('stock.picking', 'Despacho', domain=[('state', '=', 'done')])
+    picking_id = fields.Many2one('stock.picking', 'Despacho')
 
     dispatch_ids = fields.One2many('route.map.line', 'map_id', string="Despacho")
 
@@ -36,14 +36,18 @@ class RouteMap(Model):
             item.display_name = f'{item.driver_id.name} {item.truck_id.license_plate} '
 
     def add_picking(self):
-        self.env['route.map.line'].sudo().create({
+        line = self.env['route.map.line'].sudo().create({
             'map_id': self.id,
             'dispatch_id': self.picking_id.id,
             'sale_id': self.picking_id.sale_id.id,
-            'qty_to_delivery': sum(self.picking_id.mapped('move_line_ids_without_package').mapped('qty_done')),
-            'product_ids': [(4, p.id) for p in self.picking_id.mapped('move_line_ids_without_package').mapped('product_id')]
         })
-        self.picking_id.write({
+        for product in self.picking_id.move_line_ids_without_package:
+            self.env['product.line'].sudo().create({
+                'line_id': line.id,
+                'product_id': product.product_id.id,
+                'qty_to_delivery': product.qty_done
+            })
+        self.picking_id.sudo().write({
             'map_id': self.id
         })
         self.write({
@@ -51,6 +55,9 @@ class RouteMap(Model):
         })
 
     def action_dispatch(self):
+        self.dispatch_ids.write({
+            'dispatch_date': datetime.now()
+        })
         self.write({
             'state': 'incoming',
             'dispatch_date': datetime.now()

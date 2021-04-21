@@ -30,7 +30,8 @@
         'views/templates.xml',
         'views/route_map.xml',
         'reports/route_sheet_report.xml',
-        'views/stock_picking.xml'
+        'views/stock_picking.xml',
+        'views/route_map_line.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

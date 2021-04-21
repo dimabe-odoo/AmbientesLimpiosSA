@@ -11,6 +11,12 @@ class RouteMapController(http.Controller):
         if map_id:
             lines = []
             for line in map_id.dispatch_ids:
+                products = []
+                for product in line.product_line_ids:
+                    products.append({
+                        'ProductName': product.product_id.name,
+                        'Qty': product.qty_to_delivery
+                    })
                 lines.append({
                     'Id': line.id,
                     'Destiny': line.partner_id.name,
@@ -18,7 +24,7 @@ class RouteMapController(http.Controller):
                     'LatitudeDestiny': line.partner_id.partner_latitude,
                     'LongitudeDestiny': line.partner_id.partner_longitude,
                     'State': line.state,
-
+                    'Products': products
                 })
             res = {
                 'Id': map_id.id,
