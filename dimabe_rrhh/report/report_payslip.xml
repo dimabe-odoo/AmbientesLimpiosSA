@@ -164,7 +164,7 @@
                             <tr>
                                 <td>
                                     <t t-if="l.code=='PREV'">
-                                        <span t-esc="d.indicator_id.data_ids.filtered(lambda a: a.name.upper() == 'TASA AFP ' + d.contract_id.afp_id.name.upper()').percentage_show"/>
+                                        <span t-esc="d.indicator_id.data_ids.filtered(lambda a: a.name.upper() == 'TASA AFP {}'.format(d.contract_id.afp_id.name.upper()) ).percentage_show"/>
                                         <span t-field="d.contract_id.afp_id.name"/>
                                         <span t-field="l.name"/>
                                     </t>
