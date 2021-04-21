@@ -6,6 +6,4 @@ class StockPickings(models.Model):
 
     is_delivered = fields.Boolean()
 
-    map_id = fields.Many2one('route.map')
-
-
+    map_id = fields.Many2one('route.map', string='Hoja de Ruta')

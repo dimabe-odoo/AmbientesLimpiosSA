@@ -6,6 +6,8 @@ from odoo import models, fields, api
 class RouteMapLine(models.Model):
     _name = 'route.map.line'
 
+    display_name = fields.Char('Nombre a mostrar', compute='compute_display_name')
+
     map_id = fields.Many2one('route.map', string='Hoja de Calculo')
 
     dispatch_id = fields.Many2one('stock.picking', string='Despacho', required=True)
@@ -14,14 +16,31 @@ class RouteMapLine(models.Model):
 
     date_done = fields.Datetime('Fecha de Entrega')
 
-    state = fields.Selection([('to_delivered', 'Por Despacho'), ('done', 'Realizado')], string='Estado',
+    state = fields.Selection([('cancel', 'Cancelado'), ('to_delivered', 'Por Despacho'), ('done', 'Realizado')],
+                             string='Estado',
                              default='to_delivered')
+
+    image_ids = fields.One2many('ir.attachment', 'res_id')
+
+    company_observations = fields.Text('Observaciones Compañia')
+
+    driver_observations = fields.Text('Observaciones Conductor')
 
     partner_id = fields.Many2one('res.partner', string="Cliente", related='dispatch_id.partner_id')
 
     address_to_delivery = fields.Char(related='partner_id.street', string='Direccion de Entrega')
 
     is_delivered = fields.Boolean('Esta entregado?')
+
+    def compute_display_name(self):
+        for item in self:
+            item.display_name = f'Pedido {item.sale_id.name} Cliente {item.partner_id.display_name}'
+
+    def button_cancel(self):
+        for item in self:
+            item.write({
+                'state': 'cancel'
+            })
 
     def button_done(self):
         for item in self:
@@ -36,7 +55,8 @@ class RouteMapLine(models.Model):
                 })
             if all(item.map_id.dispatch_ids.mapped('is_delivered')):
                 item.map_id.write({
-                    'state': 'done'
+                    'state': 'done',
+                    'date_done': datetime.datetime.now()
                 })
 
     def create(self, values):
