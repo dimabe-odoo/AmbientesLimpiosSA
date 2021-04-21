@@ -34,6 +34,10 @@ class RouteMapLine(models.Model):
 
     is_delivered = fields.Boolean('Esta entregado?')
 
+    qty_to_delivery = fields.Float('Cantidad a Entregar')
+
+    product_ids = fields.Many2many('product.product')
+
     def compute_display_name(self):
         for item in self:
             item.display_name = f'Pedido {item.sale_id.name} Cliente {item.partner_id.display_name}'

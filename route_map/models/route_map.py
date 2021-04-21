@@ -39,7 +39,9 @@ class RouteMap(Model):
         self.env['route.map.line'].sudo().create({
             'map_id': self.id,
             'dispatch_id': self.picking_id.id,
-            'sale_id': self.picking_id.sale_id.id
+            'sale_id': self.picking_id.sale_id.id,
+            'qty_to_delivery': sum(self.picking_id.mapped('move_line_ids_without_package').mapped('qty_done')),
+            'product_ids': [(4, p.id) for p in self.picking_id.mapped('move_line_ids_without_package').mapped('product_id')]
         })
         self.picking_id.write({
             'map_id': self.id

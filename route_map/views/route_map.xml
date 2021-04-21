@@ -32,7 +32,7 @@
                                 <button type="object" name="add_picking" string="Agregar"
                                         attrs="{'invisible': [('state','!=','draft')]}"/>
                                 <field name="dispatch_ids" attrs="{'readonly':['|',('state','!=','draft'),('add_more','=',False)]}">
-                                    <tree editable="bottom" delete="false" create="false">
+                                    <tree editable="bottom" delete="true" create="false">
                                         <button type="object" name="button_done" string="Entregar"
                                                 attrs="{'column_invisible':[('parent.state','=','draft')],'invisible': [('state','=','done')]}"/>
                                         <field name="dispatch_id" readonly="1"/>
