@@ -139,7 +139,7 @@
                                 </th>
                             </tr>
                             <tr>
-                                <td style="padding-left: 6px;">HABER AFECTOS</td>
+                                <td style="padding-left: 6px; font-weight: bold;">HABER AFECTOS</td>
                             </tr>
                             <t t-foreach="d.line_ids" t-as="l">
                                 <t t-if="l.category_id.code == 'IMP'">
@@ -154,7 +154,7 @@
                                 </t>
                             </t>
                             <tr>
-                                <td style="padding-left: 6px;">LEYES SOCIALES</td>
+                                <td style="padding-left: 6px; font-weight: bold;">LEYES SOCIALES</td>
                             </tr>
                             <t t-foreach="d.line_ids" t-as="l">
                                 <t t-if="l.category_id.code == 'PREV' or l.category_id.code == 'DES' or l.category_id.code == 'ODES'">
@@ -185,10 +185,10 @@
                                                 </t>
                                             </t>
                                             <t t-elif="l.code == 'IMPUNI'">
-                                                <span name="l.name"/>
+                                                <span t-field="l.name"/>
                                             </t>
                                             <t t-else="">
-                                                <span name="l.name"/>
+                                                <span t-field="l.name"/>
                                             </t>
                                         </td>
                                         <td></td>
