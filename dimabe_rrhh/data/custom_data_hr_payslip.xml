@@ -263,15 +263,18 @@ else:
             <field name="category_id" ref="custom_hr_salary_rule_forecast"/>
             <field name="condition_select">none</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">rate= payslip.indicator_id and payslip.indicator_id.mapped('data_ids').filtered(lambda a : a.type == '9' and ('Afp ' +contract.afp_id.name).upper() in a.name.upper()).percentage_value
-maximum = payslip.indicator_id.mapped('data_ids').filtered(lambda a: a.type =='4' and 'AFP' in a.name).value
-total_imp = categories.IMP
-if contract.is_pensionary or contract.not_afp:
-    result=0
-elif total_imp >=round(maximum):
-    result = round(maximum * rate / 100)
+            <field name="amount_python_compute">if contract.not_afp is False:
+    rate= payslip.indicator_id and payslip.indicator_id.mapped('data_ids').filtered(lambda a : a.type == '9' and ('Afp ' +contract.afp_id.name).upper() in a.name.upper()).percentage_value
+    maximum = payslip.indicator_id.mapped('data_ids').filtered(lambda a: a.type =='4' and 'AFP' in a.name).value
+    total_imp = categories.IMP
+    if contract.is_pensionary or contract.not_afp:
+        result=0
+    elif total_imp >=round(maximum):
+        result = round(maximum * rate / 100)
+    else:
+        result = round(total_imp * rate / 100)
 else:
-    result = round(total_imp * rate / 100)
+    result = 0
 </field>
         </record>
 
