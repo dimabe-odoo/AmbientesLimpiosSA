@@ -35,6 +35,10 @@ class RouteMapLine(models.Model):
 
     is_delivered = fields.Boolean('Esta entregado?')
 
+    latitude_delivery = fields.Float('Latitud de Entrega')
+
+    longitude_delivery = fields.Float('Longitude de Entrega')
+
     product_line_ids = fields.One2many('product.line', 'line_id')
 
     def compute_display_name(self):
