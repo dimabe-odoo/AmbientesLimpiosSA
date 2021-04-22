@@ -351,6 +351,6 @@
         <field name="header_spacing">0</field>
         <field name="dpi">90</field>
     </record>
-    <report id="action_payslip_report" string="Nómina Custom" model="hr.payslip" report_type="qweb-pdf"
-            name="dimabe_rrhh.report_payslip" menu="True" paperformat="paper_format_letter_custom"/>
+    <report id="action_payslip_report" string="Nómina" model="hr.payslip" report_type="qweb-pdf" 
+            name="dimabe_rrhh.report_payslip" menu="True" paperformat="paper_format_letter_custom" print_report_name="((object.name).replace('Nómina',object.employee_id.first_name+' '+object.employee_id.last_name + ' ' + object.indicator_id.name))"/>
 </odoo>
