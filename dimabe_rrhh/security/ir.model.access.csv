@@ -13,6 +13,8 @@ access_dimabe_custom_mutuality_by_company,dimabe_rrhh.custom_mutuality_by_compan
 access_dimabe_custom_unique_tax,dimabe_rrhh.custom_unique_tax,model_custom_unique_tax,,1,1,1,1
 access_dimabe_custom_employee_type,dimabe_rrhh.custom_employee_type,model_custom_employee_type,,1,1,1,1
 access_dimabe_wizard_hr_payslip,dimabe_rrhh.wizard_hr_payslip,model_wizard_hr_payslip,,1,1,1,1 
+access_dimabe_custom_payslip_payment_term,dimabe_rrhh.custom_payslip_payment_term,model_custom_payslip_payment_term,,1,1,1,1 
+
 
 
 
