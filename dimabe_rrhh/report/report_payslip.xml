@@ -139,30 +139,61 @@
                                 </th>
                             </tr>
                             <tr>
-                                <td style="padding-left: 6px; font-weight: bold;border-right: 1px solid #0080bf">HABER AFECTOS</td>
+                                <td style="padding-left: 6px; font-weight: bold;border-right: 1px solid #0080bf;">HABER AFECTOS</td>
+                                <td style="border-right: 1px solid #0080bf"></td>
                             </tr>
+                            <tr>
+                              <td style="border-right: 1px solid #0080bf;">
+                                <span t-esc="d.line_ids.filetered(lambda a: a.code == 'SUELDO').name"/>
+                              </td>
+                              <td style="border-right: 1px solid #0080bf;text-align: right;">
+                                <span t-esc="d.line_ids.filetered(lambda a: a.code == 'SUELDO').total"/>
+                              </td>
+                            </tr>
+                            <t t-if="d.line_ids.filetered(lambda a: a.code == 'GRAT')">
+                              <tr>
+                                <td style="border-right: 1px solid #0080bf;">
+                                  <span t-esc="d.line_ids.filetered(lambda a: a.code == 'GRAT').name"/>
+                                </td>
+                                <td style="border-right: 1px solid #0080bf;text-align: right;">
+                                  <span t-esc="d.line_ids.filetered(lambda a: a.code == 'GRAT').total"/>
+                                </td>
+                              </tr>
+                            </t>
+                            <t t-if="d.line_ids.filetered(lambda a: a.code == 'MANGRAT')">
+                              <tr>
+                                <td style="border-right: 1px solid #0080bf;">
+                                  <span t-esc="d.line_ids.filetered(lambda a: a.code == 'MANGRAT').name"/>
+                                </td>
+                                <td style="border-right: 1px solid #0080bf;text-align: right;">
+                                  <span t-esc="d.line_ids.filetered(lambda a: a.code == 'MANGRAT').total"/>
+                                </td>
+                              </tr>
+                            </t>
+                            
                             <t t-foreach="d.line_ids" t-as="l">
-                                <t t-if="l.category_id.code == 'IMP'">
+                                <t t-if="l.category_id.code == 'IMP' and l.code != 'SUELDO' and l.code != 'GRAT' and l.code != 'MANGRAT'">
                                     <tr>
-                                        <td style="padding-left: 6px;border-right: 1px solid #0080bf">
+                                        <td style="padding-left: 6px;border-right: 1px solid #0080bf;">
                                             <span t-field="l.name"/>
                                         </td>
-                                        <td style="padding-left: 6px;border-right: 1px solid #0080bf">
+                                        <td style="padding-left: 6px;border-right: 1px solid #0080bf;text-align: right;">
                                             <span t-field="l.total"/>
                                         </td>
                                     </tr>
                                 </t>
                             </t>
                             <tr>
-                                <td style="padding-left: 6px; font-weight: bold;">HABER NO AFECTOS</td>
+                                <td style="padding-left: 6px; font-weight: bold; border-right: 1px solid #0080bf;">HABER NO AFECTOS</td>
+                                <td style="border-right: 1px solid #0080bf"></td>
                             </tr>
                             <t t-foreach="d.line_ids" t-as="l">
                                 <t t-if="l.category_id.code == 'NOTIMP'">
                                     <tr>
-                                        <td style="padding-left: 6px;border-right: 1px solid #0080bf">
+                                        <td style="padding-left: 6px;border-right: 1px solid #0080bf;">
                                             <span t-field="l.name"/>
                                         </td>
-                                        <td style="padding-left: 6px;border-right: 1px solid #0080bf">
+                                        <td style="padding-left: 6px;border-right: 1px solid #0080bf;text-align: right;">
                                             <span t-field="l.total"/>
                                         </td>
                                     </tr>
@@ -170,6 +201,7 @@
                             </t>
                             <tr>
                                 <td style="padding-left: 6px; font-weight: bold;">LEYES SOCIALES</td>
+                                <td style="border-right: 1px solid #0080bf"></td>
                             </tr>
                             <t t-foreach="d.line_ids" t-as="l">
                                 <t t-if="l.category_id.code == 'PREV' or l.category_id.code == 'DES' or l.category_id.code == 'ODES' or l.code == 'FONASA' or  l.code == 'CAJACOMP'">
@@ -209,7 +241,7 @@
                                                 <span t-field="l.name"/>
                                             </t>
                                         </td>
-                                        <td style="border-right: 1px solid #0080bf"></td>
+                                        <td style="border-right: 1px solid #0080bf;text-align: right;"></td>
                                         <td style="padding-left: 6px;">
                                             <span t-field="l.total"/>
                                         </td>
