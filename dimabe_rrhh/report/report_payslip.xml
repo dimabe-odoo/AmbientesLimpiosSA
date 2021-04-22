@@ -165,7 +165,7 @@
                                                 <span t-field="d.contract_id.afp_id.name"/>
                                                 <span t-field="l.name"/>
                                             </t>
-                                            <t t-else="l.code=='SECE'">
+                                            <t t-elif="l.code=='SECE'">
                                                 <span t-field="l.name"/>:
                                                 <t t-if="d.contract_id.type_id.code == '1'">
                                                     <span t-esc="d.indicator_id.data_ids.filtered(lambda a: a.name =='Contrato Plazo Indefinido Trabajador').percentage_value"/>
@@ -174,7 +174,7 @@
                                                     <span t-esc="d.indicator_id.data_ids.filtered(lambda a: a.name =='Plazo Indefinido 11 años o más').percentage_value"/>
                                                 </t>
                                             </t>
-                                            <t t-else="l.code=='APV'">
+                                            <t t-elif="l.code=='APV'">
                                                 <span t-field="l.name"/>
                                                 <span t-field="d.contract_id.apv_amount"/>
                                                 <t t-if="d.contract_id.apv_currency == 'uf'">
@@ -184,7 +184,7 @@
                                                   Peso $
                                                 </t>
                                             </t>
-                                            <t t-else="l.code == 'IMPUNI'">
+                                            <t t-elif="l.code == 'IMPUNI'">
                                                 <span name="l.name"/>
                                             </t>
                                             <t t-else="">
