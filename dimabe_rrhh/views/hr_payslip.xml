@@ -20,6 +20,7 @@
                 </xpath>
                 <xpath expr="//field[@name='name']" position="after">
                     <field name="personal_movements"/>
+                    <field name="payment_term_id">
                 </xpath>
                 <xpath expr="//page[1]" position="after">
                     <page string="Prevision">

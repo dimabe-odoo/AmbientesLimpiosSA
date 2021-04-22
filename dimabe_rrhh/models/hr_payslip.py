@@ -16,9 +16,9 @@ class HrPaySlip(models.Model):
 
     worked_days_line_ids = fields.One2many(readonly=False)
 
-    #payment_term_id = fields.Many2one('custom.payslip.payment.term', 'Forma de Pago')
+    payment_term_id = fields.Many2one('custom.payslip.payment.term', 'Forma de Pago')
 
-    personal_movements = fields.Selection((('0', 'Sin Movimiento en el Mes'),
+    personal_movements = fields.Selection([('0', 'Sin Movimiento en el Mes'),
      ('1', 'Contratación a plazo indefinido'),
      ('2', 'Retiro'),
      ('3', 'Subsidios (L Médicas)'),
@@ -29,7 +29,7 @@ class HrPaySlip(models.Model):
      ('8', 'Cambio Contrato plazo fijo a plazo indefinido'),
      ('11', 'Otros Movimientos (Ausentismos)'),
      ('12', 'Reliquidación, Premio, Bono')     
-     ), 'Movimientos Personal', default="0")
+    ], 'Movimientos Personal', default="0")
 
     @api.model
     def _compute_basic_salary(self):
