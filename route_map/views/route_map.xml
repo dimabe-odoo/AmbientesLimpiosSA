@@ -38,6 +38,7 @@
                                         <field name="dispatch_id" readonly="1"/>
                                         <field name="sale_id" readonly="1"/>
                                         <field name="address_to_delivery" readonly="1"/>
+                                        <field name="dispatch_date" readonly="1" attrs="{'column_invisible': [('parent.state','=','draft')]}"/>
                                         <field name="date_done" readonly="1"/>
                                         <field name="state" readonly="1" widget="badget"
                                                statusbar_visible="to_delivered,done"/>
