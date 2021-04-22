@@ -50,7 +50,7 @@
                                 </td>
                                 <td style="text-align: right; width: 25%;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;">Cargo</td>
                                 <td style="text-align: left; width: 25%;border-bottom: 1px solid #0080bf;">
-                                    <span t-field="d.contract_id.job_id.name"/>
+                                    <span t-field="d.employee_id.job_title"/>
                                 </td>
                             </tr>
                             <tr>
@@ -139,15 +139,15 @@
                                 </th>
                             </tr>
                             <tr>
-                                <td style="padding-left: 6px; font-weight: bold;">HABER AFECTOS</td>
+                                <td style="padding-left: 6px; font-weight: bold;border-right: 1px solid #0080bf">HABER AFECTOS</td>
                             </tr>
                             <t t-foreach="d.line_ids" t-as="l">
                                 <t t-if="l.category_id.code == 'IMP'">
                                     <tr>
-                                        <td style="padding-left: 6px;">
+                                        <td style="padding-left: 6px;border-right: 1px solid #0080bf">
                                             <span t-field="l.name"/>
                                         </td>
-                                        <td style="padding-left: 6px;">
+                                        <td style="padding-left: 6px;border-right: 1px solid #0080bf">
                                             <span t-field="l.total"/>
                                         </td>
                                     </tr>
@@ -159,10 +159,10 @@
                             <t t-foreach="d.line_ids" t-as="l">
                                 <t t-if="l.category_id.code == 'NOTIMP'">
                                     <tr>
-                                        <td style="padding-left: 6px;">
+                                        <td style="padding-left: 6px;border-right: 1px solid #0080bf">
                                             <span t-field="l.name"/>
                                         </td>
-                                        <td style="padding-left: 6px;">
+                                        <td style="padding-left: 6px;border-right: 1px solid #0080bf">
                                             <span t-field="l.total"/>
                                         </td>
                                     </tr>
@@ -172,9 +172,9 @@
                                 <td style="padding-left: 6px; font-weight: bold;">LEYES SOCIALES</td>
                             </tr>
                             <t t-foreach="d.line_ids" t-as="l">
-                                <t t-if="l.category_id.code == 'PREV' or l.category_id.code == 'DES' or l.category_id.code == 'ODES' or l.category_id.code == 'SAL'">
+                                <t t-if="l.category_id.code == 'PREV' or l.category_id.code == 'DES' or l.category_id.code == 'ODES' or l.code == 'FONASA' pr  l.code == 'CAJACOMP'">
                                     <tr>
-                                        <td style="padding-left: 6px;">
+                                        <td style="padding-left: 6px;border-right: 1px solid #0080bf">
                                             <t t-if="l.code=='PREV'">
                                                 <span t-esc="d.indicator_id.data_ids.filtered(lambda a: a.name.upper() == 'TASA AFP {}'.format(d.contract_id.afp_id.name.upper()) ).percentage_show"/>
                                                 <span t-field="d.contract_id.afp_id.name"/>
@@ -206,7 +206,7 @@
                                                 <span t-field="l.name"/>
                                             </t>
                                         </td>
-                                        <td></td>
+                                        <td style="border-right: 1px solid #0080bf"></td>
                                         <td style="padding-left: 6px;">
                                             <span t-field="l.total"/>
                                         </td>
@@ -227,6 +227,7 @@
                             </tr>
                         </table>
                     </div>
+                    <br/>
                     <div style="width:100%;margin:0 auto;border:2px solid #0080bf; border-radius: 5px; margin-top:4px;">
                         <table style="width:100%;font-size:11px;" cellspacing="0" >
                             <tr>
@@ -269,10 +270,10 @@
                             <tr style="text-align: center;">
                                 <td style="width: 50%;"></td>
                                 <td style="width: 50%;">
-                                    <span style="font-size: 14px; font-weight: bold;" t-field="d.employee_id.first_name"/>
-                                    <span style="font-size: 14px; font-weight: bold;" t-field="d.employee_id.middle_name"/>
-                                    <span style="font-size: 14px; font-weight: bold;" t-field="d.employee_id.last_name"/>
-                                    <span style="font-size: 14px; font-weight: bold;" t-field="d.employee_id.mothers_name"/>
+                                    <span style="font-size: 14px; font-weight: bold;" t-esc="d.employee_id.first_name.upper()"/>
+                                    <span style="font-size: 14px; font-weight: bold;" t-esc="d.employee_id.middle_name.upper()"/>
+                                    <span style="font-size: 14px; font-weight: bold;" t-esc="d.employee_id.last_name.upper()"/>
+                                    <span style="font-size: 14px; font-weight: bold;" t-esc="d.employee_id.mothers_name.upper()"/>
                                 </td>
                             </tr>
                         </table>
