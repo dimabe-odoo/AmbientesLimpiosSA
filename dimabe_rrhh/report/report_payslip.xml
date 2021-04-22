@@ -96,11 +96,11 @@
                             <tr>
                                 <td style="text-align: right;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;">Banco</td>
                                 <td style="text-align: left;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;">
-                                  <span t-field="d.employee_id.bank_account_id.bank_id.name">
+                                  <span t-field="d.employee_id.bank_account_id.bank_id.name"/>
                                 </td>
                                 <td style="text-align: right;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;">Cuenta</td>
                                 <td style="text-align: left;border-bottom: 1px solid #0080bf;">
-                                  <span t-field="d.employee_id.bank_account_id.acc_number">
+                                  <span t-field="d.employee_id.bank_account_id.acc_number"/>
                                 </td>
                             </tr>
                             <tr>
