@@ -9,7 +9,7 @@
                             <tr>
                                 <td style="width: 50%;">
                                     <div style="height: 100px; text-align: left; padding: 10px;">
-                                        <img t-att-src="'data:image/png;base64,%s' % to_text(res_company.logo)" style="max-width: 100px; max-height: 60px"/>
+                                        <img t-att-src="'data:image/png;base64,%s' % to_text(res_company.logo)" style="max-width: 150px; max-height: 90px"/>
                                     </div>
                                 </td>
                                 <td>
@@ -167,10 +167,10 @@
                                             </t>
                                             <t t-if="l.code=='SECE'">
                                                 <span t-field="l.name"/>:
-                                                <t t-if="d.contract_id.code == '1'">
+                                                <t t-if="d.contract_id.type_id.code == '1'">
                                                     <span t-esc="d.indicator_id.data_ids.filtered(lambda a: a.name =='Contrato Plazo Indefinido Trabajador').percentage_value"/>
                                                 </t>
-                                                <t t-if="d.contract_id.code == '3'">
+                                                <t t-if="d.contract_id.type_id.code == '3'">
                                                     <span t-esc="d.indicator_id.data_ids.filtered(lambda a: a.name =='Plazo Indefinido 11 años o más').percentage_value"/>
                                                 </t>
                                             </t>
