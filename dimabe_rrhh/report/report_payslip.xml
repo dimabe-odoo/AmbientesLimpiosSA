@@ -184,28 +184,30 @@
                                     </tr>
                                 </t>
                             </t>
-                            <tr>
-                                <td style="padding-left: 6px; font-weight: bold; border-right: 1px solid #0080bf;">HABER NO AFECTOS</td>
-                                <td style="border-right: 1px solid #0080bf"></td>
-                            </tr>
-                            <t t-foreach="d.line_ids" t-as="l">
-                                <t t-if="l.category_id.code == 'NOTIMP'">
-                                    <tr>
-                                        <td style="padding-left: 6px;border-right: 1px solid #0080bf;">
-                                            <span t-field="l.name"/>
-                                        </td>
-                                        <td style="padding-right: 6px;border-right: 1px solid #0080bf;text-align: right;">
-                                            <span t-field="l.total"/>
-                                        </td>
-                                    </tr>
-                                </t>
+                            <t t-if="sum(d.line_ids.filtered(lambda a: a..category_id.code == 'NOTIMP)) > 0">
+                              <tr>
+                                  <td style="padding-left: 6px; font-weight: bold; border-right: 1px solid #0080bf;">HABERES EXENTOS</td>
+                                  <td style="border-right: 1px solid #0080bf"></td>
+                              </tr>
+                              <t t-foreach="d.line_ids" t-as="l">
+                                  <t t-if="l.category_id.code == 'NOTIMP'">
+                                      <tr>
+                                          <td style="padding-left: 6px;border-right: 1px solid #0080bf;">
+                                              <span t-field="l.name"/>
+                                          </td>
+                                          <td style="padding-right: 6px;border-right: 1px solid #0080bf;text-align: right;">
+                                              <span t-field="l.total"/>
+                                          </td>
+                                      </tr>
+                                  </t>
+                              </t>
                             </t>
                             <tr>
-                                <td style="padding-left: 6px; font-weight: bold;border-right: 1px solid #0080bf">LEYES SOCIALES</td>
+                                <td style="padding-left: 6px; font-weight: bold;border-right: 1px solid #0080bf">DESCUENTOS LEYES SOCIALES</td>
                                 <td style="border-right: 1px solid #0080bf"></td>
                             </tr>
                             <t t-foreach="d.line_ids" t-as="l">
-                                <t t-if="l.category_id.code == 'PREV' or l.category_id.code == 'DES' or l.category_id.code == 'ODES' or l.code == 'FONASA' or  l.code == 'CAJACOMP'">
+                                <t t-if="l.category_id.code == 'PREV' or l.category_id.code == 'DES' or l.code == 'FONASA' or  l.code == 'CAJACOMP'">
                                     <tr>
                                         <td style="padding-left: 6px;border-right: 1px solid #0080bf;">
                                             <t t-if="l.code=='PREV'">
@@ -248,6 +250,25 @@
                                         </td>
                                     </tr>
                                 </t>
+                            </t>
+                            <t t-if="sum(d.line_ids.filtered(lambda a: a.category_id.code == 'ODES')) > 0">
+                              <tr>
+                                  <td style="padding-left: 6px; font-weight: bold;border-right: 1px solid #0080bf">OTROS DESCUENTOS</td>
+                                  <td style="border-right: 1px solid #0080bf"></td>
+                              </tr>
+                              <t t-foreach="d.line_ids" t-as="l">
+                                  <t t-if="l.category_id.code == 'ODES'">
+                                      <tr>
+                                          <td style="padding-left: 6px;border-right: 1px solid #0080bf;">
+                                              <span t-field="l.name"/>
+                                          </td>
+                                          <td style="border-right: 1px solid #0080bf;"></td>
+                                          <td style="padding-right: 6px; text-align: right;">
+                                              <span t-field="l.total"/>
+                                          </td>
+                                      </tr>
+                                  </t>
+                              </t>
                             </t>
                             <tr style="font-weight: bold;">
                                 <td style="padding-left: 6px; border-top: 2px solid #0080bf;border-right: 1px solid #0080bf;">TOTALES</td>
