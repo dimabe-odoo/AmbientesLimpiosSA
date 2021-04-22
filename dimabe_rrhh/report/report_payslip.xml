@@ -145,29 +145,29 @@
                             </tr>
                             <tr>
                               <td style="border-right: 1px solid #0080bf;">
-                                <span t-esc="d.line_ids.filetered(lambda a: a.code == 'SUELDO').name"/>
+                                <span t-esc="d.line_ids.filtered(lambda a: a.code == 'SUELDO').name"/>
                               </td>
                               <td style="border-right: 1px solid #0080bf;text-align: right;">
-                                <span t-esc="d.line_ids.filetered(lambda a: a.code == 'SUELDO').total"/>
+                                <span t-esc="d.line_ids.filtered(lambda a: a.code == 'SUELDO').total"/>
                               </td>
                             </tr>
-                            <t t-if="d.line_ids.filetered(lambda a: a.code == 'GRAT')">
+                            <t t-if="d.line_ids.filtered(lambda a: a.code == 'GRAT')">
                               <tr>
                                 <td style="border-right: 1px solid #0080bf;">
-                                  <span t-esc="d.line_ids.filetered(lambda a: a.code == 'GRAT').name"/>
+                                  <span t-esc="d.line_ids.filtered(lambda a: a.code == 'GRAT').name"/>
                                 </td>
                                 <td style="border-right: 1px solid #0080bf;text-align: right;">
-                                  <span t-esc="d.line_ids.filetered(lambda a: a.code == 'GRAT').total"/>
+                                  <span t-esc="d.line_ids.filtered(lambda a: a.code == 'GRAT').total"/>
                                 </td>
                               </tr>
                             </t>
-                            <t t-if="d.line_ids.filetered(lambda a: a.code == 'MANGRAT')">
+                            <t t-if="d.line_ids.filtered(lambda a: a.code == 'MANGRAT')">
                               <tr>
                                 <td style="border-right: 1px solid #0080bf;">
-                                  <span t-esc="d.line_ids.filetered(lambda a: a.code == 'MANGRAT').name"/>
+                                  <span t-esc="d.line_ids.filtered(lambda a: a.code == 'MANGRAT').name"/>
                                 </td>
                                 <td style="border-right: 1px solid #0080bf;text-align: right;">
-                                  <span t-esc="d.line_ids.filetered(lambda a: a.code == 'MANGRAT').total"/>
+                                  <span t-esc="d.line_ids.filtered(lambda a: a.code == 'MANGRAT').total"/>
                                 </td>
                               </tr>
                             </t>
