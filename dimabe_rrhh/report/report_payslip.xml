@@ -9,7 +9,7 @@
                             <tr>
                                 <td style="width: 50%;">
                                     <div style="height: 100px; text-align: left; padding: 10px;">
-                                        <img t-att-src="'data:image/png;base64,%s' % to_text(res_company.logo)" style="max-width: 150px; max-height: 90px"/>
+                                        <img t-att-src="'data:image/png;base64,%s' % to_text(res_company.logo)" style="max-width: 200px; max-height: 120px"/>
                                     </div>
                                 </td>
                                 <td>
@@ -157,7 +157,7 @@
                                 <td style="padding-left: 6px; font-weight: bold;">LEYES SOCIALES</td>
                             </tr>
                             <t t-foreach="d.line_ids" t-as="l">
-                                <t t-if="l.category_id.code == 'PREV' or l.category_id.code == 'DES' or l.category_id.code == 'ODES'">
+                                <t t-if="l.category_id.code == 'PREV' or l.category_id.code == 'DES' or l.category_id.code == 'ODES' or l.category_id.code == 'SALUD'">
                                     <tr>
                                         <td style="padding-left: 6px;">
                                             <t t-if="l.code=='PREV'">
