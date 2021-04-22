@@ -37,10 +37,10 @@
                                 </th>
                                 <th style="width:50%;border-bottom:2px solid #0080bf; padding: 6px;" colspan="2">
                                     <span style="color: white;">Nombre:</span>
-                                    <span style="color: #e1e434;" t-field="d.employee_id.first_name"/>
-                                    <span style="color: #e1e434;" t-field="d.employee_id.middle_name"/>
                                     <span style="color: #e1e434;" t-field="d.employee_id.last_name"/>
                                     <span style="color: #e1e434;" t-field="d.employee_id.mothers_name"/>
+                                    <span style="color: #e1e434;" t-field="d.employee_id.first_name"/>
+                                    <span style="color: #e1e434;" t-field="d.employee_id.middle_name"/>
                                 </th>
                             </tr>
                             <tr>
@@ -327,10 +327,10 @@
                             <tr style="text-align: center;">
                                 <td style="width: 50%;"></td>
                                 <td style="width: 50%;">
-                                    <span style="font-size: 14px; font-weight: bold;" t-esc="d.employee_id.first_name.upper()"/>
-                                    <span style="font-size: 14px; font-weight: bold;" t-esc="d.employee_id.middle_name.upper()"/>
                                     <span style="font-size: 14px; font-weight: bold;" t-esc="d.employee_id.last_name.upper()"/>
                                     <span style="font-size: 14px; font-weight: bold;" t-esc="d.employee_id.mothers_name.upper()"/>
+                                    <span style="font-size: 14px; font-weight: bold;" t-esc="d.employee_id.first_name.upper()"/>
+                                    <span style="font-size: 14px; font-weight: bold;" t-esc="d.employee_id.middle_name.upper()"/>
                                 </td>
                             </tr>
                         </table>
