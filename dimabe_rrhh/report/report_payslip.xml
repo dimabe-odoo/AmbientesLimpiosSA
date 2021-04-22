@@ -125,6 +125,7 @@
                             </tr>
                         </table>
                     </div>
+                    <br/>
                     <div style="width:100%;margin:0 auto;border:2px solid #0080bf; border-radius: 5px; margin-top:4px;">
                         <table style="width:100%;font-size:11px;" cellspacing="0" >
                             <tr style="background-color: #004080; font-weight: bold;">
@@ -249,8 +250,8 @@
                                 </t>
                             </t>
                             <tr style="font-weight: bold;">
-                                <td style="padding-left: 6px; border-top: 2px solid #0080bf;">TOTALES</td>
-                                <td style="border-top: 2px solid #0080bf;"><span t-field="d.line_ids.filtered(lambda a: a.code == 'HAB').total"/></td>
+                                <td style="padding-left: 6px; border-top: 2px solid #0080bf;border-right: 1px solid #0080bf;">TOTALES</td>
+                                <td style="border-top: 2px solid #0080bf;border-right: 1px solid #0080bf;"><span t-field="d.line_ids.filtered(lambda a: a.code == 'HAB').total"/></td>
                                 <td style="padding-left: 6px; border-top: 2px solid #0080bf;"><span t-field="d.line_ids.filtered(lambda a: a.code == 'TDE').total"/></td>
                             </tr>
                             <tr style="background-color: #004080; font-weight: bold; color: white;">
