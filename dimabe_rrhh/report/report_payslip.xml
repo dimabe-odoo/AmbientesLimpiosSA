@@ -172,7 +172,7 @@
                                 <td style="padding-left: 6px; font-weight: bold;">LEYES SOCIALES</td>
                             </tr>
                             <t t-foreach="d.line_ids" t-as="l">
-                                <t t-if="l.category_id.code == 'PREV' or l.category_id.code == 'DES' or l.category_id.code == 'ODES' or l.code == 'FONASA' pr  l.code == 'CAJACOMP'">
+                                <t t-if="l.category_id.code == 'PREV' or l.category_id.code == 'DES' or l.category_id.code == 'ODES' or l.code == 'FONASA' or  l.code == 'CAJACOMP'">
                                     <tr>
                                         <td style="padding-left: 6px;border-right: 1px solid #0080bf">
                                             <t t-if="l.code=='PREV'">
