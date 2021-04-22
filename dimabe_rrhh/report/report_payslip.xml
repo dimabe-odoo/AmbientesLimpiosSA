@@ -144,10 +144,10 @@
                             <t t-foreach="d.line_ids" t-as="l">
                                 <t t-if="l.category_id.code == 'IMP'">
                                     <tr>
-                                        <td>
+                                        <td style="padding-left: 6px;">
                                             <span t-field="l.name"/>
                                         </td>
-                                        <td>
+                                        <td style="padding-left: 6px;">
                                             <span t-field="l.total"/>
                                         </td>
                                     </tr>
@@ -159,13 +159,13 @@
                             <t t-foreach="d.line_ids" t-as="l">
                                 <t t-if="l.category_id.code == 'PREV' or l.category_id.code == 'DES' or l.category_id.code == 'ODES'">
                                     <tr>
-                                        <td>
+                                        <td style="padding-left: 6px;">
                                             <t t-if="l.code=='PREV'">
                                                 <span t-esc="d.indicator_id.data_ids.filtered(lambda a: a.name.upper() == 'TASA AFP {}'.format(d.contract_id.afp_id.name.upper()) ).percentage_show"/>
                                                 <span t-field="d.contract_id.afp_id.name"/>
                                                 <span t-field="l.name"/>
                                             </t>
-                                            <t t-if="l.code=='SECE'">
+                                            <t t-else="l.code=='SECE'">
                                                 <span t-field="l.name"/>:
                                                 <t t-if="d.contract_id.type_id.code == '1'">
                                                     <span t-esc="d.indicator_id.data_ids.filtered(lambda a: a.name =='Contrato Plazo Indefinido Trabajador').percentage_value"/>
@@ -174,17 +174,17 @@
                                                     <span t-esc="d.indicator_id.data_ids.filtered(lambda a: a.name =='Plazo Indefinido 11 años o más').percentage_value"/>
                                                 </t>
                                             </t>
-                                            <t t-if="l.code=='APV'">
+                                            <t t-else="l.code=='APV'">
                                                 <span t-field="l.name"/>
                                                 <span t-field="d.contract_id.apv_amount"/>
                                                 <t t-if="d.contract_id.apv_currency == 'uf'">
-                                          UF
-                                        </t>
+                                                  UF
+                                                </t>
                                                 <t t-if="d.contract_id.apv_currency == 'clp'">
-                                          Peso $
-                                        </t>
+                                                  Peso $
+                                                </t>
                                             </t>
-                                            <t t-if="l.code == 'IMPUNI'">
+                                            <t t-else="l.code == 'IMPUNI'">
                                                 <span name="l.name"/>
                                             </t>
                                             <t t-else="">
@@ -192,7 +192,7 @@
                                             </t>
                                         </td>
                                         <td></td>
-                                        <td>
+                                        <td style="padding-left: 6px;">
                                             <span t-field="l.total"/>
                                         </td>
                                     </tr>
