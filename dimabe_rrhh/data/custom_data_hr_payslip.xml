@@ -127,7 +127,7 @@ else:
         <record id="custom_hr_salary_rule_production_bonus" model="hr.salary.rule">
             <field name="name">Bono de Produccion</field>
             <field name="code">PROD</field>
-            <field name="sequence">8</field>
+            <field name="sequence">6</field>
             <field name="struct_id" ref="custom_hr_payroll_structure_cl"/>
             <field name="condition_select">python</field>
             <field name="category_id" ref="custom_hr_salary_rule_category_taxable"/>
@@ -158,7 +158,7 @@ else:
         <record id="custom_hr_salary_rule_bonus" model="hr.salary.rule">
             <field name="name">Aguinaldo</field>
             <field name="code">AGUI</field>
-            <field name="sequence">10</field>
+            <field name="sequence">6</field>
             <field name="struct_id" ref="custom_hr_payroll_structure_cl"/>
             <field name="condition_select">python</field>
             <field name="condition_python">result = (inputs.AGUI and inputs.AGUI.amount > 0)</field>
@@ -227,9 +227,9 @@ else:
             <field name="sequence">15</field>
             <field name="category_id" ref="custom_hr_salary_rule_category_not_taxable"/>
             <field name="condition_select">python</field>
-            <field name="condition_python">result = (inputs.AGUI and inputs.AGUI.amount > 0)</field>
+            <field name="condition_python">result = (inputs.OTRONOIMP  and inputs.OTRONOIMP .amount > 0)</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">result = inputs.AGUI.amount > 0</field>
+            <field name="amount_python_compute">result = inputs.OTRONOIMP .amount > 0</field>
         </record>
 
         <record id="custom_hr_salary_rule_viatic" model="hr.salary.rule">
@@ -263,15 +263,18 @@ else:
             <field name="category_id" ref="custom_hr_salary_rule_forecast"/>
             <field name="condition_select">none</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">rate= payslip.indicator_id and payslip.indicator_id.mapped('data_ids').filtered(lambda a : a.type == '9' and ('Afp ' +contract.afp_id.name).upper() in a.name.upper()).percentage_value
-maximum = payslip.indicator_id.mapped('data_ids').filtered(lambda a: a.type =='4' and 'AFP' in a.name).value
-total_imp = categories.IMP
-if contract.is_pensionary or contract.not_afp:
-    result=0
-elif total_imp >=round(maximum):
-    result = round(maximum * rate / 100)
+            <field name="amount_python_compute">if contract.not_afp is False:
+    rate= payslip.indicator_id and payslip.indicator_id.mapped('data_ids').filtered(lambda a : a.type == '9' and ('Afp ' +contract.afp_id.name).upper() in a.name.upper()).percentage_value
+    maximum = payslip.indicator_id.mapped('data_ids').filtered(lambda a: a.type =='4' and 'AFP' in a.name).value
+    total_imp = categories.IMP
+    if contract.is_pensionary or contract.not_afp:
+        result=0
+    elif total_imp >=round(maximum):
+        result = round(maximum * rate / 100)
+    else:
+        result = round(total_imp * rate / 100)
 else:
-    result = round(total_imp * rate / 100)
+    result = 0
 </field>
         </record>
 

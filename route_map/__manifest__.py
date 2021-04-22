@@ -31,7 +31,8 @@
         'views/route_map.xml',
         'reports/route_sheet_report.xml',
         'views/stock_picking.xml',
-        'views/route_map_line.xml'
+        'views/route_map_line.xml',
+        'data/route_map_sequence.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

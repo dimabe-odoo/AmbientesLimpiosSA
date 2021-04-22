@@ -37,94 +37,95 @@
                                 </th>
                                 <th style="width:50%;border-bottom:2px solid #0080bf; padding: 6px;" colspan="2">
                                     <span style="color: white;">Nombre:</span>
-                                    <span style="color: #e1e434;" t-field="d.employee_id.first_name"/>
-                                    <span style="color: #e1e434;" t-field="d.employee_id.middle_name"/>
                                     <span style="color: #e1e434;" t-field="d.employee_id.last_name"/>
                                     <span style="color: #e1e434;" t-field="d.employee_id.mothers_name"/>
+                                    <span style="color: #e1e434;" t-field="d.employee_id.first_name"/>
+                                    <span style="color: #e1e434;" t-field="d.employee_id.middle_name"/>
                                 </th>
                             </tr>
                             <tr>
-                                <td style="text-align: right; width: 25%;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;">R.U.T.</td>
-                                <td style="text-align: left; width: 25%;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;">
+                                <td style="text-align: right; width: 25%;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf; padding-right: 6px;">R.U.T.</td>
+                                <td style="text-align: left; width: 25%;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf; padding-left: 6px;">
                                     <span t-field="d.employee_id.identification_id"/>
                                 </td>
-                                <td style="text-align: right; width: 25%;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;">Cargo</td>
-                                <td style="text-align: left; width: 25%;border-bottom: 1px solid #0080bf;">
+                                <td style="text-align: right; width: 25%;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;padding-right: 6px;">Cargo</td>
+                                <td style="text-align: left; width: 25%;border-bottom: 1px solid #0080bf;padding-left: 6px;">
                                     <span t-field="d.employee_id.job_title"/>
                                 </td>
                             </tr>
                             <tr>
-                                <td style="text-align: right;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;">Ubicación</td>
-                                <td style="text-align: left;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;">
+                                <td style="text-align: right;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;padding-right: 6px;">Ubicación</td>
+                                <td style="text-align: left;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;padding-left: 6px;">
                                     <span t-field="d.employee_id.department_id.name"/>
                                 </td>
-                                <td style="text-align: right;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;">Fecha Ingreso</td>
-                                <td style="text-align: left;border-bottom: 1px solid #0080bf;">
+                                <td style="text-align: right;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;padding-right: 6px;">Fecha Ingreso</td>
+                                <td style="text-align: left;border-bottom: 1px solid #0080bf;padding-left: 6px;">
                                     <span t-field="d.contract_id.date_start"/>
                                 </td>
                             </tr>
                             <tr>
-                                <td style="text-align: right;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;">Costo</td>
-                                <td style="text-align: left;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;">
+                                <td style="text-align: right;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;padding-right: 6px;">Costo</td>
+                                <td style="text-align: left;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;padding-left: 6px;">
                                     <t t-if="res_company.analitic_account == '1'">
-                                        <span t-field="d.account_analytic_id.name"/>
+                                        <span t-esc="d.account_analytic_id.name.capitalize()"/>
                                     </t>
                                     <t t-if="res_company.analitic_account == '2'">
-                                        <span t-field="d.contract_id.analytic_account_id.name"/>
+                                        <span t-esc="d.contract_id.analytic_account_id.name.capitalize()"/>
                                     </t>
                                     <t t-if="res_company.analitic_account == '3'">
-                                        <span t-field="d.contract_id.department_id.analytic_account_id.name"/>
+                                        <span t-esc="d.contract_id.department_id.analytic_account_id.name.capitalize()"/>
                                     </t>
                                 </td>
-                                <td style="text-align: right;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;">Días trabajados</td>
-                                <td style="text-align: left;border-bottom: 1px solid #0080bf;">
+                                <td style="text-align: right;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;padding-right: 6px;">Días trabajados</td>
+                                <td style="text-align: left;border-bottom: 1px solid #0080bf;padding-left: 6px;">
                                     <t t-foreach="d.worked_days_line_ids" t-as="wd">
                                         <t t-if="wd.work_entry_type_id.code == 'WORK100'">
-                                            <span t-field="wd.number_of_days"/>
+                                            <span t-esc="int(wd.number_of_days)"/>
                                         </t>
                                     </t>
                                 </td>
                             </tr>
                             <tr>
-                                <td style="text-align: right;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;">Forma Pago</td>
-                                <td style="text-align: left;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;">
+                                <td style="text-align: right;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;padding-right: 6px;">Forma Pago</td>
+                                <td style="text-align: left;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;padding-left: 6px;">
                                   <span t-field="d.payment_term_id.name"/>
                                 </td>
                                 <td style="border-bottom: 1px solid #0080bf;"></td>
                                 <td style="border-bottom: 1px solid #0080bf;"></td>
                             </tr>
                             <tr>
-                                <td style="text-align: right;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;">Banco</td>
-                                <td style="text-align: left;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;">
+                                <td style="text-align: right;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;padding-right: 6px;">Banco</td>
+                                <td style="text-align: left;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;padding-left: 6px;">
                                   <span t-field="d.employee_id.bank_account_id.bank_id.name"/>
                                 </td>
-                                <td style="text-align: right;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;">Cuenta</td>
-                                <td style="text-align: left;border-bottom: 1px solid #0080bf;">
+                                <td style="text-align: right;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;padding-right: 6px;">Cuenta</td>
+                                <td style="text-align: left;border-bottom: 1px solid #0080bf;padding-left: 6px;">
                                   <span t-field="d.employee_id.bank_account_id.acc_number"/>
                                 </td>
                             </tr>
                             <tr>
-                                <td style="text-align: right;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;">Monto Imponible</td>
-                                <td style="text-align: left;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;">
+                                <td style="text-align: right;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;padding-right: 6px;">Monto Imponible</td>
+                                <td style="text-align: left;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;padding-left: 6px;">
                                     <span t-field="d.line_ids.filtered(lambda a: a.code == 'TOTIM').total"/>
                                 </td>
-                                <td style="text-align: right;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;">Monto Afecto</td>
-                                <td style="text-align: left;border-bottom: 1px solid #0080bf;">
+                                <td style="text-align: right;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;padding-right: 6px;">Monto Afecto</td>
+                                <td style="text-align: left;border-bottom: 1px solid #0080bf;padding-left: 6px;">
                                     <span t-field="d.line_ids.filtered(lambda a: a.code == 'TRIBU').total"/>
                                 </td>
                             </tr>
                             <tr>
-                                <td style="text-align: right;border-right:2px solid #0080bf">Haber Ajuste S.M.</td>
-                                <td style="text-align: left;border-right:2px solid #0080bf">
+                                <td style="text-align: right;border-right:2px solid #0080bf;padding-right: 6px;">Haber Ajuste S.M.</td>
+                                <td style="text-align: left;border-right:2px solid #0080bf;padding-left: 6px;">
                       
                         </td>
-                                <td style="text-align: right;border-right:2px solid #0080bf">Monto Ajuste S.M.</td>
-                                <td style="text-align: left;">
+                                <td style="text-align: right;border-right:2px solid #0080bf;padding-right: 6px;">Monto Ajuste S.M.</td>
+                                <td style="text-align: left;padding-left: 6px;">
                         
                         </td>
                             </tr>
                         </table>
                     </div>
+                    <br/>
                     <div style="width:100%;margin:0 auto;border:2px solid #0080bf; border-radius: 5px; margin-top:4px;">
                         <table style="width:100%;font-size:11px;" cellspacing="0" >
                             <tr style="background-color: #004080; font-weight: bold;">
@@ -139,43 +140,77 @@
                                 </th>
                             </tr>
                             <tr>
-                                <td style="padding-left: 6px; font-weight: bold;border-right: 1px solid #0080bf">HABER AFECTOS</td>
+                                <td style="padding-left: 6px; font-weight: bold;border-right: 1px solid #0080bf;">HABER AFECTOS</td>
+                                <td style="border-right: 1px solid #0080bf"></td>
                             </tr>
+                            <tr>
+                              <td style="border-right: 1px solid #0080bf;padding-left: 6px;">
+                                <span t-field="d.line_ids.filtered(lambda a: a.code == 'SUELDO').name"/>
+                              </td>
+                              <td style="border-right: 1px solid #0080bf;text-align: right;padding-right: 6px;">
+                                <span t-field="d.line_ids.filtered(lambda a: a.code == 'SUELDO').total"/>
+                              </td>
+                            </tr>
+                            <t t-if="d.line_ids.filtered(lambda a: a.code == 'GRAT')">
+                              <tr>
+                                <td style="border-right: 1px solid #0080bf;padding-left: 6px;">
+                                  <span t-field="d.line_ids.filtered(lambda a: a.code == 'GRAT').name"/>
+                                </td>
+                                <td style="border-right: 1px solid #0080bf;text-align: right;padding-right: 6px;">
+                                  <span t-field="d.line_ids.filtered(lambda a: a.code == 'GRAT').total"/>
+                                </td>
+                              </tr>
+                            </t>
+                            <t t-if="d.line_ids.filtered(lambda a: a.code == 'MANGRAT')">
+                              <tr>
+                                <td style="border-right: 1px solid #0080bf;padding-left: 6px;">
+                                  <span t-field="d.line_ids.filtered(lambda a: a.code == 'MANGRAT').name"/>
+                                </td>
+                                <td style="border-right: 1px solid #0080bf;text-align: right;padding-right: 6px;">
+                                  <span t-field="d.line_ids.filtered(lambda a: a.code == 'MANGRAT').total"/>
+                                </td>
+                              </tr>
+                            </t>
+                            
                             <t t-foreach="d.line_ids" t-as="l">
-                                <t t-if="l.category_id.code == 'IMP'">
+                                <t t-if="l.category_id.code == 'IMP' and l.code != 'SUELDO' and l.code != 'GRAT' and l.code != 'MANGRAT' and l.total > 0">
                                     <tr>
-                                        <td style="padding-left: 6px;border-right: 1px solid #0080bf">
+                                        <td style="padding-left: 6px;border-right: 1px solid #0080bf;">
                                             <span t-field="l.name"/>
                                         </td>
-                                        <td style="padding-left: 6px;border-right: 1px solid #0080bf">
+                                        <td style="padding-right: 6px;border-right: 1px solid #0080bf;text-align: right;">
                                             <span t-field="l.total"/>
                                         </td>
                                     </tr>
                                 </t>
                             </t>
-                            <tr>
-                                <td style="padding-left: 6px; font-weight: bold;">HABER NO AFECTOS</td>
-                            </tr>
-                            <t t-foreach="d.line_ids" t-as="l">
-                                <t t-if="l.category_id.code == 'NOTIMP'">
-                                    <tr>
-                                        <td style="padding-left: 6px;border-right: 1px solid #0080bf">
-                                            <span t-field="l.name"/>
-                                        </td>
-                                        <td style="padding-left: 6px;border-right: 1px solid #0080bf">
-                                            <span t-field="l.total"/>
-                                        </td>
-                                    </tr>
-                                </t>
+                            <t t-if="len(d.line_ids.filtered(lambda a: a.category_id.code == 'NOTIMP')) > 0">
+                              <tr>
+                                  <td style="padding-left: 6px; font-weight: bold; border-right: 1px solid #0080bf;">HABERES EXENTOS</td>
+                                  <td style="border-right: 1px solid #0080bf"></td>
+                              </tr>
+                              <t t-foreach="d.line_ids" t-as="l">
+                                  <t t-if="l.category_id.code == 'NOTIMP' and l.total > 0">
+                                      <tr>
+                                          <td style="padding-left: 6px;border-right: 1px solid #0080bf;">
+                                              <span t-field="l.name"/>
+                                          </td>
+                                          <td style="padding-right: 6px;border-right: 1px solid #0080bf;text-align: right;">
+                                              <span t-field="l.total"/>
+                                          </td>
+                                      </tr>
+                                  </t>
+                              </t>
                             </t>
                             <tr>
-                                <td style="padding-left: 6px; font-weight: bold;">LEYES SOCIALES</td>
+                                <td style="padding-left: 6px; font-weight: bold;border-right: 1px solid #0080bf">DESCUENTOS LEYES SOCIALES</td>
+                                <td style="border-right: 1px solid #0080bf"></td>
                             </tr>
                             <t t-foreach="d.line_ids" t-as="l">
-                                <t t-if="l.category_id.code == 'PREV' or l.category_id.code == 'DES' or l.category_id.code == 'ODES' or l.code == 'FONASA' or  l.code == 'CAJACOMP'">
+                                <t t-if="l.total > 0 and (l.category_id.code == 'PREV' or l.category_id.code == 'DES' or l.code == 'FONASA' or  l.code == 'CAJACOMP')">
                                     <tr>
-                                        <td style="padding-left: 6px;border-right: 1px solid #0080bf">
-                                            <t t-if="l.code=='PREV'">
+                                        <td style="padding-left: 6px;border-right: 1px solid #0080bf;">
+                                            <t t-if="l.code=='PREV' and l.total > 0">
                                                 <span t-esc="d.indicator_id.data_ids.filtered(lambda a: a.name.upper() == 'TASA AFP {}'.format(d.contract_id.afp_id.name.upper()) ).percentage_show"/>
                                                 <span t-field="d.contract_id.afp_id.name"/>
                                                 <span t-field="l.name"/>
@@ -200,32 +235,48 @@
                                                 </t>
                                             </t>
                                             <t t-elif="l.code == 'IMPUNI'">
-                                                <span t-field="l.name"/>
-                                            </t>
-                                            <t t-elif="l.code == 'CAJACOMP' and l.total > 0">
-                                                <span t-field="l.name"/>
+                                              <span t-field="l.name"/>
                                             </t>
                                             <t t-else="">
-                                                <span t-field="l.name"/>
+                                              <span t-field="l.name"/>
                                             </t>
                                         </td>
-                                        <td style="border-right: 1px solid #0080bf"></td>
-                                        <td style="padding-left: 6px;">
+                                        <td style="border-right: 1px solid #0080bf;"></td>
+                                        <td style="padding-right: 6px; text-align: right;">
                                             <span t-field="l.total"/>
                                         </td>
                                     </tr>
                                 </t>
                             </t>
+                            <t t-if="len(d.line_ids.filtered(lambda a: a.category_id.code == 'ODES')) > 0">
+                              <tr>
+                                  <td style="padding-left: 6px; font-weight: bold;border-right: 1px solid #0080bf">OTROS DESCUENTOS</td>
+                                  <td style="border-right: 1px solid #0080bf"></td>
+                              </tr>
+                              <t t-foreach="d.line_ids" t-as="l">
+                                  <t t-if="l.category_id.code == 'ODES' and l.total > 0">
+                                      <tr>
+                                          <td style="padding-left: 6px;border-right: 1px solid #0080bf;">
+                                              <span t-field="l.name"/>
+                                          </td>
+                                          <td style="border-right: 1px solid #0080bf;"></td>
+                                          <td style="padding-right: 6px; text-align: right;">
+                                              <span t-field="l.total"/>
+                                          </td>
+                                      </tr>
+                                  </t>
+                              </t>
+                            </t>
                             <tr style="font-weight: bold;">
-                                <td style="padding-left: 6px; border-top: 2px solid #0080bf;">TOTALES</td>
-                                <td style="border-top: 2px solid #0080bf;"><span t-field="d.line_ids.filtered(lambda a: a.code == 'HAB').total"/></td>
-                                <td style="padding-left: 6px; border-top: 2px solid #0080bf;"><span t-field="d.line_ids.filtered(lambda a: a.code == 'TDE').total"/></td>
+                                <td style="padding-left: 6px; border-top: 2px solid #0080bf;border-right: 1px solid #0080bf;">TOTALES</td>
+                                <td style="padding-right: 6px; border-top: 2px solid #0080bf;border-right: 1px solid #0080bf; text-align: right;"><span t-field="d.line_ids.filtered(lambda a: a.code == 'HAB').total"/></td>
+                                <td style="padding-right: 6px; border-top: 2px solid #0080bf;text-align: right;"><span t-field="d.line_ids.filtered(lambda a: a.code == 'TDE').total"/></td>
                             </tr>
                             <tr style="background-color: #004080; font-weight: bold; color: white;">
                                 <td style="padding: 6px;">LIQUIDO A PAGAR</td>
                                 <td></td>
-                                <td>
-                                    <span t-esc="d.line_ids.filtered(lambda a: a.code == 'LIQ').total"/>
+                                <td style="text-align: right; padding-right: 6px;">
+                                    <span t-field="d.line_ids.filtered(lambda a: a.code == 'LIQ').total"/>
                                 </td>
                             </tr>
                         </table>
@@ -236,7 +287,7 @@
                             <tr>
                                 <td style="padding: 6px;">Recibí conforme la suma de:</td>
                                 <td style="padding: 6px;">$
-                                    <span t-esc="d.line_ids.filtered(lambda a: a.code == 'LIQ').total"/>
+                                    <span t-field="d.line_ids.filtered(lambda a: a.code == 'LIQ').total"/>
                                 </td>
                             </tr>
                             <tr>
@@ -260,7 +311,7 @@
                     <div style="width: 100%;">
                         <p style="font-size:12px">Certifico el haber recibido conforme la remuneración menusal de parte de mi empleador y lo libero de cualquier reclamo
                                 por error u omisión en la presenta liquidación
-                            </p>
+                        </p>
                     </div>
                     <div style="width: 100%;  float: right; text-align: right;margin-top: 80px;">
                         <table style="width: 100%;">
@@ -273,10 +324,10 @@
                             <tr style="text-align: center;">
                                 <td style="width: 50%;"></td>
                                 <td style="width: 50%;">
-                                    <span style="font-size: 14px; font-weight: bold;" t-esc="d.employee_id.first_name.upper()"/>
-                                    <span style="font-size: 14px; font-weight: bold;" t-esc="d.employee_id.middle_name.upper()"/>
                                     <span style="font-size: 14px; font-weight: bold;" t-esc="d.employee_id.last_name.upper()"/>
                                     <span style="font-size: 14px; font-weight: bold;" t-esc="d.employee_id.mothers_name.upper()"/>
+                                    <span style="font-size: 14px; font-weight: bold;" t-esc="d.employee_id.first_name.upper()"/>
+                                    <span style="font-size: 14px; font-weight: bold;" t-esc="d.employee_id.middle_name.upper()"/>
                                 </td>
                             </tr>
                         </table>
@@ -300,6 +351,6 @@
         <field name="header_spacing">0</field>
         <field name="dpi">90</field>
     </record>
-    <report id="action_payslip_report" string="Nómina Custom" model="hr.payslip" report_type="qweb-pdf"
-            name="dimabe_rrhh.report_payslip" menu="True" paperformat="paper_format_letter_custom"/>
+    <report id="action_payslip_report" string="Nómina" model="hr.payslip" report_type="qweb-pdf" 
+            name="dimabe_rrhh.report_payslip" menu="True" paperformat="paper_format_letter_custom" print_report_name="((object.name).replace('Recibo de Salario','Liq.'))"/>
 </odoo>

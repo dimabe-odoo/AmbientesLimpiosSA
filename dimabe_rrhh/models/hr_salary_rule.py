@@ -3,7 +3,7 @@ from odoo import models,fields,api
 class HrSalaryRule(models.Model):
     _inherit = 'hr.salary.rule'
 
-    is_bonus = fields.Boolean('Es Bono')
+    is_bonus = fields.Boolean('Ingreso Manual')
 
     show_in_book = fields.Boolean('Aparece en el libro de remuneraciones', default=True)
 

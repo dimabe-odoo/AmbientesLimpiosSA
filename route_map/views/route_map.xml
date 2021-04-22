@@ -14,13 +14,14 @@
                     </header>
                     <sheet>
                         <div class="oe_title">
-                            <label for="driver_id"/>
+                            <label for="display_name"/>
                             <h1>
-                                <field name="driver_id"/>
+                                <field name="display_name"/>
                             </h1>
                         </div>
                         <group>
                             <group>
+                                <field name="driver_id"/>
                                 <field name="truck_id"/>
                                 <field name="sell"/>
                                 <field name="add_more"/>
