@@ -202,6 +202,9 @@
                                             <t t-elif="l.code == 'IMPUNI'">
                                                 <span t-field="l.name"/>
                                             </t>
+                                            <t t-elif="l.code == 'CAJACOMP' and l.total > 0">
+                                                <span t-field="l.name"/>
+                                            </t>
                                             <t t-else="">
                                                 <span t-field="l.name"/>
                                             </t>
