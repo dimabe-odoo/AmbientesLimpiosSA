@@ -154,10 +154,25 @@
                                 </t>
                             </t>
                             <tr>
+                                <td style="padding-left: 6px; font-weight: bold;">HABER NO AFECTOS</td>
+                            </tr>
+                            <t t-foreach="d.line_ids" t-as="l">
+                                <t t-if="l.category_id.code == 'NOTIMP'">
+                                    <tr>
+                                        <td style="padding-left: 6px;">
+                                            <span t-field="l.name"/>
+                                        </td>
+                                        <td style="padding-left: 6px;">
+                                            <span t-field="l.total"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </t>
+                            <tr>
                                 <td style="padding-left: 6px; font-weight: bold;">LEYES SOCIALES</td>
                             </tr>
                             <t t-foreach="d.line_ids" t-as="l">
-                                <t t-if="l.category_id.code == 'PREV' or l.category_id.code == 'DES' or l.category_id.code == 'ODES' or l.category_id.code == 'SALUD'">
+                                <t t-if="l.category_id.code == 'PREV' or l.category_id.code == 'DES' or l.category_id.code == 'ODES' or l.category_id.code == 'SAL'">
                                     <tr>
                                         <td style="padding-left: 6px;">
                                             <t t-if="l.code=='PREV'">
