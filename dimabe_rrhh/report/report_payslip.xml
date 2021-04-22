@@ -144,30 +144,30 @@
                                 <td style="border-right: 1px solid #0080bf"></td>
                             </tr>
                             <tr>
-                              <td style="border-right: 1px solid #0080bf;">
-                                <span t-esc="d.line_ids.filtered(lambda a: a.code == 'SUELDO').name"/>
+                              <td style="border-right: 1px solid #0080bf;padding-left: 6px;">
+                                <span t-field="d.line_ids.filtered(lambda a: a.code == 'SUELDO').name"/>
                               </td>
-                              <td style="border-right: 1px solid #0080bf;text-align: right;">
-                                <span t-esc="d.line_ids.filtered(lambda a: a.code == 'SUELDO').total"/>
+                              <td style="border-right: 1px solid #0080bf;text-align: right;padding-left: 6px;">
+                                <span t-field="d.line_ids.filtered(lambda a: a.code == 'SUELDO').total"/>
                               </td>
                             </tr>
                             <t t-if="d.line_ids.filtered(lambda a: a.code == 'GRAT')">
                               <tr>
-                                <td style="border-right: 1px solid #0080bf;">
-                                  <span t-esc="d.line_ids.filtered(lambda a: a.code == 'GRAT').name"/>
+                                <td style="border-right: 1px solid #0080bf;padding-left: 6px;">
+                                  <span t-field="d.line_ids.filtered(lambda a: a.code == 'GRAT').name"/>
                                 </td>
-                                <td style="border-right: 1px solid #0080bf;text-align: right;">
-                                  <span t-esc="d.line_ids.filtered(lambda a: a.code == 'GRAT').total"/>
+                                <td style="border-right: 1px solid #0080bf;text-align: right;padding-left: 6px;">
+                                  <span t-field="d.line_ids.filtered(lambda a: a.code == 'GRAT').total"/>
                                 </td>
                               </tr>
                             </t>
                             <t t-if="d.line_ids.filtered(lambda a: a.code == 'MANGRAT')">
                               <tr>
-                                <td style="border-right: 1px solid #0080bf;">
-                                  <span t-esc="d.line_ids.filtered(lambda a: a.code == 'MANGRAT').name"/>
+                                <td style="border-right: 1px solid #0080bf;padding-left: 6px;">
+                                  <span t-field="d.line_ids.filtered(lambda a: a.code == 'MANGRAT').name"/>
                                 </td>
-                                <td style="border-right: 1px solid #0080bf;text-align: right;">
-                                  <span t-esc="d.line_ids.filtered(lambda a: a.code == 'MANGRAT').total"/>
+                                <td style="border-right: 1px solid #0080bf;text-align: right;padding-left: 6px;">
+                                  <span t-field="d.line_ids.filtered(lambda a: a.code == 'MANGRAT').total"/>
                                 </td>
                               </tr>
                             </t>
@@ -201,13 +201,13 @@
                                 </t>
                             </t>
                             <tr>
-                                <td style="padding-left: 6px; font-weight: bold;">LEYES SOCIALES</td>
+                                <td style="padding-left: 6px; font-weight: bold;border-right: 1px solid #0080bf">LEYES SOCIALES</td>
                                 <td style="border-right: 1px solid #0080bf"></td>
                             </tr>
                             <t t-foreach="d.line_ids" t-as="l">
                                 <t t-if="l.category_id.code == 'PREV' or l.category_id.code == 'DES' or l.category_id.code == 'ODES' or l.code == 'FONASA' or  l.code == 'CAJACOMP'">
                                     <tr>
-                                        <td style="padding-left: 6px;border-right: 1px solid #0080bf">
+                                        <td style="padding-left: 6px;border-right: 1px solid #0080bf;">
                                             <t t-if="l.code=='PREV'">
                                                 <span t-esc="d.indicator_id.data_ids.filtered(lambda a: a.name.upper() == 'TASA AFP {}'.format(d.contract_id.afp_id.name.upper()) ).percentage_show"/>
                                                 <span t-field="d.contract_id.afp_id.name"/>
@@ -242,8 +242,8 @@
                                                 <span t-field="l.name"/>
                                             </t>
                                         </td>
-                                        <td style="border-right: 1px solid #0080bf;text-align: right;"></td>
-                                        <td style="padding-left: 6px;">
+                                        <td style="border-right: 1px solid #0080bf;"></td>
+                                        <td style="padding-left: 6px; text-align: right;">
                                             <span t-field="l.total"/>
                                         </td>
                                     </tr>
@@ -258,7 +258,7 @@
                                 <td style="padding: 6px;">LIQUIDO A PAGAR</td>
                                 <td></td>
                                 <td>
-                                    <span t-esc="d.line_ids.filtered(lambda a: a.code == 'LIQ').total"/>
+                                    <span t-field="d.line_ids.filtered(lambda a: a.code == 'LIQ').total"/>
                                 </td>
                             </tr>
                         </table>
@@ -269,7 +269,7 @@
                             <tr>
                                 <td style="padding: 6px;">Recibí conforme la suma de:</td>
                                 <td style="padding: 6px;">$
-                                    <span t-esc="d.line_ids.filtered(lambda a: a.code == 'LIQ').total"/>
+                                    <span t-field="d.line_ids.filtered(lambda a: a.code == 'LIQ').total"/>
                                 </td>
                             </tr>
                             <tr>
