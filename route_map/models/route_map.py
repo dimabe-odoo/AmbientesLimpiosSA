@@ -1,4 +1,4 @@
-from odoo import fields, models
+from odoo import fields, models,api
 from odoo.models import Model
 from datetime import datetime
 
@@ -7,7 +7,7 @@ class RouteMap(Model):
     _name = 'route.map'
     _rec_name = 'display_name'
 
-    display_name = fields.Char('Nombre a mostrar', compute='compute_display_name')
+    display_name = fields.Char('Nombre a mostrar')
 
     truck_id = fields.Many2one('fleet.vehicle', string='Camion', required=True)
 
@@ -31,9 +31,6 @@ class RouteMap(Model):
 
     observations = fields.Text('Observaciones')
 
-    def compute_display_name(self):
-        for item in self:
-            item.display_name = f'{item.driver_id.name} {item.truck_id.license_plate} '
 
     def add_picking(self):
         line = self.env['route.map.line'].sudo().create({
@@ -53,6 +50,11 @@ class RouteMap(Model):
         self.write({
             'picking_id': None
         })
+
+    @api.model
+    def create(self,values):
+        values['display_name'] = self.env['ir.sequence'].next_by_code('route.map.seq')
+        return super(RouteMap, self).create(values)
 
     def action_dispatch(self):
         self.dispatch_ids.write({

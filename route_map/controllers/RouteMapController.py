@@ -29,6 +29,7 @@ class RouteMapController(http.Controller):
                 })
             map = {
                 'Id': map_id.id,
+                'Name': map_id.display_name,
                 'Sell': map_id.sell,
                 'Lines': lines,
                 'State': map_id.state
