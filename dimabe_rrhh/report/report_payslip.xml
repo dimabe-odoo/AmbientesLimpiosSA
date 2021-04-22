@@ -184,7 +184,7 @@
                                     </tr>
                                 </t>
                             </t>
-                            <t t-if="sum(d.line_ids.filtered(lambda a: a..category_id.code == 'NOTIMP)) > 0">
+                            <t t-if="len(d.line_ids.filtered(lambda a: a..category_id.code == 'NOTIMP)) > 0">
                               <tr>
                                   <td style="padding-left: 6px; font-weight: bold; border-right: 1px solid #0080bf;">HABERES EXENTOS</td>
                                   <td style="border-right: 1px solid #0080bf"></td>
@@ -251,7 +251,7 @@
                                     </tr>
                                 </t>
                             </t>
-                            <t t-if="sum(d.line_ids.filtered(lambda a: a.category_id.code == 'ODES')) > 0">
+                            <t t-if="len(d.line_ids.filtered(lambda a: a.category_id.code == 'ODES')) > 0">
                               <tr>
                                   <td style="padding-left: 6px; font-weight: bold;border-right: 1px solid #0080bf">OTROS DESCUENTOS</td>
                                   <td style="border-right: 1px solid #0080bf"></td>
