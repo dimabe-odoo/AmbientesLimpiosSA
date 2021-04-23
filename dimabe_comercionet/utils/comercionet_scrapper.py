@@ -1,17 +1,21 @@
 import requests
 from bs4 import BeautifulSoup
 from pydifact.message import Message
-from edi_comercionet import create_sale_order_by_edi
+from .edi_comercionet import create_sale_order_by_edi
 
-def download_documents(docs,s,doc_type='SRCU'):
-    if docs: 
+
+def download_documents(docs, s, doc_type='SRCU'):
+    if docs:
         sales = []
         for doc in docs:
-            res = s.get(f"https://www.comercionet.cl/descargar_documentoAction.php?tipo=recibidos&docu_id={doc['id']}&formato={doc_type}")
+            res = s.get(
+                f"https://www.comercionet.cl/descargar_documentoAction.php?tipo=recibidos&docu_id={doc['id']}&formato={doc_type}")
             if res.status_code == 200:
                 sale = create_sale_order_by_edi(res.content.decode('utf-8'))
                 if sale:
-                  sales.append(sale)  
+                    sales.append(sale)
+        return sales
+
 
 def get_sale_orders():
     sale_orders = []
@@ -20,7 +24,7 @@ def get_sale_orders():
         'login': '7808800014004',
         'password': 'ptx123'
     }
-    s.post('https://www.comercionet.cl/usuarios/login.php', data = login_data)
+    s.post('https://www.comercionet.cl/usuarios/login.php', data=login_data)
 
     res = s.get('https://www.comercionet.cl/listadoDocumentos.php?tido_id=3&tipo=recibidos&entrada=1')
 
@@ -48,8 +52,6 @@ def get_sale_orders():
                 documents.append(doc)
 
     if documents:
-        download_documents(documents, s)
+        sale_orders = download_documents(documents, s)
 
-
-
-
+    return sale_orders

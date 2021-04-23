@@ -1,4 +1,6 @@
 from odoo import models, fields
+from ..utils import comercionet_scrapper
+
 
 class SaleOrderComercionet(models.Model):
     _name = 'sale.order.comercionet'
@@ -8,7 +10,27 @@ class SaleOrderComercionet(models.Model):
     sale_order_id = fields.Many2one('sale.order', string='Nota de Venta')
     comercionet_line_id = fields.One2many('sale.order.comercionet.line', 'comercionet_id')
 
-    
+    def get_orders(self):
+        orders = comercionet_scrapper.get_sale_orders()
+        if orders:
+            for order in orders:
+                sale = self.env['sale.order.comercionet'].search([('purchase_order', '=', order['purchase_order'])])
+                if not sale:
+                    comercionet = self.env['sale.order.comercionet'].create({
+                        'purchase_order': order['purchase_order'],
+                        'client_code_comercionet': order['client_code_comercionet']
+                    })
+                    for line in order['lines']:
+                        self.env['sale.order.comercionet.line'].create({
+                            'number': line['number'],
+                            'product_code': line['product_code'],
+                            'final_price': line['final_price'],
+                            'price': line['price'],
+                            'quantity': line['quantity'],
+                            'discount_percent': line['discount_percent'],
+                            'comercionet_id': comercionet.id
+                        })
+
 
 class SaleOrderComercionetLine(models.Model):
     _name = 'sale.order.comercionet.line'
@@ -19,8 +41,3 @@ class SaleOrderComercionetLine(models.Model):
     quantity = fields.Integer('Cantidad')
     discount_percent = fields.Float('Descuento')
     comercionet_id = fields.Many2one('sale.order.comercionet')
-
-
-
-
-    

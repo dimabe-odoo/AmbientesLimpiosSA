@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="sale_order_comercio_net_form_view" model="ir.ui.view">
+            <field name="name">sale_order_comercio_net.form</field>
+            <field name="model">sale.order.comercionet</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="purchase_order"/>
+                            <h1>
+                                <field name="purchase_order" placeholder="Title"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="client_code_comercionet"/>
+                            </group>
+                            <group>
+                                <field name="sale_order_id"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="comercionet_line_id">
+                                <tree>
+                                    <field name="number"/>
+                                    <field name="product_code"/>
+                                    <field name="product_code"/>
+                                    <field name="quantity"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="sale_order_comercio_net_tree_view" model="ir.ui.view">
+            <field name="name">sale_order_comercio_net.tree</field>
+            <field name="model">sale.order.comercionet</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="purchase_order"/>
+                    <field name="client_code_comercionet"/>
+                    <field name="sale_order_id"/>
+                </tree>
+            </field>
+        </record>
+
+<!--        <record id="sale_order_comercio_net_search_view" model="ir.ui.view">-->
+<!--            <field name="name">ProjectName.sale_order_comercio_net.search</field>-->
+<!--            <field name="model">ProjectName.sale_order_comercio_net</field>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <search string="ModelTitle">-->
+<!--                    <group expand="1" string="Group By">-->
+<!--                        <filter string="Example Field" name="example_field" domain="[]"-->
+<!--                                context="{'group_by':'example_field'}"/>-->
+<!--                    </group>-->
+<!--                </search>-->
+<!--            </field>-->
+<!--        </record>-->
+
+        <record id="sale_order_comercio_net_act_window" model="ir.actions.act_window">
+            <field name="name">Ordenes de Venta ComercioNet</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order.comercionet</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="Ordenes de Venta ComercioNet" id="sale_order_comercio_net_menu" parent="sale.sale_menu_root" action="sale_order_comercio_net_act_window"/>
+
+    </data>
+</odoo>
