@@ -13,7 +13,7 @@ class RouteMapController(http.Controller):
             for route_map in maps:
                 res.append({
                     'Id': route_map.id,
-                    'Name': res.display_name
+                    'Name': route_map.display_name
                 })
             return {'ok': True, 'result': res}
         else:
@@ -23,30 +23,33 @@ class RouteMapController(http.Controller):
     def get_route_map(self, map_id):
         map = request.env['route.map'].sudo().search([('id', '=', map_id)])
         lines = []
-        for line in map.dispatch_ids:
-            products = []
-            for product in line.product_line_ids:
-                products.append({
-                    'ProductName': product.product_id.name,
-                    'Qty': product.qty_to_delivery
+        if map:
+            for line in map.dispatch_ids:
+                products = []
+                for product in line.product_line_ids:
+                    products.append({
+                        'ProductName': product.product_id.name,
+                        'Qty': product.qty_to_delivery
+                    })
+                lines.append({
+                    'Id': line.id,
+                    'Destiny': line.partner_id.name,
+                    'Address': line.address_to_delivery,
+                    'LatitudeDestiny': line.partner_id.partner_latitude,
+                    'LongitudeDestiny': line.partner_id.partner_longitude,
+                    'State': line.state,
+                    'Products': products
                 })
-            lines.append({
-                'Id': line.id,
-                'Destiny': line.partner_id.name,
-                'Address': line.address_to_delivery,
-                'LatitudeDestiny': line.partner_id.partner_latitude,
-                'LongitudeDestiny': line.partner_id.partner_longitude,
-                'State': line.state,
-                'Products': products
-            })
-        res = {
-            'Id': map.id,
-            'Name': map.display_name,
-            'Sell': map.sell,
-            'Lines': lines,
-            'State': map.state
-        }
-        return res
+            res = {
+                'Id': map.id,
+                'Name': map.display_name,
+                'Sell': map.sell,
+                'Lines': lines,
+                'State': map.state
+            }
+            return {'ok': True, 'result': res}
+        else:
+            return {'ok': False, 'message': "No existe ningun pedido con este id"}
 
     @http.route('/api/add_image', type='json', auth='token', cors='*')
     def add_image(self, binary, line_id):

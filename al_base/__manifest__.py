@@ -32,6 +32,7 @@
         'reports/purchase_order.xml',
         'views/res_company.xml',
         'views/stock_picking.xml',
+        'views/account_move.xml',
         'views/purchase_order.xml'
     ],
     # only loaded in demonstration mode
