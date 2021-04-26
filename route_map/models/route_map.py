@@ -85,7 +85,7 @@ class RouteMap(Model):
                 kgs_sum += line.kgs_quantity
             item.kgs_sum = kgs_sum
 
-    def _lots_sum(self):
+    def _pallets_sum(self):
         for item in self:
             pallets_sum = 0
             for line in item.dispatch_ids:
