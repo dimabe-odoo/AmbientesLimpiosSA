@@ -25,6 +25,7 @@ def get_sale_orders():
     urllib3.disable_warnings()
     sale_orders = []
     s = requests.session()
+    s.verify = False
     login_data = {
         'login': '7808800014004',
         'password': 'ptx123'
