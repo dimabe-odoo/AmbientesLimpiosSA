@@ -38,6 +38,16 @@
                                     </tree>
                                 </field>
                             </page>
+                            <page name="image" string="Imagenes">
+                                <field name="image_ids">
+                                    <tree>
+
+                                        <field name="store_fname"/>
+                                        <field name="datas"/>
+                                    </tree>
+
+                                </field>
+                            </page>
                         </notebook>
                     </sheet>
                 </form>

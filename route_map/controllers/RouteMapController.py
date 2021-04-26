@@ -59,9 +59,22 @@ class RouteMapController(http.Controller):
         })
 
     @http.route('/api/cancel', type='json', auth='token', cors='*')
-    def action_cancel(self, observation, line_id):
+    def action_cancel(self, observation, line_id, files):
         line = request.env['route.map.line'].sudo().search([('id', '=', line_id)])
         if line:
+            for file in files:
+                request.env['ir.attachment'].sudo().create({
+                    'res_id': line.id,
+                    'type': 'binary',
+                    'res_model': 'route.map.line',
+                    'db_datas': file,
+                    'datas':file,
+                    'file_size' : (len(file) * 6 - file.count('=') * 8) / 8,
+                    'name': f"Prueba {line_id}",
+                    'store_fname': file,
+                    'mimetype': 'image/jpeg',
+                    'index_content':'image'
+                })
             line.sudo().write({
                 'state': 'cancel',
                 'driver_observations': observation
