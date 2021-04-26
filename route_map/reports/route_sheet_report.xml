@@ -113,7 +113,7 @@
                                                 <span t-field="line.partner_id"/>
                                             </td>
                                             <td style="border-right:1px solid;border-bottom:1px solid;text-align:right;padding-right:4px;">
-                                                <span t-esc="sum(line.mapped('product_line_ids').qty_to_delivery)" />
+                                                <span t-esc="sum(p.qty_to_delivery for p in line.product_line_ids)" />
                                             </td>
                                             <td style="border-right:1px solid;border-bottom:1px solid;text-align:right;padding-right:4px;">
                                                 <!--<span t-field="line."/>-->
