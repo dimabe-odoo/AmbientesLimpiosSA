@@ -175,7 +175,7 @@
             <field name="header_spacing">0</field>
             <field name="dpi">90</field>
         </record>
-        
+
         <record id="report_route_map" model="ir.actions.report">
             <field name="name">Hoja de Ruta</field>
             <field name="model">route.map</field>
@@ -184,7 +184,7 @@
             <field name="report_file">report_route_report_template</field>
             <field name="binding_model_id" ref="route_map.model_route_map" />
             <field name="binding_type">report</field>
-            <field name="paperformat">paper_format_letter_custom</field>
+            <field name="paperformat_id" ref="route_map.paper_format_letter_custom"/>
         </record>
     </data>
 </odoo>
