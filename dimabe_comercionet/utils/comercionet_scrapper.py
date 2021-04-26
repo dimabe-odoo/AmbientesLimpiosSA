@@ -8,12 +8,15 @@ def download_documents(docs, s, doc_type='SRCU'):
     if docs:
         sales = []
         for doc in docs:
-            res = s.get(
-                f"https://www.comercionet.cl/descargar_documentoAction.php?tipo=recibidos&docu_id={doc['id']}&formato={doc_type}")
-            if res.status_code == 200:
-                sale = create_sale_order_by_edi(res.content.decode('utf-8'))
-                if sale:
-                    sales.append(sale)
+            try:
+                res = s.get(
+                    f"https://www.comercionet.cl/descargar_documentoAction.php?tipo=recibidos&docu_id={doc['id']}&formato={doc_type}")
+                if res.status_code == 200:
+                    sale = create_sale_order_by_edi(res.content.decode('utf-8'))
+                    if sale:
+                        sales.append(sale)
+            except:
+                continue
         return sales
 
 

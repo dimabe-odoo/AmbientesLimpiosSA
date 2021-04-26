@@ -53,6 +53,8 @@ class RouteMapLine(models.Model):
 
     def button_done(self):
         for item in self:
+            if item.state == 'cancel':
+                raise models.ValidationError('No se puede entregar un pedido ya cancelado')
             item.write({
                 'state': 'done',
                 'is_delivered': True,
@@ -69,7 +71,7 @@ class RouteMapLine(models.Model):
                 })
 
     def create(self, values):
-        dispatch = self.env['route.map.line'].search([('id', '=', values['dispatch_id'])])
+        dispatch = self.env['route.map.line'].search([('id', '=', values['dispatch_id']),('state','!=','cancel')])
         if dispatch:
             raise models.ValidationError('No puede existe mas de una linea de hoja de ruta con el mismo despacho')
         return super(RouteMapLine, self).create(values)

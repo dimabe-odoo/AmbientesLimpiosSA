@@ -29,7 +29,7 @@
                         </group>
                         <notebook>
                             <page name="disaptch" string="Despachos">
-                                <field name="picking_id" attrs="{'invisible': [('state','!=','draft')]}" domain="[('picking_type_id.sequence_code','=','OUT'),('state','=','done')]"/>
+                                <field name="picking_id" attrs="{'invisible': [('state','not in',('draft','cancel'))]}" domain="[('picking_type_id.sequence_code','=','OUT'),('state','=','done')]"/>
                                 <button type="object" name="add_picking" string="Agregar"
                                         attrs="{'invisible': [('state','!=','draft')]}"/>
                                 <field name="dispatch_ids" attrs="{'readonly':['|',('state','!=','draft'),('add_more','=',False)]}">
