@@ -16,19 +16,19 @@ def create_sale_order_by_edi(str_edi):
             if segment.tag == 'LIN':
                 detail_line = {}
                 discounts = []
-                detail_line['number'] = int(segment.elements[0])
+                detail_line['number'] = int(segment.elements[0].split('.')[0])
                 detail_line['product_code'] = segment.elements[2][0]
             if segment.tag == 'QTY':
                 if segment.elements[0][0] == '21':
-                    detail_line['quantity'] = int(segment.elements[0][1])
+                    detail_line['quantity'] = int(segment.elements[0][1].split('.')[0])
             if segment.tag == 'MOA' and segment.elements[0][0] == '203':
-                detail_line['final_price'] = int(segment.elements[0][1])
+                detail_line['final_price'] = int(segment.elements[0][1].split('.')[0])
             if segment.tag == 'PRI':
-                detail_line['price'] = int(segment.elements[0][1])
+                detail_line['price'] = int(segment.elements[0][1].split('.')[0])
             if segment.tag == 'PCD':
-                discount = {'percent': int(segment.elements[0][1])}
+                discount = {'percent': int(segment.elements[0][1].split('.')[0])}
             if segment.tag == 'MOA' and segment.elements[0][0] == '204':
-                discount['amount'] = int(segment.elements[0][1])
+                discount['amount'] = int(segment.elements[0][1].split('.')[0])
                 discounts.append(discount)
                 detail_line['discounts'] = discounts
                 if detail_line and not any(d['number'] == detail_line['number'] for d in lines):
@@ -41,12 +41,5 @@ def create_sale_order_by_edi(str_edi):
 
         return sale_order
     except Exception as e:
-        print('Error procesando ',str(e))
+        print(str_edi, e)
         return None
-
-
-
-
-    
-
-    

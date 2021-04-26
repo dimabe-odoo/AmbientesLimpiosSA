@@ -2,7 +2,12 @@ import requests
 from bs4 import BeautifulSoup
 from pydifact.message import Message
 from .edi_comercionet import create_sale_order_by_edi
-import urllib3
+
+requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += 'HIGH:!DH:!aNULL'
+requests.packages.urllib3.contrib.pyopenssl.DEFAULT_SSL_CIPHER_LIST += 'HIGH:!DH:!aNULL'
+
+
+
 
 
 def download_documents(docs, s, doc_type='SRCU'):
@@ -13,7 +18,7 @@ def download_documents(docs, s, doc_type='SRCU'):
                 res = s.get(
                     f"https://www.comercionet.cl/descargar_documentoAction.php?tipo=recibidos&docu_id={doc['id']}&formato={doc_type}")
                 if res.status_code == 200:
-                    sale = create_sale_order_by_edi(res.content.decode('utf-8'))
+                    sale = create_sale_order_by_edi(res.content.decode('unicode_escape'))
                     if sale:
                         sales.append(sale)
             except:
@@ -22,7 +27,6 @@ def download_documents(docs, s, doc_type='SRCU'):
 
 
 def get_sale_orders():
-    urllib3.disable_warnings()
     sale_orders = []
     s = requests.session()
     s.verify = False
@@ -61,3 +65,4 @@ def get_sale_orders():
         sale_orders = download_documents(documents, s)
 
     return sale_orders
+
