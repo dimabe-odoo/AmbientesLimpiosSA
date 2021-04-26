@@ -1,7 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
 from pydifact.message import Message
-from .edi_comercionet import create_sale_order_by_edi
+from edi_comercionet import create_sale_order_by_edi
+import urllib3
+
+urllib3.disable_warnings()
 
 
 def download_documents(docs, s, doc_type='SRCU'):
@@ -11,9 +14,14 @@ def download_documents(docs, s, doc_type='SRCU'):
             res = s.get(
                 f"https://www.comercionet.cl/descargar_documentoAction.php?tipo=recibidos&docu_id={doc['id']}&formato={doc_type}", verify=False)
             if res.status_code == 200:
-                sale = create_sale_order_by_edi(res.content.decode('utf-8'))
-                if sale:
-                    sales.append(sale)
+                try: 
+                    sale = create_sale_order_by_edi(res.content.decode('unicode_escape'))
+                    if sale:
+                        sales.append(sale)
+                except UnicodeDecodeError as ue:
+                    print(str(ue))
+                    print('error en el archivo ',res.content)
+                    return
         return sales
 
 
@@ -55,3 +63,5 @@ def get_sale_orders():
         sale_orders = download_documents(documents, s)
 
     return sale_orders
+
+get_sale_orders()
