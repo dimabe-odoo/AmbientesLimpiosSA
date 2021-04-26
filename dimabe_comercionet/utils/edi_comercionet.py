@@ -41,6 +41,7 @@ def create_sale_order_by_edi(str_edi):
 
         return sale_order
     except:
+        print('Error procesando ',str_edi)
         return None
 
 

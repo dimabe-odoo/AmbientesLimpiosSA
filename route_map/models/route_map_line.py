@@ -41,6 +41,20 @@ class RouteMapLine(models.Model):
 
     product_line_ids = fields.One2many('product.line', 'line_id')
 
+    pallets_quantity = fields.Integer('Lotes', compute="_compute_pallets_quantity")
+
+    kgs_quantity = fields.Float('Kilos', _compute="_compute_kgs_quantity")
+
+    def _compute_pallets_quantity(self):
+        pallets_quantity = 0
+        for item in self:
+            pallets_quantity = len(item.mapped('dispatch_id').mapped('move_line_ids_without_package').mapped('lot_id'))
+            item.pallets_quantity = pallets_quantity
+
+    def _compute_kgs_quantity(self):
+        for item in self:
+            item.kgs_quantity = 0
+
     def compute_display_name(self):
         for item in self:
             item.display_name = f'Pedido {item.sale_id.name} Cliente {item.partner_id.display_name}'

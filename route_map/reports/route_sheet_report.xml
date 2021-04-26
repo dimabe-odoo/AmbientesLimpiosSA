@@ -1,18 +1,180 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
-
         <template id="report_route_report_template">
             <t t-call="web.html_container">
-                <t t-foreach="docs" t-as="doc">
-                    <t t-call="web.html_container">
-                        <div class="page">
-                            <div style="width:100px;border:1px solid;"></div>
+                <div class="page">
+                    <t t-foreach="docs" t-as="d">
+                        <div style="width: 100%;">
+                            <div style="width: 49%; height: 130px; display: inline-block;">
+                                <table style="margin-left: 60px;">
+                                    <tr>
+                                        <td style="width: 80%;">
+                                            <div style="width: 200px; height: 120px;">
+                                                <img t-att-src="'data:image/png;base64,%s' % to_text(res_company.logo)"
+                                                style="max-width: 160px; max-height: 100px;"/>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div style="width: 50%; display: inline-block;">
+                                <table style="border:4px solid; border-color: #ff0000; float: right; width: 60%; height: 120px;">
+                                    <tr>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:center;color:#ff0000; font-weight: bold;">
+                                                HOJA DE RUTA TRANSPORTE
+                                            </td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:center;color:#ff0000; font-weight: bold;">
+                                            N°
+                                            <span t-field="d.id"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <br/>
+                        <div style="width:100%;margin:0 auto;border:1px solid; border-radius: 5px; ">
+                            <table style="width:98%;margin: 0 auto;font-size:11px; padding: 6px;" cellspacing="1">
+                                <tr>
+                                    <td style="width: 10%; text-align:right; " colspan="2">
+                                        <strong>SELLO:</strong>
+                                    </td>
+                                    <td style="text-align:left; width: 10%;">
+                                        <strong>
+                                            <span t-field="d.sell"/>
+                                        </strong>
+                                    </td>
+                                    <td></td>
+                                    <td style="text-align:right; width: 10%">
+                                        <strong>RESPONSABLE:</strong>
+                                    </td>
+                                    <td style="text-align:left; width: 25%;">
+                                        <span t-field="d.driver_id"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td style="text-align:right;">
+                                        <strong>PATENTE:</strong>
+                                    </td>
+                                    <td style="text-align:left;">
+                                        <span t-esc="d.truck_id.license_plate"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <br/>
+                        <div style="width:100%;margin:0 auto;border:1px solid; border-radius: 5px; margin-top:4px;">
+                            <table style="width:100%;font-size:11px;" cellspacing="0">
+                                <tr>
+                                    <th style="width:12%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
+                                        N° FACTURA
+                                    </th>
+                                    <th style="width:11%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
+                                        FECHA
+                                    </th>
+                                    <th style="width:25%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
+                                        CLIENTE
+                                    </th>
+                                    <th style="width:11%;border-right:1px solid; border-bottom:1px solid;padding-top: 6px;">
+                                        BULTOS
+                                    </th>
+                                    <th style="width:10%;border-right:1px solid; border-bottom:1px solid;padding-top: 6px;">
+                                        KILOS
+                                    </th>
+                                    <th style="width:11%;border-right:1px solid; border-bottom:1px solid;padding-top: 6px;">
+                                        PALLETS
+                                    </th>
+                                    <th style="width:20%;border-bottom:1px solid;padding-top: 6px;">
+                                        DESTINO
+                                    </th>
+                                </tr>
+                                <t t-foreach="d.dispatch_ids" t-as="line">
+                                    <tr>
+                                        <td style="border-right:1px solid;border-bottom:1px solid;text-align:center;">
+                                            <span t-field="line.sale_id"/>
+                                        </td>
+                                        <td style="border-right:1px solid;border-bottom:1px solid;text-align:right;padding-right:4px;">
+                                            <span t-field="line.dispatch_date"/>
+                                        </td>
+                                        <td style="border-right:1px solid;border-bottom:1px solid;text-align:left;padding-right:4px;padding-left:4px;">
+                                            <span t-field="line.partner_id"/>
+                                        </td>
+                                        <td style="border-right:1px solid;border-bottom:1px solid;text-align:right;padding-right:4px;">
+                                            <span t-esc="sum(p.qty_to_delivery for p in line.product_line_ids)" />
+                                        </td>
+                                        <td style="border-right:1px solid;border-bottom:1px solid;text-align:right;padding-right:4px;">
+                                            <span t-field="line.kgs_quantity"/>
+                                        </td>
+                                        <td style="border-right:1px solid;border-bottom:1px solid;text-align:right;padding-right:4px;">
+                                            <span t-esc="line.pallets_quantity"/>
+                                        </td>
+                                        <td style="border-bottom:1px solid;text-align:right;padding-right:4px;">
+                                            <span t-field="line.address_to_delivery"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </table>
+                            <table style="width:100%;font-size:11px;" cellspacing="0">
+                                <tr>
+                                    <td colspan="2" style="width: 23%"></td>
+                                    <td style="text-align: center; width: 25%;padding-top: 8px;padding-bottom: 8px;">TOTAL</td>
+                                    <td style="width: 11%;text-align:right;padding-right:4px;"><span t-esc="d.packages_sum"/></td>
+                                    <td style="width: 10%;text-align:right;padding-right:4px;"><span t-esc="d.kgs_sum"/></td>
+                                    <td colspan="2" style="width: 31%;"></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <br/>
+                        <div style="margin-top: 4px; width:100%;">
+                            <div style="width:41%; float:right; border:1px solid; border-radius: 5px; ">
+                                <table style="width:100%; font-size:11px; float: right;" cellspacing="0">
+                                    <tr>
+                                        <th style="width: 10%; border-bottom:1px solid; border-right:1px solid; padding-top: 6px;">PALLETS</th>
+                                        <th style="width: 11%; border-bottom:1px solid; border-right:1px solid; padding-top: 6px">DEVUELTOS</th>
+                                        <th style="width: 20%; border-bottom:1px solid; padding-top: 6px">PENDIENTES</th>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:center;"><span t-field="d.pallets_sum"/></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
                     </t>
-                </t>
+                </div>
             </t>
         </template>
+
+        <record id="paper_format_letter_custom" model="report.paperformat">
+            <field name="name">Carta Custom</field>
+            <field name="default" eval="False"/>
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="margin_top">5</field>
+            <field name="margin_bottom">0</field>
+            <field name="margin_left">15</field>
+            <field name="margin_right">15</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">0</field>
+            <field name="dpi">90</field>
+        </record>
 
         <record id="report_route_map" model="ir.actions.report">
             <field name="name">Hoja de Ruta</field>
@@ -22,7 +184,7 @@
             <field name="report_file">report_route_report_template</field>
             <field name="binding_model_id" ref="route_map.model_route_map" />
             <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="route_map.paper_format_letter_custom"/>
         </record>
-
     </data>
 </odoo>
