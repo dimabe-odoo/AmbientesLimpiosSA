@@ -89,5 +89,5 @@ class RouteMap(Model):
         for item in self:
             pallets_sum = 0
             for line in item.dispatch_ids:
-                pallets_sum += line.lots_quantity
+                pallets_sum += line.pallets_quantity
             item.pallets_sum = pallets_sum
