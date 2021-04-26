@@ -8,6 +8,9 @@
                 <xpath expr="//field[@name='payment_term_id']" position="after">
                     <field name="l10n_latam_document_type_id" />
                 </xpath>
+                <button name="action_confirm">
+                    <attribute name="groups">al_base.group_purchase_file_orders</attribute>
+                </button>
             </field>
         </record>
 
