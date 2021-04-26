@@ -9,7 +9,7 @@ def download_documents(docs, s, doc_type='SRCU'):
         sales = []
         for doc in docs:
             res = s.get(
-                f"https://www.comercionet.cl/descargar_documentoAction.php?tipo=recibidos&docu_id={doc['id']}&formato={doc_type}")
+                f"https://www.comercionet.cl/descargar_documentoAction.php?tipo=recibidos&docu_id={doc['id']}&formato={doc_type}", verify=False)
             if res.status_code == 200:
                 sale = create_sale_order_by_edi(res.content.decode('utf-8'))
                 if sale:
@@ -24,9 +24,9 @@ def get_sale_orders():
         'login': '7808800014004',
         'password': 'ptx123'
     }
-    s.post('https://www.comercionet.cl/usuarios/login.php', data=login_data)
+    s.post('https://www.comercionet.cl/usuarios/login.php', data=login_data, verify=False)
 
-    res = s.get('https://www.comercionet.cl/listadoDocumentos.php?tido_id=3&tipo=recibidos&entrada=1')
+    res = s.get('https://www.comercionet.cl/listadoDocumentos.php?tido_id=3&tipo=recibidos&entrada=1', verify=False)
 
     if res.status_code == 200:
         soup = BeautifulSoup(res.content, 'html.parser')
