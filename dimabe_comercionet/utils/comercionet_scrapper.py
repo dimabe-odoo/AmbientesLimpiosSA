@@ -4,10 +4,6 @@ from pydifact.message import Message
 from .edi_comercionet import create_sale_order_by_edi
 
 requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += 'HIGH:!DH:!aNULL'
-requests.packages.urllib3.contrib.pyopenssl.DEFAULT_SSL_CIPHER_LIST += 'HIGH:!DH:!aNULL'
-
-
-
 
 
 def download_documents(docs, s, doc_type='SRCU'):
