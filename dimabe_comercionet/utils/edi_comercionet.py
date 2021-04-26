@@ -40,8 +40,8 @@ def create_sale_order_by_edi(str_edi):
             line['discount_percent'] = (1 - (line['final_price'] / (line['quantity'] * line['price']))) * 100
 
         return sale_order
-    except:
-        print('Error procesando ',str_edi)
+    except Exception as e:
+        print('Error procesando ',str(e))
         return None
 
 

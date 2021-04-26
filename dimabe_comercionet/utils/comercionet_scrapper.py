@@ -1,7 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
 from pydifact.message import Message
-from .edi_comercionet import create_sale_order_by_edi
+from edi_comercionet import create_sale_order_by_edi
+import urllib3
+
+urllib3.disable_warnings()
 
 
 def download_documents(docs, s, doc_type='SRCU'):
@@ -58,3 +61,5 @@ def get_sale_orders():
         sale_orders = download_documents(documents, s)
 
     return sale_orders
+
+get_sale_orders()
