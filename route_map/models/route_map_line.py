@@ -46,8 +46,11 @@ class RouteMapLine(models.Model):
     kgs_quantity = fields.Float('Kilos', _compute="_compute_kgs_quantity")
 
     def _compute_pallets_quantity(self):
+        pallets_quantity = 0
         for item in self:
-            item.pallets_quantity = 0
+            pallets_quantity = item.mapped('sale_id').mapped('picking_ids').mapped('move_line_ids_without_package').mapped('lot_id')
+            raise models.ValidationError(f'{len(pallets_quantity)}  pallets_quantity[0].name')    
+            item.pallets_quantity = pallets_quantity
 
     def _compute_kgs_quantity(self):
         for item in self:
