@@ -131,7 +131,7 @@
                             <table style="width:100%;font-size:11px;" cellspacing="0">
                                 <tr>
                                     <td colspan="2" style="width: 23%"></td>
-                                    <td style="text-align: center; width: 25%">TOTAL</td>
+                                    <td style="text-align: center; width: 25%;padding-top: 8px;padding-bottom: 8px;">TOTAL</td>
                                     <td style="width: 11%;text-align:right;padding-right:4px;"><span t-esc="d.packages_sum"/></td>
                                     <td style="width: 10%;text-align:right;padding-right:4px;"><span t-esc="d.kgs_sum"/></td>
                                     <td colspan="2" style="width: 31%;"></td>
@@ -159,6 +159,7 @@
                 </div>
             </t>
         </template>
+
         <record id="paper_format_letter_custom" model="report.paperformat">
             <field name="name">Carta Custom</field>
             <field name="default" eval="False"/>
@@ -174,6 +175,7 @@
             <field name="header_spacing">0</field>
             <field name="dpi">90</field>
         </record>
+        
         <record id="report_route_map" model="ir.actions.report">
             <field name="name">Hoja de Ruta</field>
             <field name="model">route.map</field>
