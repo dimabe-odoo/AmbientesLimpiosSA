@@ -31,6 +31,8 @@ class RouteMap(Model):
 
     observations = fields.Text('Observaciones')
 
+    packages_sum = fields.Integer('Suma de Bultos', compute="_packages_sum")
+
 
     def add_picking(self):
         line = self.env['route.map.line'].sudo().create({
@@ -64,3 +66,10 @@ class RouteMap(Model):
             'state': 'incoming',
             'dispatch_date': datetime.now()
         })
+
+    def _packages_sum(self):
+        for item in self:
+            packages_sum = 0
+            for line in item.dispatch_ids.product_line_ids:
+                packages_sum += line.qty_to_delivery
+            item.packages_sum = packages_sum
