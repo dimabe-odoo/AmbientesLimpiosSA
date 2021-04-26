@@ -48,8 +48,7 @@ class RouteMapLine(models.Model):
     def _compute_pallets_quantity(self):
         pallets_quantity = 0
         for item in self:
-            pallets_quantity = item.mapped('sale_id').mapped('picking_ids').mapped('move_line_ids_without_package').mapped('lot_id')
-            raise models.ValidationError(f'{len(pallets_quantity)}  pallets_quantity[0].name')    
+            pallets_quantity = len(item.mapped('dispatch_id').mapped('move_line_ids_without_package').mapped('lot_id'))
             item.pallets_quantity = pallets_quantity
 
     def _compute_kgs_quantity(self):
