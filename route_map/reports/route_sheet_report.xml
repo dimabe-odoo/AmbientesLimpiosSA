@@ -148,9 +148,8 @@
                                         <th style="width: 20%; border-bottom:1px solid; padding-top: 6px">PENDIENTES</th>
                                     </tr>
                                     <tr>
-                                        <td style="text-align:center;"><span t-field="d.pallets_sum"/></td>
-                                        <td></td>
-                                        <td></td>
+                                        <td style="text-align:center;padding-top: 6px;"><span t-field="d.pallets_sum"/></td>
+                                        <td colspan="2"></td>
                                     </tr>
                                 </table>
                             </div>
