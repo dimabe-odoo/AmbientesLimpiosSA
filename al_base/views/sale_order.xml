@@ -8,8 +8,13 @@
                 <xpath expr="//field[@name='payment_term_id']" position="after">
                     <field name="l10n_latam_document_type_id" />
                 </xpath>
-                <xpath expr="//button[@name='action_confirm']" position="attribute">
+                <xpath expr="//button[@name='action_confirm']" position="attributes">
                     <attribute name="groups">al_base.group_purchase_file_orders</attribute>
+                </xpath>
+                <xpath expr="//header" position="inside">
+                    <button type="object" string="Por Confirmar" name="order_to_confirm"
+                    attrs="{'invisible':[('state', '=', to_confirm)]}"
+                    />
                 </xpath>
             </field>
         </record>
