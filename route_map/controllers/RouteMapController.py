@@ -21,10 +21,10 @@ class RouteMapController(http.Controller):
 
     @http.route('/api/route_map', type='json', auth='token', method='GET', cors='*')
     def get_route_map(self, map_id):
-        map = request.env['route.map'].sudo().search([('id', '=', map_id)])
+        map_object = request.env['route.map'].sudo().search([('id', '=', map_id)])
         lines = []
-        if map:
-            for line in map.dispatch_ids:
+        if map_object:
+            for line in map_object.dispatch_ids:
                 products = []
                 for product in line.product_line_ids:
                     products.append({
@@ -34,29 +34,23 @@ class RouteMapController(http.Controller):
                 lines.append({
                     'Id': line.id,
                     'Destiny': line.partner_id.name,
-                    'Address': line.address_to_delivery,
+                    'Address': line.address_to_delivery if line.address_to_delivery else '',
                     'LatitudeDestiny': line.partner_id.partner_latitude,
                     'LongitudeDestiny': line.partner_id.partner_longitude,
                     'State': line.state,
                     'Products': products
                 })
             res = {
-                'Id': map.id,
-                'Name': map.display_name,
-                'Sell': map.sell,
+                'Id': map_object.id,
+                'Name': map_object.display_name,
+                'Sell': map_object.sell if map_object.sell else '',
                 'Lines': lines,
-                'State': map.state
+                'State': map_object.state
             }
             return {'ok': True, 'result': res}
         else:
             return {'ok': False, 'message': "No existe ningun pedido con este id"}
 
-    @http.route('/api/add_image', type='json', auth='token', cors='*')
-    def add_image(self, binary, line_id):
-        line = request.env['route.map.line'].sudo().search([('id', '=', line_id)])
-        request.env['ir.attachment'].sudo().create({
-            'res_id': line.id
-        })
 
     @http.route('/api/cancel', type='json', auth='token', cors='*')
     def action_cancel(self, observation, line_id, files):
@@ -70,24 +64,30 @@ class RouteMapController(http.Controller):
                     'db_datas': file,
                     'datas':file,
                     'file_size' : (len(file) * 6 - file.count('=') * 8) / 8,
-                    'name': f"Prueba {line_id}",
+                    'name': f"{line.map_id.display_name} Imagen Pedido {line.sale_id.name}",
                     'store_fname': file,
                     'mimetype': 'image/jpeg',
                     'index_content':'image'
                 })
             line.sudo().write({
-                'state': 'cancel',
+                'is_delivered':False,
                 'driver_observations': observation
             })
+            line.sudo().button_cancel()
             return {'ok': True, "message": "Pedido devuelto o cancelado"}
         else:
             return {'ok': False, "message": "Error en comunicación"}
 
     @http.route('/api/done', type='json', auth='token', method='GET', cors='*')
-    def make_done_line(self, line_id, latitude, longitude):
+    def make_done_line(self, line_id, latitude,longitude,to_save_geo=False):
         line = request.env['route.map.line'].sudo().search([('id', '=', line_id)])
         if line:
             try:
+                if to_save_geo:
+                    line.partner_id.write({
+                        'partner_latitude': latitude,
+                        'partner_longitude': longitude
+                    })
                 line.sudo().write({
                     'latitude_delivery': latitude,
                     'longitude_delivery': longitude

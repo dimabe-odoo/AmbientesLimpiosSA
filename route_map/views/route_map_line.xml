@@ -38,15 +38,9 @@
                                     </tree>
                                 </field>
                             </page>
-                            <page name="image" string="Imagenes">
-                                <field name="image_ids">
-                                    <tree>
-
-                                        <field name="store_fname"/>
-                                        <field name="datas"/>
-                                    </tree>
-
-                                </field>
+                            <page name="image" string="Causas de Cancelacion" attrs="{'invisible':[('state','!=','cancel')]}">
+                                <group><field name="driver_observations"/></group>
+                                <field name="image_ids" widget="many2many_binary"/>
                             </page>
                         </notebook>
                     </sheet>
