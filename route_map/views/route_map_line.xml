@@ -40,7 +40,7 @@
                             </page>
                             <page name="image" string="Causas de Cancelacion" attrs="{'invisible':[('state','!=','cancel')]}">
                                 <group><field name="driver_observations"/></group>
-                                <field name="image_ids" widget="many2many_binary"/>
+                                <field name="image_ids"/>
                             </page>
                         </notebook>
                     </sheet>
