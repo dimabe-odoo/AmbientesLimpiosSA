@@ -5,7 +5,6 @@ from .edi_comercionet import create_sale_order_by_edi
 
 requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += 'HIGH:!DH:!aNULL'
 
-
 def download_documents(docs, s, doc_type='SRCU'):
     if docs:
         sales = []
@@ -28,7 +27,7 @@ def get_sale_orders():
     s.verify = False
     login_data = {
         'login': '7808800014004',
-        'password': 'ptx123'
+        'password': 'Alimpsaexcell2021'
     }
     s.post('https://www.comercionet.cl/usuarios/login.php', data=login_data)
 
