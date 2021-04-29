@@ -1,18 +1,26 @@
 <odoo>
-    <data>
-        <record id="sale_view_order_form_inherit" model="ir.ui.view">
-            <field name="name">Formulario de Venta Heredado</field>
-            <field name="model">sale.order</field>
-            <field name="inherit_id" ref="sale.view_order_form"/>
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='payment_term_id']" position="after">
-                    <field name="l10n_latam_document_type_id" />
-                </xpath>
-                <xpath expr="//button[@name='action_confirm']" position="attribute">
-                    <attribute name="groups">al_base.group_purchase_file_orders</attribute>
-                </xpath>
-            </field>
-        </record>
-
-    </data>
+  <data>
+    <record id="sale_view_order_form_inherit" model="ir.ui.view">
+      <field name="name">Formulario de Venta Heredado</field>
+      <field name="model">sale.order</field>
+      <field name="inherit_id" ref="sale.view_order_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='payment_term_id']" position="after">
+          <field name="l10n_latam_document_type_id"/>
+        </xpath>
+        <xpath expr="//button[@name='action_confirm'][1]" position="attributes">
+          <attribute name="attrs">{'invisible':[('state', '!=', 'toconfirm')]}</attribute>
+          <attribute name="groups">al_base.group_order_confirmation</attribute>
+        </xpath>
+        <xpath expr="//button[@name='action_confirm'][2]" position="attributes">
+          <attribute name="invisible">1</attribute>
+          <attribute name="groups">al_base.group_order_confirmation</attribute>
+        </xpath>
+        <xpath expr="//header" position="inside">
+          <button type="object" string="Por Aprobar" name="order_to_confirm"
+                  attrs="{'invisible':[('state', '!=', 'draft')]}"/>
+        </xpath>
+      </field>
+    </record>
+  </data>
 </odoo>

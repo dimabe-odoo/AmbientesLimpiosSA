@@ -66,6 +66,11 @@ class RouteMapLine(models.Model):
             item.write({
                 'state': 'cancel'
             })
+            if self.verify_all_line(item.map_id.dispatch_ids):
+                item.map_id.write({
+                    'state': 'done',
+                    'date_done': datetime.datetime.now()
+                })
 
     def button_done(self):
         for item in self:
@@ -80,14 +85,20 @@ class RouteMapLine(models.Model):
                 item.map_id.write({
                     'state': 'partially_delivered',
                 })
-            if all(item.map_id.dispatch_ids.mapped('is_delivered')):
+            if self.verify_all_line(item.map_id.dispatch_ids):
                 item.map_id.write({
                     'state': 'done',
                     'date_done': datetime.datetime.now()
                 })
 
+    def verify_all_line(self, dispatch_ids):
+        for item in dispatch_ids:
+            if item.state != 'done' and item.state != 'cancel':
+                return False
+        return True
+
     def create(self, values):
-        dispatch = self.env['route.map.line'].search([('id', '=', values['dispatch_id']),('state','!=','cancel')])
+        dispatch = self.env['route.map.line'].search([('id', '=', values['dispatch_id']), ('state', '!=', 'cancel')])
         if dispatch:
             raise models.ValidationError('No puede existe mas de una linea de hoja de ruta con el mismo despacho')
         return super(RouteMapLine, self).create(values)
