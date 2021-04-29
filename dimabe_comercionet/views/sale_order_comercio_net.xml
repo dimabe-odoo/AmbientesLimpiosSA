@@ -48,6 +48,7 @@
                     <field name="purchase_order"/>
                     <field name="client_code_comercionet"/>
                     <field name="sale_order_id"/>
+                    <field name="total_price" />
                 </tree>
             </field>
         </record>

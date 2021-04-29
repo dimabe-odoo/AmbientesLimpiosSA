@@ -9,6 +9,11 @@ class SaleOrderComercionet(models.Model):
     client_code_comercionet = fields.Char('Casilla Comercionet')
     sale_order_id = fields.Many2one('sale.order', string='Nota de Venta')
     comercionet_line_id = fields.One2many('sale.order.comercionet.line', 'comercionet_id')
+    total_price = fields.Float('Total', compute='_compute_total')
+
+    def _compute_total(self):
+        for item in self:
+            item.total_price = sum(item.comercionet_line_id.mapped('final_price'))
 
     def get_orders(self):
         orders = comercionet_scrapper.get_sale_orders()
