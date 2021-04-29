@@ -39,6 +39,7 @@ def get_sale_orders():
     get_row = True
     while get_row:
         res = s.get(url+str(page))
+        last_document = documents[-1] if len(documents) > 0 else None
         if res.status_code == 200:
             soup = BeautifulSoup(res.content, 'html.parser')
             # buscar los documentos dentro de la tabla y guardarlos en una lista
@@ -61,7 +62,10 @@ def get_sale_orders():
                         documents.append(doc)
             else:
                 get_row = False
+        if documents[-1] == last_document:
+            get_row = False
         page += 10
+        
     if documents:
         sale_orders = download_documents(documents, s)
 
