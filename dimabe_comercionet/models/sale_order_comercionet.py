@@ -11,7 +11,7 @@ class SaleOrderComercionet(models.Model):
     comercionet_line_id = fields.One2many('sale.order.comercionet.line', 'comercionet_id')
     total_price = fields.Float('Total', compute='_compute_total')
     doc_id = fields.Char('Id Documento Comercionet')
-    doc = fields.Binary('Documento')
+    doc = fields.Char('Documento EDI')
 
     def _compute_total(self):
         for item in self:
