@@ -22,21 +22,21 @@ class SaleOrderComercionet(models.Model):
         orders = comercionet_scrapper.get_sale_orders()
         if orders:
             for order in orders:
-                sale = self.env['sale.order.comercionet'].search([('purchase_order', '=', order['purchase_order'])])
+                sale = self.env['sale.order.comercionet'].search([('purchase_order', '=', order['purchase_order'].strip())])
                 if not sale:
-                    client = self.env['res.partner'].search([('comercionet_box', '=', order['client_code_comercionet'])], limit=1)
+                    client = self.env['res.partner'].search([('comercionet_box', '=', order['client_code_comercionet'].strip())], limit=1)
                     comercionet = self.env['sale.order.comercionet'].create({
-                        'purchase_order': order['purchase_order'],
-                        'client_code_comercionet': order['client_code_comercionet'],
+                        'purchase_order': order['purchase_order'].strip(),
+                        'client_code_comercionet': order['client_code_comercionet'].strip(),
                         'doc_id': order['doc_id'],
                         'doc': order['doc'],
                         'client_id': client.id if client else None
                     })
                     for line in order['lines']:
-                        product = self.env['product.product'].search([('al_dun', '=', line['product_code'])], limit=1)
+                        product = self.env['product.product'].search([('al_dun', '=', line['product_code'].strip())], limit=1)
                         self.env['sale.order.comercionet.line'].create({
                             'number': line['number'],
-                            'product_code': line['product_code'],
+                            'product_code': line['product_code'].strip(),
                             'final_price': line['final_price'],
                             'price': line['price'],
                             'quantity': line['quantity'],
