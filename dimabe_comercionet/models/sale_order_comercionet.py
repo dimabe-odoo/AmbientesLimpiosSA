@@ -10,6 +10,8 @@ class SaleOrderComercionet(models.Model):
     sale_order_id = fields.Many2one('sale.order', string='Nota de Venta')
     comercionet_line_id = fields.One2many('sale.order.comercionet.line', 'comercionet_id')
     total_price = fields.Float('Total', compute='_compute_total')
+    doc_id = fields.Char('Id Documento Comercionet')
+    doc = fields.Binary('Documento')
 
     def _compute_total(self):
         for item in self:
@@ -23,7 +25,9 @@ class SaleOrderComercionet(models.Model):
                 if not sale:
                     comercionet = self.env['sale.order.comercionet'].create({
                         'purchase_order': order['purchase_order'],
-                        'client_code_comercionet': order['client_code_comercionet']
+                        'client_code_comercionet': order['client_code_comercionet'],
+                        'doc_id': order['doc_id'],
+                        'doc': order['doc']
                     })
                     for line in order['lines']:
                         self.env['sale.order.comercionet.line'].create({

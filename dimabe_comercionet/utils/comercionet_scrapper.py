@@ -15,6 +15,8 @@ def download_documents(docs, s, doc_type='SRCU'):
                 if res.status_code == 200:
                     sale = create_sale_order_by_edi(res.content.decode('unicode_escape'))
                     if sale:
+                        sale['doc_id'] = doc['id']
+                        sale['doc'] = res.content
                         sales.append(sale)
             except:
                 continue
