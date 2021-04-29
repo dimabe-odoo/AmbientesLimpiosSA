@@ -27,8 +27,10 @@
                                 <tree>
                                     <field name="number"/>
                                     <field name="product_code"/>
-                                    <field name="product_code"/>
+                                    <field name="price" />
                                     <field name="quantity"/>
+                                    <field name="discount_percent"/>
+                                    <field name="final_price"/>
                                 </tree>
                             </field>
                         </group>
@@ -42,6 +44,7 @@
             <field name="model">sale.order.comercionet</field>
             <field name="arch" type="xml">
                 <tree>
+                    <field name="create_date" string="Fecha de Creación"/>
                     <field name="purchase_order"/>
                     <field name="client_code_comercionet"/>
                     <field name="sale_order_id"/>
