@@ -14,13 +14,13 @@ class SaleOrder(models.Model):
 
     approve_date = fields.Datetime('Fecha de aprovación')
 
-    
     def order_to_confirm(self):
         if self.state == 'draft':
             self.state = 'toconfirm'
             self.request_date = datetime.today()
             template_id = self.env.ref('al_base.so_to_approve_mail_template')
             self.message_post_with_template(template_id.id)
+
 
     def action_confirm(self):
         res = super(SaleOrder, self).action_confirm()

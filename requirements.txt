@@ -1,1 +1,3 @@
 pydifact
+xmltodict
+pdf417
