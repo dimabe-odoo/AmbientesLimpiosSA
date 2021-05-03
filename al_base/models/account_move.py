@@ -54,8 +54,9 @@ class AccountMove(models.Model):
         with open('doc.xml', 'wb') as xml_result:
             xml_result.write(doc_xml)
 
-        # with open(xml_result) as xml_file:
-        data_dict = xmltodict.parse(xml_result.read())
+        xml_file = open(xml_result, 'rb')
+        #with open(xml_result) as xml_file:
+        data_dict = xmltodict.parse(xml_file.read())
         json_data = json.dumps(data_dict['EnvioDTE']['SetDTE']['DTE']['Documento']['TED'])
         cols = 12
         while True:
