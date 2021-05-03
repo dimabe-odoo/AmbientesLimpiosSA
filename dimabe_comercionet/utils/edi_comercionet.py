@@ -12,7 +12,12 @@ def create_sale_order_by_edi(str_edi):
             if segment.tag == 'BGM':
                 sale_order['purchase_order'] = segment.elements[1]
             if segment.tag == 'LOC':
-                sale_order['client_code_comercionet'] = segment.elements[1][0]
+                if type(segment.elements[1]) == list:
+                    sale_order['client_code_comercionet'] = segment.elements[1][0]
+                elif type(segment.elements[1]) == str:
+                    sale_order['client_code_comercionet'] = segment.elements[1]
+                else:
+                    raise Exception('No es posible obtener el codigo del cliente')
             if segment.tag == 'LIN':
                 detail_line = {}
                 discounts = []
