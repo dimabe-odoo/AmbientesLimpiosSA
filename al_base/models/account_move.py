@@ -53,6 +53,7 @@ class AccountMove(models.Model):
         doc_xml = base64.b64decode(doc_id)
         xml_result = open('doc.xml','wb')
         xml_result.write(doc_xml)
+        raise models.ValidationError(f'{doc_id.name}')
         with open(xml_result) as xml_file:
             data_dict = xmltodict.parse(xml_file.read())
             json_data = json.dumps(data_dict['EnvioDTE']['SetDTE']['DTE']['Documento']['TED'])
