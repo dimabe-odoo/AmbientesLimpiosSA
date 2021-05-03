@@ -35,7 +35,7 @@
         'views/stock_picking.xml',
         'views/account_move.xml',
         'views/purchase_order.xml',
-        'data/sale_order_mail_template.xml'
+        'data/sale_order_mail_template.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

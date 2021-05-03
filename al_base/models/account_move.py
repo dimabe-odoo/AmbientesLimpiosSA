@@ -1,13 +1,16 @@
-from odoo import models, api
+from odoo import models, api, fields
+
 
 class AccountMove(models.Model):
     _inherit = 'account.move'
+
+    is_jump_number = fields.Boolean("Saltar Folio")
 
     @api.model
     def create(self, values):
         if 'invoice_origin' in values.keys():
             if values['invoice_origin']:
-                sale_order = self.env['sale.order'].search([('name','=',values['invoice_origin'])])
+                sale_order = self.env['sale.order'].search([('name', '=', values['invoice_origin'])])
                 if sale_order.l10n_latam_document_type_id:
                     values['journal_id'] = 1
                     values['l10n_latam_document_type_id'] = sale_order.l10n_latam_document_type_id.id
