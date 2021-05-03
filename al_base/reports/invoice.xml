@@ -397,7 +397,19 @@
     <field name="dpi">90</field>
   </record>
 
-  <report id="action_custom_purchase_order" string="Factura" model="account.move" report_type="qweb-pdf"
-          name="al_base.custom_invoice" menu="True" paperformat="paper_format_letter_custom"
-  />
+    <report id="action_custom_invoice" string="Factura" model="account.move" report_type="qweb-pdf"
+            name="al_base.custom_invoice" menu="True" paperformat="paper_format_letter_custom"
+    />
+
+  <!--
+  <record id="action_custom_invoice" model="ir.actions.report">
+    <field name="name">Facturas</field>
+    <field name="model">account.move</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">al_base.custom_invoice</field>
+    <field name="report_file">custom_invoice</field>
+    <field name="binding_model_id" ref="model_account_move"/>
+    <field name="binding_type">report</field>
+    <field name="paperformat_id" ref="al_base.paper_format_letter_custom"/>
+  </record>-->
 </odoo>

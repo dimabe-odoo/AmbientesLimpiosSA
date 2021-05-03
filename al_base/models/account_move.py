@@ -16,6 +16,16 @@ class AccountMove(models.Model):
 
     ted = fields.Binary('TED')
 
+    invisible_btn_ted = fields.Boolean(compute="_compute_show_btn_ted", default=True)
+
+    @api.model
+    def _compute_show_btn_ted(self):
+        for item in self:
+            if item.ted != False or (item.state == 'draft' or item.state == 'cancel'):
+                item.invisible_btn_ted = True
+            else:
+                item.invisible_btn_ted = False
+
     @api.model
     def _compute_subtotal_amount(self):
         for item in self:
@@ -41,37 +51,35 @@ class AccountMove(models.Model):
                     total_exempt += line.price_unit * line.quantity * ((100 - line.discount) / 100)
             item.total_exempt = total_exempt
 
-    # @api.model
-    # def action_post(self):
-    #    res = super(AccountMove, self).action_post
-    #    doc_xml = self.env['ir.attachment'].search([('res_model','=','account.move'),('res_id','=',self.id),('SII','in','name')])
-    #    return res
+    @api.model
+    def action_post(self):
+        res = super(AccountMove, self).action_post
+        doc_xml = self.env['ir.attachment'].search([('res_model','=','account.move'),('res_id','=',self.id),('SII','in','name')])
+        return res
 
     def get_ted(self):
         doc_id = self.env['ir.attachment'].search(
             [('res_model', '=', 'account.move'), ('res_id', '=', self.id), ('name', 'like', 'SII')]).datas
-        doc_xml = base64.decodebytes(doc_id)
-        with open('doc.xml', 'wb') as xml_result:
-            xml_result.write(doc_xml)
-
-        xml_file = open(xml_result, 'rb')
-        #with open(xml_result) as xml_file:
-        data_dict = xmltodict.parse(xml_file.read())
-        json_data = json.dumps(data_dict['EnvioDTE']['SetDTE']['DTE']['Documento']['TED'])
-        cols = 12
-        while True:
-            try:
-                if cols == 31:
+        if doc_id:
+            doc_xml = base64.b64decode(doc_id).decode('utf-8')
+            data_dict = xmltodict.parse(doc_xml)
+            json_data = json.dumps(data_dict['EnvioDTE']['SetDTE']['DTE']['Documento']['TED'])
+            cols = 12
+            while True:
+                try:
+                    if cols == 31:
+                        break
+                    codes = encode(json_data, cols)
+                    image = render_image(codes, scale=5, ratio=2)
+                    buffered = BytesIO()
+                    image.save(buffered, format="JPEG")
+                    img_str = base64.b64encode(buffered.getvalue())
+                    self.write({'ted': img_str})
                     break
-                codes = encode(json_data, cols)
-                image = render_image(codes, scale=5, ratio=2)
-                buffered = BytesIO()
-                image.save(buffered, format="JPEG")
-                img_str = base64.b64encode(buffered.getvalue())
-                self.write({'ted': img_str})
-                break
-            except:
-                cols += 1
+                except:
+                    cols += 1
+        else:
+            raise models.ValidationError('No se puede generar código de barra 2D ya que aun no se ha generado la Factura')
 
 
 @api.model

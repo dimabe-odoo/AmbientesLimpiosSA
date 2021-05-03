@@ -17,9 +17,12 @@ class RouteMapLine(models.Model):
 
     date_done = fields.Datetime('Fecha de Entrega')
 
-    state = fields.Selection([('cancel', 'Cancelado'), ('to_delivered', 'Por Despacho'), ('done', 'Realizado')],
-                             string='Estado',
-                             default='to_delivered')
+    state = fields.Selection(
+        [('to_delivered', 'Por Despachar'), ('ok', 'Entrega Ok'), ('parcial', 'Entrega Parcial'),
+         ('rejected', 'Rechazo Total Cliente'),
+         ('homeless', 'Sin Moradores'), ('after hour', 'Fuera de Horario')],
+        string='Estado',
+        default='to_delivered')
 
     image_ids = fields.One2many('ir.attachment', 'res_id')
 
@@ -45,6 +48,10 @@ class RouteMapLine(models.Model):
 
     kgs_quantity = fields.Float('Kilos', _compute="_compute_kgs_quantity")
 
+    invoice_ids = fields.Many2many('account.move', compute='compute_invoice_ids')
+
+    invoices_name = fields.Char('Factura', compute='compute_invoice_name')
+
     def _compute_pallets_quantity(self):
         for item in self:
             pallet_ids = []
@@ -53,13 +60,21 @@ class RouteMapLine(models.Model):
                     pallet_ids.append(line.id)
             item.pallets_quantity = len(pallet_ids)
 
+    def compute_invoice_ids(self):
+        for item in self:
+            item.invoice_ids = item.sale_id.invoice_ids
+
+    def compute_invoice_name(self):
+        for item in self:
+            item.invoices_name = ','.join(item.invoice_ids.mapped('name'))
+
     def _compute_kgs_quantity(self):
         for item in self:
             item.kgs_quantity = 0
 
     def compute_display_name(self):
         for item in self:
-            item.display_name = f'Pedido {item.sale_id.name} Cliente {item.partner_id.display_name}'
+            item.display_name = f'Pedido {item.sale_id.name} Cliente {item.partner_id.display_name} Factura {",".join(item.invoice_ids.mapped("name"))}'
 
     def button_cancel(self):
         for item in self:
@@ -91,9 +106,28 @@ class RouteMapLine(models.Model):
                     'date_done': datetime.datetime.now()
                 })
 
+    def set_state(self,state):
+        for item in self:
+            if item.state == state:
+                raise models.ValidationError('No se puede entregar un pedido ya cancelado')
+            item.write({
+                'state': state,
+                'is_delivered': True,
+                'date_done': datetime.datetime.now()
+            })
+            if item.map_id.dispatch_ids.filtered(lambda a: a.state == 'done'):
+                item.map_id.write({
+                    'state': 'partially_delivered',
+                })
+            if self.verify_all_line(item.map_id.dispatch_ids):
+                item.map_id.write({
+                    'state': 'done',
+                    'date_done': datetime.datetime.now()
+                })
+
     def verify_all_line(self, dispatch_ids):
         for item in dispatch_ids:
-            if item.state != 'done' and item.state != 'cancel':
+            if item.state == 'to_delivered':
                 return False
         return True
 
