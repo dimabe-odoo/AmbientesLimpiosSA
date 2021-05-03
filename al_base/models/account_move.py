@@ -26,6 +26,12 @@ class AccountMove(models.Model):
             else:
                 item.invisible_btn_ted = False
 
+    def action_invoice_sent(self):
+        res = super(AccountMove, self).action_invoice_sent
+        if not self.ted:
+            self.get_ted()
+        return res
+
     @api.model
     def _compute_subtotal_amount(self):
         for item in self:
@@ -50,12 +56,6 @@ class AccountMove(models.Model):
                 if len(line.tax_ids) == 0:
                     total_exempt += line.price_unit * line.quantity * ((100 - line.discount) / 100)
             item.total_exempt = total_exempt
-
-    @api.model
-    def action_post(self):
-        res = super(AccountMove, self).action_post
-        doc_xml = self.env['ir.attachment'].search([('res_model','=','account.move'),('res_id','=',self.id),('SII','in','name')])
-        return res
 
     def get_ted(self):
         doc_id = self.env['ir.attachment'].search(

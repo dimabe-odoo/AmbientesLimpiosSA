@@ -7,15 +7,17 @@
       <field name="inherit_id" ref="l10n_latam_invoice_document.view_move_form"/>
       <field name="priority" eval="8"/>
       <field name="arch" type="xml">
+        <xpath expr="//header" position="inside">
+          <field name="invisible_btn_ted" invisible="1" />
+          <button type="object" string="Generar código de barra 2D" name="get_ted" class="oe_highlight"
+                  attrs="{'invisible':[('invisible_btn_ted','=',True)]}"/>
+        </xpath>
         <xpath expr="//field[@name='l10n_latam_document_number']" position="attributes">
           <attribute name="attrs">{'invisible':[('state','!=','draft')]}</attribute>
           <attribute name="groups">base.group_no_one</attribute>
         </xpath>
         <xpath expr="//field[@name='payment_reference']" position="after">
           <field name="invoice_payment_term_id"/>
-          <field name="invisible_btn_ted" invisible="1" />
-          <button type="object" string="Generar código de barra 2D" name="get_ted" class="oe_highlight"
-                  attrs="{'invisible':[('invisible_btn_ted','=',True)]}"/>
         </xpath>
       </field>
     </record>
