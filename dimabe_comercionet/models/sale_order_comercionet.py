@@ -66,4 +66,4 @@ class SaleOrderComercionetLine(models.Model):
     quantity = fields.Integer('Cantidad')
     discount_percent = fields.Float('Descuento')
     comercionet_id = fields.Many2one('sale.order.comercionet')
-    product_id = fields.Many2one('product.product')
+    product_id = fields.Many2one('product.product', string='Producto')
