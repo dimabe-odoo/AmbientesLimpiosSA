@@ -50,12 +50,10 @@ class AccountMove(models.Model):
     def get_ted(self):
         doc_id = self.env['ir.attachment'].search(
             [('res_model', '=', 'account.move'), ('res_id', '=', self.id), ('name', 'like', 'SII')]).datas
-        doc_xml = base64.b64decode(doc_id)
-        #xml_result = open('doc.xml', 'wb')
+        doc_xml = base64.b64decode(doc_id.encode('utf-8'))
         with open('doc.xml', 'wb') as xml_result:
             xml_result.write(doc_xml)
 
-        #raise models.ValidationError(f'{doc_xml}')
         with open(xml_result) as xml_file:
             data_dict = xmltodict.parse(xml_file.read())
             json_data = json.dumps(data_dict['EnvioDTE']['SetDTE']['DTE']['Documento']['TED'])
