@@ -31,15 +31,19 @@ def create_sale_order_by_edi(str_edi):
                 discount['amount'] = int(segment.elements[0][1].split('.')[0])
                 discounts.append(discount)
                 detail_line['discounts'] = discounts
-                if detail_line and not any(d['number'] == detail_line['number'] for d in lines):
-                    lines.append(detail_line)
+            if detail_line and not any(d['number'] == detail_line['number'] for d in lines):
+                lines.append(detail_line)
             if lines:
                 sale_order['lines'] = lines
 
+        line_number = 0
         for line in sale_order['lines']:
             line['discount_percent'] = (1 - (line['final_price'] / (line['quantity'] * line['price']))) * 100
-
-        return sale_order
+            line_number = line['number']
+        if sale_order['lines'] and len(sale_order['lines']) == line_number: 
+            return sale_order
+        print('Las cantidades de lineas no son las mismas', sale_order['purchase_order'])
+        return None
     except Exception as e:
         print(str_edi, e)
         return None

@@ -2,3 +2,4 @@
 
 from . import models
 from . import sale_order_comercionet
+from . import res_partner
