@@ -11,14 +11,9 @@
                         <field name="state" widget="statusbar"/>
                     </header>
                     <sheet>
-                        <div class="oe_title">
-                            <label for="display_name"/>
-                            <h1>
-                                <field name="display_name" placeholder="Nombre a nombre"/>
-                            </h1>
-                        </div>
                         <group>
                             <group>
+                                <field name="dispatch_id"/>
                                 <field name="sale_id"/>
                                 <field name="partner_id"/>
                                 <field name="address_to_delivery"/>
@@ -38,9 +33,22 @@
                                     </tree>
                                 </field>
                             </page>
-                            <page name="image" string="Causas de Cancelacion" attrs="{'invisible':[('state','!=','cancel')]}">
+                            <page name="invoice" string="Factura">
+                                <field name="invoice_ids">
+                                    <tree>
+                                        <field name="name"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page name="image" string="Causas de Cancelacion"
+                                  attrs="{'invisible':[('state','=','to_delivered')]}">
                                 <group><field name="driver_observations"/></group>
-                                <field name="image_ids"/>
+                                <field name="image_ids">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="datas" widget="binary"/>
+                                    </tree>
+                                </field>
                             </page>
                         </notebook>
                     </sheet>

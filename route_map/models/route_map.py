@@ -1,4 +1,4 @@
-from odoo import fields, models,api
+from odoo import fields, models, api
 from odoo.models import Model
 from datetime import datetime
 
@@ -13,15 +13,17 @@ class RouteMap(Model):
 
     driver_id = fields.Many2one('res.partner', string='Conductor', related='truck_id.driver_id')
 
-    picking_id = fields.Many2one('stock.picking', 'Despacho')
+    picking_id = fields.Many2one('stock.picking', 'Despacho',
+                                 domain=[('picking_type_id.sequence_code', '=', 'OUT'), ('state', '=', 'done'),
+                                         ('map_id', '=', None), ('sale_id', '!=', None),('sale_id.invoice_ids','!=',None)])
 
     dispatch_ids = fields.One2many('route.map.line', 'map_id', string="Despacho")
 
     sell = fields.Char('Sello')
 
     state = fields.Selection(
-        [('draft', 'Borrador'), ('incoming', 'Despachado'), ('partially_delivered', 'Parcialmente Entregado'),
-         ('done', 'Entregado')], default='draft', string="Estado", readonly=True)
+        [('draft', 'Borrador'), ('incoming', 'Despachado'), ('partially_delivered', 'Parcialmente Realizado'),
+         ('done', 'Realizado')], default='draft', string="Estado", readonly=True)
 
     dispatch_date = fields.Datetime('Fecha de Despacho')
 
@@ -37,6 +39,17 @@ class RouteMap(Model):
 
     pallets_sum = fields.Integer('Total Pallets', compute="_pallets_sum")
 
+    invoices_name = fields.Char('Facturas',compute='compute_invoices_name')
+
+    def action_dispatch(self):
+        for item in self:
+            item.write({
+                'state': 'incoming'
+            })
+
+    def compute_invoices_name(self):
+        for item in self:
+            item.invoices_name = ','.join(item.dispatch_ids.mapped('invoices_name'))
 
     def add_picking(self):
         line = self.env['route.map.line'].sudo().create({
@@ -58,7 +71,7 @@ class RouteMap(Model):
         })
 
     @api.model
-    def create(self,values):
+    def create(self, values):
         values['display_name'] = self.env['ir.sequence'].next_by_code('route.map.seq')
         return super(RouteMap, self).create(values)
 
