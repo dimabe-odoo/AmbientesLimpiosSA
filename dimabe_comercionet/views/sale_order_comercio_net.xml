@@ -22,7 +22,7 @@
                                 <field name="sale_order_id"/>
                             </group>
                         </group>
-                        <group>
+                        <notebook>
                             <field name="comercionet_line_id">
                                 <tree>
                                     <field name="number"/>
@@ -34,7 +34,7 @@
                                     <field name="final_price"/>
                                 </tree>
                             </field>
-                        </group>
+                        </notebook>
                     </sheet>
                 </form>
             </field>
