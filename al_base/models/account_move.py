@@ -54,23 +54,23 @@ class AccountMove(models.Model):
         with open('doc.xml', 'wb') as xml_result:
             xml_result.write(doc_xml)
 
-        with open(xml_result) as xml_file:
-            data_dict = xmltodict.parse(xml_file.read())
-            json_data = json.dumps(data_dict['EnvioDTE']['SetDTE']['DTE']['Documento']['TED'])
-            cols = 12
-            while True:
-                try:
-                    if cols == 31:
-                        break
-                    codes = encode(json_data, cols)
-                    image = render_image(codes, scale=5, ratio=2)
-                    buffered = BytesIO()
-                    image.save(buffered, format="JPEG")
-                    img_str = base64.b64encode(buffered.getvalue())
-                    self.write({'ted': img_str})
+        # with open(xml_result) as xml_file:
+        data_dict = xmltodict.parse(xml_result.read())
+        json_data = json.dumps(data_dict['EnvioDTE']['SetDTE']['DTE']['Documento']['TED'])
+        cols = 12
+        while True:
+            try:
+                if cols == 31:
                     break
-                except:
-                    cols += 1
+                codes = encode(json_data, cols)
+                image = render_image(codes, scale=5, ratio=2)
+                buffered = BytesIO()
+                image.save(buffered, format="JPEG")
+                img_str = base64.b64encode(buffered.getvalue())
+                self.write({'ted': img_str})
+                break
+            except:
+                cols += 1
 
 
 @api.model
