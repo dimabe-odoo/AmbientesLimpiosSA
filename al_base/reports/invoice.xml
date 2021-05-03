@@ -218,7 +218,7 @@
           <p style="font-size: 11px;">
             <strong>Sirvase Recibir Conforme lo siguiente según Detalle:</strong>
           </p>
-          <div style="width:100%;margin:0 auto;height:600px;border:1px solid; border-radius: 5px; margin-top:4px;">
+          <div style="width:100%;margin:0 auto;height:500px;border:1px solid; border-radius: 5px; margin-top:4px;">
             <table style="width:100%;font-size:11px;" cellspacing="0">
               <tr>
                 <th style="width:10%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
@@ -257,7 +257,7 @@
             </table>
           </div>
           <div style="width:100%;border:1px solid; border-radius: 5px; margin-top:4px;">
-            <table style="padding: 6px;">
+            <table style="padding: 6px; width: 98%">
               <tr>
                 <td>Son:</td>
                 <td>
