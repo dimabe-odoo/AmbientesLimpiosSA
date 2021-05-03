@@ -52,7 +52,7 @@ class AccountMove(models.Model):
             [('res_model', '=', 'account.move'), ('res_id', '=', self.id), ('name', 'like', 'SII')]).datas
         doc_xml = base64.b64encode(doc_id).decode('ascii')
         # with open(doc_xml) as xml_file:
-        data_dict = xmltodict.parse(doc_xml.read())
+        data_dict = xmltodict.parse(doc_xml)
         json_data = json.dumps(data_dict['EnvioDTE']['SetDTE']['DTE']['Documento']['TED'])
         cols = 12
         while True:
