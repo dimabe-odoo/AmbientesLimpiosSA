@@ -51,26 +51,26 @@ class AccountMove(models.Model):
         doc_id = self.env['ir.attachment'].search(
             [('res_model', '=', 'account.move'), ('res_id', '=', self.id), ('name', 'like', 'SII')]).datas
         doc_xml = base64.b64decode(doc_id)
-        xml_result = open('doc.xml','wb')
+        xml_result = open('doc.xml', 'wb')
         xml_result.write(doc_xml)
-        raise models.ValidationError(f'{doc_id.name}')
-        with open(xml_result) as xml_file:
-            data_dict = xmltodict.parse(xml_file.read())
-            json_data = json.dumps(data_dict['EnvioDTE']['SetDTE']['DTE']['Documento']['TED'])
-            cols = 12
-            while True:
-                try:
-                    if cols == 31:
-                        break
-                    codes = encode(json_data, cols)
-                    image = render_image(codes, scale=5, ratio=2)
-                    buffered = BytesIO()
-                    image.save(buffered, format="JPEG")
-                    img_str = base64.b64encode(buffered.getvalue())
-                    self.write({'ted': img_str})
+        # raise models.ValidationError(f'{doc_id.name}')
+        # with open(xml_result) as xml_file:
+        data_dict = xmltodict.parse(xml_result.read())
+        json_data = json.dumps(data_dict['EnvioDTE']['SetDTE']['DTE']['Documento']['TED'])
+        cols = 12
+        while True:
+            try:
+                if cols == 31:
                     break
-                except:
-                    cols += 1
+                codes = encode(json_data, cols)
+                image = render_image(codes, scale=5, ratio=2)
+                buffered = BytesIO()
+                image.save(buffered, format="JPEG")
+                img_str = base64.b64encode(buffered.getvalue())
+                self.write({'ted': img_str})
+                break
+            except:
+                cols += 1
 
 
 @api.model
