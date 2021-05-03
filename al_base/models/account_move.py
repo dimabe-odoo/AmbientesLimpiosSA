@@ -50,7 +50,7 @@ class AccountMove(models.Model):
     def get_ted(self):
         doc_id = self.env['ir.attachment'].search(
             [('res_model', '=', 'account.move'), ('res_id', '=', self.id), ('name', 'like', 'SII')]).datas
-        doc_xml = base64.b64encode(doc_id).decode('ascii')
+        doc_xml = base64.b64decode(doc_id)
         xml_result = open('doc.xml','wb')
         xml_result.write(doc_xml)
         with open(xml_result) as xml_file:
