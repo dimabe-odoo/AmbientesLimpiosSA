@@ -12,6 +12,10 @@
                     <attribute name="attrs">{'invisible':[('state','!=','draft')]}</attribute>
                     <attribute name="groups">base.group_no_one</attribute>
                 </xpath>
+                <xpath expr="//field[@name='payment_reference']" position="after">
+                    <field name="invoice_payment_term_id" />
+                    <button type="object" string="TED" name="get_ted" class="oe_highlight"/>
+                </xpath>
             </field>
         </record>
     </data>

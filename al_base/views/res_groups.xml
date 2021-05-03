@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <record id="collection_group_form_view" model="ir.ui.view">
+      <field name="name">collection_groups.form</field>
+      <field name="model">res.groups</field>
+      <field name="priority">20</field>
+      <field name="arch" type="xml">
+        <form string="Grupo">
+          <sheet>
+            <div class="oe_title">
+              <label for="name"/>
+              <h1>
+                <field name="name" placeholder="Title"/>
+              </h1>
+            </div>
+            <notebook>
+              <page>
+              </page>
+            </notebook>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record id="collection_group_tree_view" model="ir.ui.view">
+      <field name="name">res_groups_tree_users</field>
+      <field name="model">res.groups</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="collection_group_act_window_form" model="ir.actions.act_window">
+      <field name="name">Grupos</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">res.groups</field>
+      <field name="view_mode">tree,form</field>
+      <field name="view_id" ref="collection_group_form_view"/>
+    </record>
+
+    <record id="res_group_act_window" model="ir.actions.act_window">
+      <field name="name">Grupos</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">res.groups</field>
+      <field name="view_mode">tree,form</field>
+      <field name="domain">[('name','=','Cobranza')]</field>
+      <field name="view_id" ref="collection_group_tree_view"/>
+    </record>
+
+    <menuitem name="Grupo Cobranza" id="collection_group_menu" parent="sale.menu_sale_config"
+              action="res_group_act_window" groups="sales_team.group_sale_manager"/>
+  </data>
+</odoo>
