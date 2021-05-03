@@ -36,6 +36,15 @@ class SaleOrderComercionet(models.Model):
                     for line in order['lines']:
                         product_code = line['product_code'].strip()
                         product = self.env['product.product'].search([('al_dun', '=', product_code)], limit=1)
+                        if not product:
+                            p_tmpl = self.env['product.template'].search([('al_dun', '=', product_code)], limit=1)
+                            if p_tmpl:
+                                product = self.env['product.product'].search([('product_tmpl_id', '=', p_tmpl.id)])
+                                if product:
+                                    product.write({
+                                        'al_dun': p_tmpl.al_dun,
+                                        'al_sku': p_tmpl.al_sku
+                                    })
                         self.env['sale.order.comercionet.line'].create({
                             'number': line['number'],
                             'product_code': product_code,
