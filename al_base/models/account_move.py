@@ -57,6 +57,7 @@ class AccountMove(models.Model):
             super(AccountMove, self)._compute_l10n_latam_document_number()
         else:
             self.l10n_latam_document_number = self.document_number
+            self.name = f'{self.l10n_latam_document_type_id.doc_code_prefix} {self.document_number}'
 
     @api.onchange('l10n_latam_document_type_id', 'l10n_latam_document_number')
     def _inverse_l10n_latam_document_number(self):
@@ -73,6 +74,7 @@ class AccountMove(models.Model):
             super(AccountMove, self)._onchange_payment_reference()
 
     def get_ted(self):
+        print(self._get_last_sequence())
         doc_id = self.env['ir.attachment'].search(
             [('res_model', '=', 'account.move'), ('res_id', '=', self.id), ('name', 'like', 'SII')]).datas
         doc_xml = base64.decodebytes(doc_id)
@@ -88,16 +90,11 @@ class AccountMove(models.Model):
             try:
                 if cols == 31:
                     break
-                codes = encode(json_data, cols)
-                image = render_image(codes, scale=5, ratio=2)
-                buffered = BytesIO()
-                image.save(buffered, format="JPEG")
-                img_str = base64.b64encode(buffered.getvalue())
-                self.write({'ted': img_str})
-                break
             except:
                 cols += 1
-
+        else:
+            raise models.ValidationError(
+                'No se puede generar código de barra 2D ya que aun no se ha generado la Factura')
 
     @api.model
     def create(self, values):
