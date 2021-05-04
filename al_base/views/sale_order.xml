@@ -7,6 +7,7 @@
       <field name="arch" type="xml">
         <xpath expr="//field[@name='payment_term_id']" position="after">
           <field name="l10n_latam_document_type_id"/>
+          <field name="client_order_ref" />
         </xpath>
         <xpath expr="//button[@name='action_confirm'][1]" position="attributes">
           <attribute name="attrs">{'invisible':[('state', '!=', 'toconfirm')]}</attribute>
