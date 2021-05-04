@@ -9,12 +9,14 @@
             <field name="priority" eval="8"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='l10n_latam_document_number']" position="attributes">
-                    <attribute name="attrs">{'invisible':[('state','!=','draft')]}</attribute>
+                    <attribute name="attrs">{'invisible':[('state','!=','draft'),('is_jump_number','!=',False)]}</attribute>
                     <attribute name="groups">base.group_no_one</attribute>
                 </xpath>
                 <xpath expr="//field[@name='payment_reference']" position="after">
                     <field name="invoice_payment_term_id" />
+                    <field name="document_number" attrs="{'invisible':[('is_jump_number','!=',True)]}" groups="base.group_no_one"/>
                     <button type="object" string="TED" name="get_ted" class="oe_highlight"/>
+                    <field name="is_jump_number" />
                 </xpath>
             </field>
         </record>

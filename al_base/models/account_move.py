@@ -16,6 +16,10 @@ class AccountMove(models.Model):
 
     ted = fields.Binary('TED')
 
+    is_jump_number = fields.Boolean('Salto de numero')
+
+    document_number = fields.Char('Numero de Documento')
+
     @api.model
     def _compute_subtotal_amount(self):
         for item in self:
@@ -47,6 +51,27 @@ class AccountMove(models.Model):
     #    doc_xml = self.env['ir.attachment'].search([('res_model','=','account.move'),('res_id','=',self.id),('SII','in','name')])
     #    return res
 
+    @api.depends('name')
+    def _compute_l10n_latam_document_number(self):
+        if not self.is_jump_number:
+            super(AccountMove, self)._compute_l10n_latam_document_number()
+        else:
+            self.l10n_latam_document_number = self.document_number
+
+    @api.onchange('l10n_latam_document_type_id', 'l10n_latam_document_number')
+    def _inverse_l10n_latam_document_number(self):
+        if self.is_jump_number:
+            self.l10n_latam_document_number = self.document_number
+        else:
+            super(AccountMove, self)._inverse_l10n_latam_document_number()
+
+    @api.onchange('payment_reference')
+    def _onchange_payment_reference(self):
+        if self.is_jump_number:
+            self.name = f'{self.sequence_prefix} {self.document_number}'
+        else:
+            super(AccountMove, self)._onchange_payment_reference()
+
     def get_ted(self):
         doc_id = self.env['ir.attachment'].search(
             [('res_model', '=', 'account.move'), ('res_id', '=', self.id), ('name', 'like', 'SII')]).datas
@@ -55,7 +80,7 @@ class AccountMove(models.Model):
             xml_result.write(doc_xml)
 
         xml_file = open(xml_result, 'rb')
-        #with open(xml_result) as xml_file:
+        # with open(xml_result) as xml_file:
         data_dict = xmltodict.parse(xml_file.read())
         json_data = json.dumps(data_dict['EnvioDTE']['SetDTE']['DTE']['Documento']['TED'])
         cols = 12
@@ -74,13 +99,13 @@ class AccountMove(models.Model):
                 cols += 1
 
 
-@api.model
-def create(self, values):
-    if 'invoice_origin' in values.keys():
-        if values['invoice_origin']:
-            sale_order = self.env['sale.order'].search([('name', '=', values['invoice_origin'])])
-            if sale_order.l10n_latam_document_type_id:
-                values['journal_id'] = 1
-                values['l10n_latam_document_type_id'] = sale_order.l10n_latam_document_type_id.id
+    @api.model
+    def create(self, values):
+        if 'invoice_origin' in values.keys():
+            if values['invoice_origin']:
+                sale_order = self.env['sale.order'].search([('name', '=', values['invoice_origin'])])
+                if sale_order.l10n_latam_document_type_id:
+                    values['journal_id'] = 1
+                    values['l10n_latam_document_type_id'] = sale_order.l10n_latam_document_type_id.id
 
-    return super(AccountMove, self).create(values)
+        return super(AccountMove, self).create(values)
