@@ -13,3 +13,4 @@ from . import custom_driver
 from . import custom_truck
 from . import mrp_production
 from . import purchase_order
+from . import account_move_reversal

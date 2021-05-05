@@ -35,6 +35,7 @@
         'views/stock_picking.xml',
         'views/account_move.xml',
         'views/purchase_order.xml',
+        'views/account_move_reversal.xml',
         'data/sale_order_mail_template.xml',
         'views/res_groups.xml',
         'reports/invoice.xml'

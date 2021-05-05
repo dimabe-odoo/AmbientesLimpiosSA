@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="account_move_reversal_form_inherit" model="ir.ui.view">
+            <field name="name">account_move_reversal.inherit.form</field>
+            <field name="model">account.move.reversal</field>
+            <field name="inherit_id" ref="account.view_account_move_reversal"/>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='reason']" position="after">
+                    <field name="is_jump_number"/>
+                    <field name="document_number" attrs="{'invisible':[('is_jump_number','=',False)]}"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
