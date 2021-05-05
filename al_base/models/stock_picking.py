@@ -11,7 +11,8 @@ class StockPicking(models.Model):
 
     _inherit = 'stock.picking'
 
-    l10n_latam_document_type_id = fields.Many2one('l10n_latam.document.type', string="Tipo de Documento")
+
+    l10n_latam_document_type_sale_id = fields.Many2one('l10n_latam.document.type', string="Tipo de Documento")
 
     ted = fields.Binary('TED')
 
@@ -105,7 +106,7 @@ class StockPicking(models.Model):
         res = super(StockPicking, self).create(values)
         sale = self.env['sale.order'].search([('name','=',res.origin)])
         if sale:
-            res.l10n_latam_document_type_id = sale.l10n_latam_document_type_id
+            res.l10n_latam_document_type_sale_id = sale.l10n_latam_document_type_id
         return res
 
     def button_validate(self):
