@@ -2,6 +2,7 @@ import requests
 import pdfkit
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
+import base64
 import codecs
 
 def download_pdfs(documents):
@@ -21,9 +22,11 @@ def download_pdfs(documents):
         
         options = {'cookie': cookies}
         # verificar configuración de wkhtmltopdf en odoo sh
-        #config = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
-        pdf = pdfkit.from_url(url, False, options=options)
-        pdf_b64 = codecs.encode(pdf, 'hex_codec')
+        config = pdfkit.configuration(wkhtmltopdf='/bin/wkhtmltopdf')
+        pdfkit.from_url(url, "order.pdf", options=options,configuration=config)
+        with open("order.pdf", "rb") as pdf_file:
+            pdf_b64 = base64.b64encode(pdf_file.read())
+
         result.append({'doc_id' : doc, 'pdf_file': pdf_b64})
     return result
 

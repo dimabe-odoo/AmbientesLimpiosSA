@@ -23,6 +23,7 @@
                             </group>
                             <group>
                                 <field name="sale_order_id"/>
+                                <field name="pdf_file"/>
                             </group>
                         </group>
                         <notebook>
