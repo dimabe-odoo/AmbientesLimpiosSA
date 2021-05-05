@@ -34,8 +34,8 @@
       <field name="arch" type="xml">
         <xpath expr="//field[@name='origin']" position="after">
           <field name="l10n_latam_document_type_id"/>
-          <filter name="Factura Electronica" domain="[('l10n_latam_document_type_id.code','=',33)]"/>
-          <filter name="Boleta Electronica" domain="[('l10n_latam_document_type_id.code','=',39)]"/>
+          <filter name="Factura Electronica" domain="[('l10n_latam_document_type_sale_id.code','=',33)]"/>
+          <filter name="Boleta Electronica" domain="[('l10n_latam_document_type_sale_id.code','=',39)]"/>
         </xpath>
       </field>
     </record>
