@@ -1,6 +1,7 @@
 import requests
 import pdfkit
 from odoo.tools.misc import find_in_path
+from odoo import models
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 import base64
