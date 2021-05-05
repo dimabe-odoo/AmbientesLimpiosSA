@@ -22,7 +22,7 @@ def download_pdfs(documents):
         
         options = {'cookie': cookies}
         # verificar configuración de wkhtmltopdf en odoo sh
-        config = pdfkit.configuration(wkhtmltopdf='/bin/wkhtmltopdf/')
+        config = pdfkit.configuration(wkhtmltopdf='wkhtmltopdf')
         pdfkit.from_url(url, "order.pdf", options=options,configuration=config)
         with open("order.pdf", "rb") as pdf_file:
             pdf_b64 = base64.b64encode(pdf_file.read())
