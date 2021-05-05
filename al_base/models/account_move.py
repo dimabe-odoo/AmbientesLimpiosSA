@@ -20,6 +20,22 @@ class AccountMove(models.Model):
 
     document_number = fields.Char('Número de Documento')
 
+    def _get_custom_report_name(self):
+        return '%s %s' % (self.l10n_latam_document_type_id.name, self.l10n_latam_document_number)
+
+    def _compute_show_btn_ted(self):
+        for item in self:
+            if not item.ted or (item.state == 'draft' or item.state == 'cancel'):
+                item.invisible_btn_ted = True
+            else:
+                item.invisible_btn_ted = False
+    
+    def action_invoice_sent(self):
+        res = super(AccountMove, self).action_invoice_sent
+        if not self.ted:
+            self.get_ted()
+        return res
+
     @api.model
     def _compute_subtotal_amount(self):
         for item in self:
@@ -64,21 +80,28 @@ class AccountMove(models.Model):
         print(self._get_last_sequence())
         doc_id = self.env['ir.attachment'].search(
             [('res_model', '=', 'account.move'), ('res_id', '=', self.id), ('name', 'like', 'SII')]).datas
-        doc_xml = base64.decodebytes(doc_id)
-        with open('doc.xml', 'wb') as xml_result:
-            xml_result.write(doc_xml)
+        if doc_id:
+            doc_xml = base64.b64decode(doc_id).decode('utf-8')
+            data_dict = xmltodict.parse(doc_xml)
 
-        xml_file = open(xml_result, 'rb')
-        # with open(xml_result) as xml_file:
-        data_dict = xmltodict.parse(xml_file.read())
-        json_data = json.dumps(data_dict['EnvioDTE']['SetDTE']['DTE']['Documento']['TED'])
-        cols = 12
-        while True:
-            try:
-                if cols == 31:
+            if self.l10n_latam_document_type_id == '39':
+                json_data = json.dumps(data_dict['EnvioBOLETA ']['SetDTE']['DTE']['Documento']['TED'])
+            else:
+                json_data = json.dumps(data_dict['EnvioDTE']['SetDTE']['DTE']['Documento']['TED'])
+            cols = 12
+            while True:
+                try:
+                    if cols == 31:
+                        break
+                    codes = encode(json_data, cols)
+                    image = render_image(codes, scale=5, ratio=2)
+                    buffered = BytesIO()
+                    image.save(buffered, format="JPEG")
+                    img_str = base64.b64encode(buffered.getvalue())
+                    self.write({'ted': img_str})
                     break
-            except:
-                cols += 1
+                except:
+                    cols += 1
         else:
             raise models.ValidationError(
                 'No se puede generar código de barra 2D ya que aun no se ha generado la Factura')
