@@ -16,19 +16,20 @@ class AccountMove(models.Model):
 
     ted = fields.Binary('TED')
 
-    invisible_btn_ted = fields.Boolean(compute="_compute_show_btn_ted", default=True)
+    is_jump_number = fields.Boolean('Se omitiran folios')
+
+    document_number = fields.Char('Número de Documento')
 
     def _get_custom_report_name(self):
         return '%s %s' % (self.l10n_latam_document_type_id.name, self.l10n_latam_document_number)
 
-    @api.model
     def _compute_show_btn_ted(self):
         for item in self:
-            if item.ted != False or (item.state == 'draft' or item.state == 'cancel'):
+            if not item.ted or (item.state == 'draft' or item.state == 'cancel'):
                 item.invisible_btn_ted = True
             else:
                 item.invisible_btn_ted = False
-
+    
     def action_invoice_sent(self):
         res = super(AccountMove, self).action_invoice_sent
         if not self.ted:
@@ -60,7 +61,23 @@ class AccountMove(models.Model):
                     total_exempt += line.price_unit * line.quantity * ((100 - line.discount) / 100)
             item.total_exempt = total_exempt
 
+    # @api.model
+    # def action_post(self):
+    #    res = super(AccountMove, self).action_post
+    #    doc_xml = self.env['ir.attachment'].search([('res_model','=','account.move'),('res_id','=',self.id),('SII','in','name')])
+    #    return res
+
+    @api.depends('name')
+    def _compute_l10n_latam_document_number(self):
+        if not self.is_jump_number:
+            super(AccountMove, self)._compute_l10n_latam_document_number()
+        else:
+            self.l10n_latam_document_number = self.document_number
+            self.name = f'{self.l10n_latam_document_type_id.doc_code_prefix} {self.document_number}'
+
+
     def get_ted(self):
+        print(self._get_last_sequence())
         doc_id = self.env['ir.attachment'].search(
             [('res_model', '=', 'account.move'), ('res_id', '=', self.id), ('name', 'like', 'SII')]).datas
         if doc_id:
@@ -86,8 +103,8 @@ class AccountMove(models.Model):
                 except:
                     cols += 1
         else:
-            raise models.ValidationError('No se puede generar código de barra 2D ya que aun no se ha generado la Factura')
-
+            raise models.ValidationError(
+                'No se puede generar código de barra 2D ya que aun no se ha generado la Factura')
 
     @api.model
     def create(self, values):

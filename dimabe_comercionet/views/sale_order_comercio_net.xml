@@ -23,13 +23,13 @@
                             </group>
                         </group>
                         <notebook>
-                            <page string="detalles" name="details">
+                            <page string="Detalles" name="details">
                                 <field name="comercionet_line_id">
                                     <tree>
                                         <field name="number"/>
-                                        <field name="product_id" />
+                                        <field name="product_id"/>
                                         <field name="product_code"/>
-                                        <field name="price" />
+                                        <field name="price"/>
                                         <field name="quantity"/>
                                         <field name="discount_percent"/>
                                         <field name="final_price"/>
@@ -49,26 +49,26 @@
                 <tree>
                     <field name="create_date" string="Fecha de Creación"/>
                     <field name="purchase_order"/>
-                    <field name="client_id" />
+                    <field name="client_id"/>
                     <field name="client_code_comercionet"/>
                     <field name="sale_order_id"/>
-                    <field name="total_price" />
+                    <field name="total_price"/>
                 </tree>
             </field>
         </record>
 
-<!--        <record id="sale_order_comercio_net_search_view" model="ir.ui.view">-->
-<!--            <field name="name">ProjectName.sale_order_comercio_net.search</field>-->
-<!--            <field name="model">ProjectName.sale_order_comercio_net</field>-->
-<!--            <field name="arch" type="xml">-->
-<!--                <search string="ModelTitle">-->
-<!--                    <group expand="1" string="Group By">-->
-<!--                        <filter string="Example Field" name="example_field" domain="[]"-->
-<!--                                context="{'group_by':'example_field'}"/>-->
-<!--                    </group>-->
-<!--                </search>-->
-<!--            </field>-->
-<!--        </record>-->
+        <!--        <record id="sale_order_comercio_net_search_view" model="ir.ui.view">-->
+        <!--            <field name="name">ProjectName.sale_order_comercio_net.search</field>-->
+        <!--            <field name="model">ProjectName.sale_order_comercio_net</field>-->
+        <!--            <field name="arch" type="xml">-->
+        <!--                <search string="ModelTitle">-->
+        <!--                    <group expand="1" string="Group By">-->
+        <!--                        <filter string="Example Field" name="example_field" domain="[]"-->
+        <!--                                context="{'group_by':'example_field'}"/>-->
+        <!--                    </group>-->
+        <!--                </search>-->
+        <!--            </field>-->
+        <!--        </record>-->
 
         <record id="sale_order_comercio_net_act_window" model="ir.actions.act_window">
             <field name="name">Ordenes de Venta ComercioNet</field>
@@ -77,7 +77,8 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-        <menuitem name="Ordenes de Venta ComercioNet" id="sale_order_comercio_net_menu" parent="sale.sale_menu_root" action="sale_order_comercio_net_act_window"/>
+        <menuitem name="Ordenes de Venta ComercioNet" id="sale_order_comercio_net_menu" parent="sale.sale_menu_root"
+                  action="sale_order_comercio_net_act_window"/>
 
     </data>
 </odoo>
