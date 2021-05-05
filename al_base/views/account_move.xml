@@ -16,7 +16,11 @@
                     <field name="invoice_payment_term_id" />
                     <field name="document_number" attrs="{'invisible':[('is_jump_number','!=',True)]}" groups="base.group_no_one"/>
                     <button type="object" string="TED" name="get_ted" class="oe_highlight"/>
-                    <field name="is_jump_number" />
+
+                </xpath>
+                <xpath expr="//field[@name='l10n_latam_document_number']" position="after">
+                    <field name="is_jump_number"/>
+                    <field name="document_number" attrs="{'invisible':[('is_jump_number','=',False)]}"/>
                 </xpath>
             </field>
         </record>

@@ -16,9 +16,9 @@ class AccountMove(models.Model):
 
     ted = fields.Binary('TED')
 
-    is_jump_number = fields.Boolean('Salto de numero')
+    is_jump_number = fields.Boolean('Se omitiran folios')
 
-    document_number = fields.Char('Numero de Documento')
+    document_number = fields.Char('Número de Documento')
 
     @api.model
     def _compute_subtotal_amount(self):
@@ -59,19 +59,6 @@ class AccountMove(models.Model):
             self.l10n_latam_document_number = self.document_number
             self.name = f'{self.l10n_latam_document_type_id.doc_code_prefix} {self.document_number}'
 
-    @api.onchange('l10n_latam_document_type_id', 'l10n_latam_document_number')
-    def _inverse_l10n_latam_document_number(self):
-        if self.is_jump_number:
-            self.l10n_latam_document_number = self.document_number
-        else:
-            super(AccountMove, self)._inverse_l10n_latam_document_number()
-
-    @api.onchange('payment_reference')
-    def _onchange_payment_reference(self):
-        if self.is_jump_number:
-            self.name = f'{self.sequence_prefix} {self.document_number}'
-        else:
-            super(AccountMove, self)._onchange_payment_reference()
 
     def get_ted(self):
         print(self._get_last_sequence())
