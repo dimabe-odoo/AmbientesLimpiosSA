@@ -1,5 +1,6 @@
 from odoo import fields, models, api
 from dateutil.relativedelta import relativedelta
+from odoo.tools.config import config
 
 class CustomLoan(models.Model):
     _name = 'custom.loan'
@@ -39,6 +40,7 @@ class CustomLoan(models.Model):
             item.loan_total = sum(item.fee_ids.mapped('value'))
 
     def calculate_fee(self):
+        raise models.ValidationError(config.get("bin_path"))
         for item in self:
             index = 1
             for fee in range(item.fee_qty):
