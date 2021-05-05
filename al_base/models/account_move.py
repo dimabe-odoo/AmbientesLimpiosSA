@@ -18,6 +18,9 @@ class AccountMove(models.Model):
 
     invisible_btn_ted = fields.Boolean(compute="_compute_show_btn_ted", default=True)
 
+    def _get_custom_report_name(self):
+        return '%s %s' % (self.l10n_latam_document_type_id.name, self.l10n_latam_document_number)
+
     @api.model
     def _compute_show_btn_ted(self):
         for item in self:
@@ -63,7 +66,11 @@ class AccountMove(models.Model):
         if doc_id:
             doc_xml = base64.b64decode(doc_id).decode('utf-8')
             data_dict = xmltodict.parse(doc_xml)
-            json_data = json.dumps(data_dict['EnvioDTE']['SetDTE']['DTE']['Documento']['TED'])
+
+            if self.l10n_latam_document_type_id == '39':
+                json_data = json.dumps(data_dict['EnvioBOLETA ']['SetDTE']['DTE']['Documento']['TED'])
+            else:
+                json_data = json.dumps(data_dict['EnvioDTE']['SetDTE']['DTE']['Documento']['TED'])
             cols = 12
             while True:
                 try:
@@ -82,13 +89,13 @@ class AccountMove(models.Model):
             raise models.ValidationError('No se puede generar código de barra 2D ya que aun no se ha generado la Factura')
 
 
-@api.model
-def create(self, values):
-    if 'invoice_origin' in values.keys():
-        if values['invoice_origin']:
-            sale_order = self.env['sale.order'].search([('name', '=', values['invoice_origin'])])
-            if sale_order.l10n_latam_document_type_id:
-                values['journal_id'] = 1
-                values['l10n_latam_document_type_id'] = sale_order.l10n_latam_document_type_id.id
+    @api.model
+    def create(self, values):
+        if 'invoice_origin' in values.keys():
+            if values['invoice_origin']:
+                sale_order = self.env['sale.order'].search([('name', '=', values['invoice_origin'])])
+                if sale_order.l10n_latam_document_type_id:
+                    values['journal_id'] = 1
+                    values['l10n_latam_document_type_id'] = sale_order.l10n_latam_document_type_id.id
 
-    return super(AccountMove, self).create(values)
+        return super(AccountMove, self).create(values)
