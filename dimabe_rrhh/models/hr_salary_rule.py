@@ -7,6 +7,8 @@ class HrSalaryRule(models.Model):
 
     show_in_book = fields.Boolean('Aparece en el libro de remuneraciones', default=True)
 
+    discount_in_fee = fields.Boolean('Descuento en Cuota')
+
     @api.onchange('is_bonus')
     def onchange_method(self):
         #if not self.code:

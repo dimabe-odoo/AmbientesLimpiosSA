@@ -48,7 +48,8 @@
         'views/templates.xml',
         'report/report_payslip.xml',
         'views/resource_calendar.xml',
-        'views/res_company.xml'
+        'views/res_company.xml',
+        'views/custom_loan.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

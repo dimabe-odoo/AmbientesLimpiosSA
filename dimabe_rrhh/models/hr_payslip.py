@@ -3,12 +3,12 @@ from odoo import models, fields, api
 
 class HrPaySlip(models.Model):
     _inherit = 'hr.payslip'
-    
+
     indicator_id = fields.Many2one('custom.indicators', string='Indicadores')
 
     salary_id = fields.Many2one('hr.salary.rule', 'Agregar Entrada')
-    
-    account_analytic_id = fields.Many2one('account.analytic.account','Centro de Costo',readonly=True)
+
+    account_analytic_id = fields.Many2one('account.analytic.account', 'Centro de Costo', readonly=True)
 
     basic_salary = fields.Char('Sueldo Base', compute="_compute_basic_salary")
 
@@ -19,34 +19,36 @@ class HrPaySlip(models.Model):
     payment_term_id = fields.Many2one('custom.payslip.payment.term', 'Forma de Pago')
 
     personal_movements = fields.Selection([('0', 'Sin Movimiento en el Mes'),
-     ('1', 'Contratación a plazo indefinido'),
-     ('2', 'Retiro'),
-     ('3', 'Subsidios (L Médicas)'),
-     ('4', 'Permiso Sin Goce de Sueldos'),
-     ('5', 'Incorporación en el Lugar de Trabajo'),
-     ('6', 'Accidentes del Trabajo'),
-     ('7', 'Contratación a plazo fijo'),
-     ('8', 'Cambio Contrato plazo fijo a plazo indefinido'),
-     ('11', 'Otros Movimientos (Ausentismos)'),
-     ('12', 'Reliquidación, Premio, Bono')     
-    ], 'Movimientos Personal', default="0")
+                                           ('1', 'Contratación a plazo indefinido'),
+                                           ('2', 'Retiro'),
+                                           ('3', 'Subsidios (L Médicas)'),
+                                           ('4', 'Permiso Sin Goce de Sueldos'),
+                                           ('5', 'Incorporación en el Lugar de Trabajo'),
+                                           ('6', 'Accidentes del Trabajo'),
+                                           ('7', 'Contratación a plazo fijo'),
+                                           ('8', 'Cambio Contrato plazo fijo a plazo indefinido'),
+                                           ('11', 'Otros Movimientos (Ausentismos)'),
+                                           ('12', 'Reliquidación, Premio, Bono')
+                                           ], 'Movimientos Personal', default="0")
+
+    loan_id = fields.Many2one('custom.loan')
 
     @api.model
     def _compute_basic_salary(self):
         for item in self:
-            item.basic_salary = f"$ {int(item.line_ids.filtered(lambda a: a.code=='SUELDO').total)}"
+            item.basic_salary = f"$ {int(item.line_ids.filtered(lambda a: a.code == 'SUELDO').total)}"
 
     @api.model
     def _compute_net_salary(self):
         for item in self:
-            item.net_salary = f"$ {int(item.line_ids.filtered(lambda a: a.code=='LIQ').total)}"
+            item.net_salary = f"$ {int(item.line_ids.filtered(lambda a: a.code == 'LIQ').total)}"
 
     def add(self):
         for item in self:
             if item.salary_id:
-                type_id = self.env['hr.payslip.input.type'].search([('code','=',item.salary_id.code)])
+                type_id = self.env['hr.payslip.input.type'].search([('code', '=', item.salary_id.code)])
                 amount = 0
-                
+
                 if type_id:
                     if item.salary_id.amount_select == 'fix':
                         amount = item.salary_id.amount_fix
@@ -54,8 +56,9 @@ class HrPaySlip(models.Model):
                         if item.contract_id.collation_amount > 0:
                             amount = item.contract_id.collation_amount
                         else:
-                            raise models.ValidationError('No se puede agregar Asig. Colación ya que está en 0 en el contrato')
-               
+                            raise models.ValidationError(
+                                'No se puede agregar Asig. Colación ya que está en 0 en el contrato')
+
                     self.env['hr.payslip.input'].create({
                         'name': item.salary_id.name,
                         'code': item.salary_id.code,
@@ -70,17 +73,45 @@ class HrPaySlip(models.Model):
                         'code': item.salary_id.code
                     })
                     self.env['hr.payslip.input'].create({
-                        'name': item.salary_id.name. capitalize(),
+                        'name': item.salary_id.name.capitalize(),
                         'code': item.salary_id.code,
                         'contract_id': item.contract_id.id,
                         'payslip_id': item.id,
                         'input_type_id': input_type.id
                     })
             item.salary_id = None
-    
 
-    #@api.model
-    #def _get_worked_day_lines(self):
+    def compute_sheet(self):
+        loan_id = self.env['custom.loan'].search([('employee_id', '=', self.employee_id.id)])
+        loan_id = loan_id.filtered(lambda a: self.date_from <= a.next_fee_date <= self.date_to)
+        if loan_id:
+            type_id = self.env['hr.payslip.input.type'].search([('code', '=', loan_id.rule_id.code)])
+            if type_id:
+                self.env['hr.payslip.input'].create({
+                    'name': loan_id.rule_id.name,
+                    'code': loan_id.rule_id.code,
+                    'contract_id': self.contract_id.id,
+                    'payslip_id': self.id,
+                    'amount': loan_id.next_fee_id.value,
+                    'input_type_id':type_id.id
+                })
+            else:
+                input_type = self.env['hr.payslip.input.type'].create({
+                    'name': loan_id.rule_id.name,
+                    'code': loan_id.rule_id.code
+                })
+                self.env['hr.payslip.input'].create({
+                    'name': loan_id.rule_id.name,
+                    'code': loan_id.rule_id.code,
+                    'contract_id': self.contract_id.id,
+                    'payslip_id': self.id,
+                    'amount': loan_id.next_fee_id.value,
+                    'input_type_id': input_type.id
+                })
+        return super(HrPaySlip, self).compute_sheet()
+
+    # @api.model
+    # def _get_worked_day_lines(self):
     #    res = super(HrPaySlip, self)._get_worked_day_lines()
     #    temp = 0 
     #    days = 0
@@ -101,5 +132,3 @@ class HrPaySlip(models.Model):
     #    res.append(attendances)
     #    res.extend(leaves)
     #    return res
-
-    
