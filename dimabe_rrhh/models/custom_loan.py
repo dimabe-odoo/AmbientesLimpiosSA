@@ -41,12 +41,13 @@ class CustomLoan(models.Model):
 
     def calculate_fee(self):
         for item in self:
-            index = 1
-            for fee in range(item.fee_qty):
-                self.env['custom.fee'].create({
-                    'loan_id': item.id,
-                    'value': item.fee_value,
-                    'expiration_date': item.date_start + relativedelta(months=index),
-                    'number': index
-                })
-                index += 1
+            if len(item.fee_ids) == 0:
+                index = 1
+                for fee in range(item.fee_qty):
+                    self.env['custom.fee'].create({
+                        'loan_id': item.id,
+                        'value': item.fee_value,
+                        'expiration_date': item.date_start + relativedelta(months=index),
+                        'number': index
+                    })
+                    index += 1

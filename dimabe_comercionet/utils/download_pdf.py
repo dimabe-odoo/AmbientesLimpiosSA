@@ -1,5 +1,6 @@
 import requests
 import pdfkit
+from odoo.tools.misc import find_in_path
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 import base64
@@ -22,7 +23,7 @@ def download_pdfs(documents):
         
         options = {'cookie': cookies}
         # verificar configuración de wkhtmltopdf en odoo sh
-        config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
+        config = pdfkit.configuration(wkhtmltopdf=find_in_path('wkhtmltopdf'))
         pdfkit.from_url(url, "order.pdf", options=options,configuration=config)
         with open("order.pdf", "rb") as pdf_file:
             pdf_b64 = base64.b64encode(pdf_file.read())
