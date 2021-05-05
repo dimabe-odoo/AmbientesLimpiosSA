@@ -24,7 +24,7 @@ def download_pdfs(documents):
         
         options = {'cookie': cookies}
         # verificar configuración de wkhtmltopdf en odoo sh
-        raise models.ValidationError(type(find_in_path('wkhtmltopdf')))
+        raise models.ValidationError(find_in_path('wkhtmltopdf'))
         config = pdfkit.configuration(wkhtmltopdf=find_in_path('wkhtmltopdf'))
         pdfkit.from_url(url, "order.pdf", options=options,configuration=config)
         with open("order.pdf", "rb") as pdf_file:
