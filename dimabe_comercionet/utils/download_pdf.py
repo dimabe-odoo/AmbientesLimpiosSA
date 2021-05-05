@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 import codecs
 
-def download_pdfs(documents)
+def download_pdfs(documents):
     s = requests.session()
     login_data = {
             'login': '7808800014004',
