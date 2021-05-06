@@ -1,29 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
+  <data>
 
-        <record id="account_move_form_inherit" model="ir.ui.view">
-            <field name="name">account_move.form</field>
-            <field name="model">account.move</field>
-            <field name="inherit_id" ref="l10n_latam_invoice_document.view_move_form"/>
-            <field name="priority" eval="8"/>
-            <field name="arch" type="xml">
-                <xpath expr="//header" position="inside">
-                     <button type="object" string="Generar código de barra 2d" name="get_ted" class="oe_highlight"/>
-                </xpath>
-                <xpath expr="//field[@name='l10n_latam_document_number']" position="attributes">
-                    <attribute name="attrs">{'invisible':[('state','!=','draft'),('is_jump_number','!=',False)]}</attribute>
-                    <attribute name="groups">base.group_no_one</attribute>
-                </xpath>
-                <xpath expr="//field[@name='payment_reference']" position="after">
-                    <field name="invoice_payment_term_id" />
-                    <field name="document_number" attrs="{'invisible':[('is_jump_number','!=',True)]}" groups="base.group_no_one"/>
-                </xpath>
-                <xpath expr="//field[@name='l10n_latam_document_number']" position="after">
-                    <field name="is_jump_number"/>
-                    <field name="document_number" attrs="{'invisible':[('is_jump_number','=',False)]}"/>
-                </xpath>
-            </field>
-        </record>
-    </data>
+    <record id="account_move_form_inherit" model="ir.ui.view">
+      <field name="name">account_move.form</field>
+      <field name="model">account.move</field>
+      <field name="inherit_id" ref="l10n_latam_invoice_document.view_move_form"/>
+      <field name="priority" eval="8"/>
+      <field name="arch" type="xml">
+        <xpath expr="//header" position="inside">
+          <field name="invisible_btn_ted" invisible="1"/>
+          <button type="object" string="Generar código de barra 2D" name="get_ted" class="oe_highlight"
+                  attrs="{'invisible':[('invisible_btn_ted','=',True)]}"/>
+        </xpath>
+        <xpath expr="//field[@name='l10n_latam_document_number']" position="attributes">
+          <attribute name="attrs">{'invisible':[('state','!=','draft'),('is_jump_number','!=',False)]}</attribute>
+          <attribute name="groups">base.group_no_one</attribute>
+        </xpath>
+        <xpath expr="//field[@name='payment_reference']" position="after">
+          <field name="invoice_payment_term_id"/>
+          <field name="document_number" attrs="{'invisible':[('is_jump_number','!=',True)]}"
+                 groups="base.group_no_one"/>
+        </xpath>
+        <xpath expr="//field[@name='l10n_latam_document_number']" position="after">
+          <field name="is_jump_number"/>
+          <field name="document_number" attrs="{'invisible':[('is_jump_number','=',False)]}"/>
+        </xpath>
+      </field>
+    </record>
+  </data>
 </odoo>

@@ -19,8 +19,9 @@
           <attribute name="groups">al_base.group_order_confirmation</attribute>
         </xpath>
         <xpath expr="//header" position="inside">
-          <button type="object" string="Confirmar" name="order_to_confirm" class="oe_highlight"
-                  attrs="{'invisible':[('state', '!=', 'draft')]}"/>
+          <field name="invisible_btn_confirm" invisible="1"/>
+          <button type="object" string="Confirmar" name="order_to_discount_approve" class="oe_highlight"
+                  attrs="{'invisible':[('invisible_btn_confirm','=',True)]}"/>
         </xpath>
       </field>
     </record>
