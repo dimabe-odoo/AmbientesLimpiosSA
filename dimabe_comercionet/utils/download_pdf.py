@@ -1,8 +1,7 @@
 import requests
 import pdfkit
 from odoo.tools.misc import find_in_path
-from odoo import http
-from odoo.http import request
+from odoo import models
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 import base64
@@ -25,12 +24,8 @@ def download_pdfs(documents):
         
         options = {'cookie': cookies}
         # verificar configuración de wkhtmltopdf en odoo sh
-        path = request.env['ir.config_parameter'].search([('key','=','webkit')])
-        config = pdfkit.configuration(wkhtmltopdf=path.value)
-        pdfkit.from_file("/src/user/dimabe_rrhh/report/report_payslip.xml", "order.pdf", options=options,configuration=config)
-        with open("order.pdf", "rb") as pdf_file:
-            pdf_b64 = base64.b64encode(pdf_file.read())
-
-        result.append({'doc_id' : doc, 'pdf_file': pdf_b64})
+        pdf = pdfkit.from_url(url, False, options=options)
+        pdf_b64 = codecs.encode(pdf, 'hex_codec')
+        result.append({'doc_id': doc, 'pdf_file': pdf_b64})
     return result
 
