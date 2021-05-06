@@ -11,6 +11,7 @@ import codecs
 
 def download_pdfs(documents):
     s = requests.session()
+    s.verify = False
     login_data = {
             'login': '7808800014004',
             'password': 'Alimpsaexcell2021'
