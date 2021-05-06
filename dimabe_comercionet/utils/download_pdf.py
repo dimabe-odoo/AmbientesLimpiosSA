@@ -22,14 +22,11 @@ def download_pdfs(documents):
         url = "https://www.comercionet.cl/visualizacion/visualizar_documentoORDERS.php?tipo=recibidos&docu_id="+doc
         cookies = []
         for key, value in s.cookies.get_dict().items():
-            cookies.append((key, value))
-
-        
+            cookies.append((key, value))   
         options = {'cookie': cookies}
         # verificar configuración de wkhtmltopdf en odoo sh
-        pdfkit.from_url(url, False, options=options)
         config = pdfkit.configuration(wkhtmltopdf=bytes(find_in_path('wkhtmltopdf'),'utf-8'))
-        pdfkit.from_url(url, "order.pdf", options=options, configuration=config)
+        pdfkit.from_url(url, ".order.pdf", options=options, configuration=config)
         with open("order.pdf", "rb") as pdf_file:
             pdf_b64 = base64.b64encode(pdf_file.read())
         result.append({'doc_id': doc, 'pdf_file': pdf_b64})
