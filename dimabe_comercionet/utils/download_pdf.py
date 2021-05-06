@@ -27,7 +27,7 @@ def download_pdfs(documents):
         # verificar configuración de wkhtmltopdf en odoo sh
         path = request.env['ir.config_parameter'].search([('key','=','webkit')])
         config = pdfkit.configuration(wkhtmltopdf=path.value)
-        pdfkit.from_file("src/user/dimabe_rrhh/report/report_payslip.xml", "order.pdf", options=options,configuration=config)
+        pdfkit.from_file("/src/user/dimabe_rrhh/report/report_payslip.xml", "order.pdf", options=options,configuration=config)
         with open("order.pdf", "rb") as pdf_file:
             pdf_b64 = base64.b64encode(pdf_file.read())
 
