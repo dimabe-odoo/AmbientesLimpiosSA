@@ -5,6 +5,7 @@ from odoo import models
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 import base64
+import urllib.request
 import codecs
 
 def download_pdfs(documents):
@@ -17,6 +18,14 @@ def download_pdfs(documents):
     result = []
     for doc in documents:
         url = "https://www.comercionet.cl/visualizacion/visualizar_documentoORDERS.php?tipo=recibidos&docu_id="+doc
+
+        fp = urllib.request.urlopen(url)
+        mybytes = fp.read()
+
+        mystr = mybytes.decode("utf8")
+        fp.close()
+
+        raise models.ValidationError(mystr)
         cookies = []
         for key, value in s.cookies.get_dict().items():
             cookies.append((key, value))
