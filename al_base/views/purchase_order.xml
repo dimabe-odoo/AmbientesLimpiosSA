@@ -22,7 +22,7 @@
           <field name="invisible_custom_btn_confirm" invisible="1"/>
           <button type="object" string="Confirmar Pedido por Monto" name="button_confirm"
                   attrs="{'invisible':['|',('invisible_custom_btn_confirm','=',True),('state','!=','toamountapprove')]}" class="oe_highlight"/>
-          <button type="object" string="Power" name="test"/>
+
         </xpath>
       </field>
     </record>
