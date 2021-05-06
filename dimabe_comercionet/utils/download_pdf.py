@@ -18,14 +18,8 @@ def download_pdfs(documents):
     result = []
     for doc in documents:
         url = "https://www.comercionet.cl/visualizacion/visualizar_documentoORDERS.php?tipo=recibidos&docu_id="+doc
-
-        fp = urllib.request.urlopen(url)
-        mybytes = fp.read()
-
-        mystr = mybytes.decode("utf8")
-        fp.close()
-
-        raise models.ValidationError(mystr)
+        web = requests.get(url)
+        soup = BeautifulSoup(web.text)
         cookies = []
         for key, value in s.cookies.get_dict().items():
             cookies.append((key, value))
@@ -33,8 +27,9 @@ def download_pdfs(documents):
         
         options = {'cookie': cookies}
         # verificar configuración de wkhtmltopdf en odoo sh
-        pdf = pdfkit.from_url(url, False, options=options)
-        pdf_b64 = codecs.encode(pdf, 'hex_codec')
+        pdf = pdfkit.from_string(web.text,"order.pdf", options=options)
+        with open("order.pdf", "rb") as pdf_file:
+            pdf_b64 = base64.b64encode(pdf_file.read())
         result.append({'doc_id': doc, 'pdf_file': pdf_b64})
     return result
 
