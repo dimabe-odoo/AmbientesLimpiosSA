@@ -2,4 +2,3 @@ pydifact
 xmltodict
 pdf417
 pdfkit
-headless-pdfkit==0.1.1
