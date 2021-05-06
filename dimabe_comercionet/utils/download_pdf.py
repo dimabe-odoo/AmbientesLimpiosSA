@@ -23,7 +23,7 @@ def download_pdfs(documents):
         for key, value in s.cookies.get_dict().items():
             cookies.append((key, value))
         options = {'cookie': cookies}
-        pdfkit.from_str('ola', "order.pdf", options=options)
+        pdfkit.from_html(url, "order.pdf", options=options)
         with open("order.pdf", "rb") as pdf_file:
             pdf_b64 = base64.b64encode(pdf_file.read())
         return None
