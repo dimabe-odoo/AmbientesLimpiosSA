@@ -84,7 +84,7 @@ class HrPaySlip(models.Model):
     def compute_sheet(self):
         loan_id = self.env['custom.loan'].search([('employee_id', '=', self.employee_id.id)])
         loan_id = loan_id.filtered(lambda a: self.date_from <= a.next_fee_date <= self.date_to)
-        if loan_id:
+        if self.input_line_ids.filtered(lambda a: a.code == loan_id.rule_id.code and a.amount > 0) and loan_id:
             type_id = self.env['hr.payslip.input.type'].search([('code', '=', loan_id.rule_id.code)])
             if type_id:
                 self.env['hr.payslip.input'].create({
@@ -93,7 +93,7 @@ class HrPaySlip(models.Model):
                     'contract_id': self.contract_id.id,
                     'payslip_id': self.id,
                     'amount': loan_id.next_fee_id.value,
-                    'input_type_id':type_id.id
+                    'input_type_id': type_id.id
                 })
             else:
                 input_type = self.env['hr.payslip.input.type'].create({
