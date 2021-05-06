@@ -628,9 +628,9 @@ else:
             <field name="sequence">38</field>
             <field name="category_id" ref="custom_hr_salary_rule_category_other_discount"/>
             <field name="condition_select">python</field>
-            <field name="condition_python">result = inputs.PREST and inputs.PREST.amount > 0</field>
+            <field name="condition_python">result = inputs.PRES and inputs.PRES.amount > 0</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">result = inputs.PREST.amount</field>
+            <field name="amount_python_compute">result = inputs.PRES.amount</field>
         </record>
 
        <record id="custom_hr_salary_rule_ccaf_loan_amount" model="hr.salary.rule">

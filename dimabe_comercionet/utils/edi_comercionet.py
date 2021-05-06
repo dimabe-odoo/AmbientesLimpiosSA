@@ -18,6 +18,9 @@ def create_sale_order_by_edi(str_edi):
                     sale_order['client_code_comercionet'] = segment.elements[1]
                 else:
                     raise Exception('No es posible obtener el codigo del cliente')
+            if segment.tag == 'NAD':
+                if type(segment.elements[0]) == str and segment.elements[0].lower() == 'by':
+                    sale_order['secondary_comercionet_box'] = segment.elements[1][0] if type(segment.elements[1][0]) == str else ''
             if segment.tag == 'LIN':
                 detail_line = {}
                 discounts = []

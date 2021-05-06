@@ -24,3 +24,5 @@ from . import hr_payslip_worked_days
 from . import resource_calendar
 from . import res_company
 from . import custom_payslip_payment_term
+from . import custom_loan
+from . import custom_fee

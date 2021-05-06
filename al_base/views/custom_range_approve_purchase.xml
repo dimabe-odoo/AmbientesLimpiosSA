@@ -1,0 +1,11 @@
+<odoo>
+  <record id="custom_range_approve_purchase_act_window" model="ir.actions.act_window">
+            <field name="name">Rangos de Aprobación Compra</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">custom.range.approve.purchase</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="Rangos de Aprobación Compra" id="custom_range_approve_purchase_menu" parent="purchase.menu_purchase_config" action="custom_range_approve_purchase_act_window"/>
+
+</odoo>
