@@ -24,9 +24,6 @@ class PurchaseOrder(models.Model):
             except Exception as e:
                 print(f'Error {e}')
 
-    def test(self):
-        self.state == 'sent'
-
     def button_confirm(self):
         if self.state == 'draft' and self.get_range_amount():
             self.order_to_amount_approve()
