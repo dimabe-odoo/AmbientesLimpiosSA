@@ -20,6 +20,8 @@ class AccountMove(models.Model):
 
     document_number = fields.Char('Número de Documento')
 
+    invisible_btn_ted = fields.Boolean(compute="_compute_show_btn_ted", default=True)
+
     def _get_custom_report_name(self):
         return '%s %s' % (self.l10n_latam_document_type_id.name, self.l10n_latam_document_number)
 
@@ -84,7 +86,7 @@ class AccountMove(models.Model):
             doc_xml = base64.b64decode(doc_id).decode('utf-8')
             data_dict = xmltodict.parse(doc_xml)
 
-            if self.l10n_latam_document_type_id == '39':
+            if self.l10n_latam_document_type_id.code == '39':
                 json_data = json.dumps(data_dict['EnvioBOLETA ']['SetDTE']['DTE']['Documento']['TED'])
             else:
                 json_data = json.dumps(data_dict['EnvioDTE']['SetDTE']['DTE']['Documento']['TED'])

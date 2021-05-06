@@ -14,3 +14,6 @@ from . import custom_truck
 from . import mrp_production
 from . import purchase_order
 from . import account_move_reversal
+from . import custom_range_approve_sale
+from . import custom_range_approve_purchase
+from . import account_move_line

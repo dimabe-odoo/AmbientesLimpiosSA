@@ -186,7 +186,7 @@
                                         <th style="text-align: left;">COND. DE VENTA</th>
                                         <td>:</td>
                                         <td style="text-transform: uppercase;">
-                                            <span t-esc="d.payment_term_id.l10n_cl_sii_code[3:]"/>
+                                            <span t-esc="d.payment_term_id.l10n_cl_sii_code"/>
                                             /<span t-field="d.payment_term_id.name"/>
                                         </td>
                                     </tr>

@@ -1,7 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
+  <record id="so_to_amount_approve_mail_template" model="mail.template">
+    <field name="name">Órden de venta por aprobación por Descuento</field>
+    <field name="model_id" ref="al_base.model_sale_order"/>
+    <field name="email_from">ventas@excellchile.cl</field>
+    <field name="email_to">
+      ${object.get_email_to_discount_approve()}
+    </field>
+    <field name="subject">Nueva órden de venta</field>
+    <field name="body_html">
+      <![CDATA[
+          <p>Estimados,<br/><br/>
+          Se ha generado una nueva órden de venta ${object.name}. La cual requiere aprobación por Descuento
+          <br/>
+          </p>
+          Atte,<br/>
+          ${(object.company_id.name)}
+      ]]>
+    </field>
+  </record>
   <record id="so_to_approve_mail_template" model="mail.template">
-    <field name="name">Órden de venta por confirmar</field>
+    <field name="name">Órden de venta por confirmar por Cobranza</field>
     <field name="model_id" ref="al_base.model_sale_order"/>
     <field name="email_from">ventas@excellchile.cl</field>
     <field name="email_to">
@@ -11,7 +30,7 @@
     <field name="body_html">
       <![CDATA[
           <p>Estimados,<br/><br/>
-          Se ha generado una nueva órden de venta ${object.name}. La cual requiere aprobación
+          Se ha generado una nueva órden de venta ${object.name}. La cual requiere aprobación por Cobranza
           <br/>
           </p>
           Atte,<br/>
