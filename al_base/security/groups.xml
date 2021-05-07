@@ -3,4 +3,7 @@
     <record id="group_order_confirmation" model="res.groups">
         <field name="name">Cobranza</field>
     </record>
+    <record id="custom_templates" model="res.groups">
+        <field name="name">Plantillas Personalizadas</field>
+    </record>
 </odoo>

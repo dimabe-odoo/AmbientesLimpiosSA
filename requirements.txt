@@ -2,4 +2,3 @@ pydifact
 xmltodict
 pdf417
 pdfkit
-weasyprint

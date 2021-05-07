@@ -32,39 +32,42 @@ def get_sale_orders():
         'password': 'Alimpsaexcell2021'
     }
     s.post('https://www.comercionet.cl/usuarios/login.php', data=login_data)
-
     documents = []
-    url = 'https://www.comercionet.cl/listadoDocumentos.php?tido_id=3&tipo=recibidos&entrada=1&offset='
-    page = 0;
-    get_row = True
-    while get_row:
-        res = s.get(url+str(page))
-        last_document = documents[-1] if len(documents) > 0 else None
-        if res.status_code == 200:
-            soup = BeautifulSoup(res.content, 'html.parser')
-            # buscar los documentos dentro de la tabla y guardarlos en una lista
-            table_content = soup.find('table', {'class', 'tabla'}).find_all('tr')
-            if table_content and len(table_content) > 0:
-                for tr in table_content:
-                    td_counter = 0
-                    doc = {}
-                    for td in tr.find_all('td'):
-                        td_counter += 1
-                        if td_counter == 1:
-                            try:
-                                doc_id = td.find('input', {'class': 'radio'}).get('value')
-                                doc['id'] = doc_id
-                            except:
-                                pass
-                        if td_counter == 7 and td.text:
-                            doc['status'] = td.text
-                    if doc:
-                        documents.append(doc)
-            else:
+    doc_types = [3, 9]
+    for i in doc_types:
+        url = 'https://www.comercionet.cl/listadoDocumentos.php?tido_id={}&tipo=recibidos&entrada=1&offset='.format(i)
+        page = 0;
+        get_row = True
+        while get_row:
+            res = s.get(url+str(page))
+            last_document = documents[-1] if len(documents) > 0 else None
+            if res.status_code == 200:
+                soup = BeautifulSoup(res.content, 'html.parser')
+                # buscar los documentos dentro de la tabla y guardarlos en una lista
+                table_content = soup.find('table', {'class', 'tabla'}).find_all('tr')
+                if table_content and len(table_content) > 0:
+                    for tr in table_content:
+                        td_counter = 0
+                        doc = {}
+                        for td in tr.find_all('td'):
+                            td_counter += 1
+                            if td_counter == 1:
+                                try:
+                                    doc_id = td.find('input', {'class': 'radio'}).get('value')
+                                    doc['id'] = doc_id
+                                except:
+                                    pass
+                            if td_counter == 7 and td.text:
+                                doc['status'] = td.text
+                        if doc and len(documents)  == 0:
+                            documents.append(doc)
+                        if doc and len(documents) > 0 and documents[-1] != doc:
+                            documents.append(doc)
+                else:
+                    get_row = False
+            if documents[-1] == last_document:
                 get_row = False
-        if documents[-1] == last_document:
-            get_row = False
-        page += 10
+            page += 10
         
     if documents:
         sale_orders = download_documents(documents, s)

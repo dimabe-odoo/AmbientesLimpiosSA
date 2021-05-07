@@ -20,7 +20,7 @@ class SaleOrder(models.Model):
     invisible_btn_confirm = fields.Boolean(compute="_compute_invisible_btn_confirm", defaul=True)
 
     def order_to_discount_approve(self):
-        if not self.get_range_amount():
+        if not self.get_range_discount():
             self.state_to_toconfirm()
         else:
             if self.state == 'draft':
@@ -56,14 +56,16 @@ class SaleOrder(models.Model):
         for item in self:
             if item.state == 'todiscountapprove' or item.state == 'draft':
                 if item.get_range_discount():
+                    print(item.get_range_discount().name)
                     user_can_access = False
                     if item.env.user in item.get_range_discount().user_ids:
                         user_can_access = True
                     item.invisible_btn_confirm = not user_can_access
                 else:
                     item.invisible_btn_confirm = False
-            if item.state == 'toconfirm':
+            else:
                 item.invisible_btn_confirm = True
+
 
     @api.model
     def get_range_discount(self):

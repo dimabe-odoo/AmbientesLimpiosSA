@@ -5,7 +5,5 @@
             <field name="res_model">custom.range.approve.sale</field>
             <field name="view_mode">tree,form</field>
         </record>
-
-        <menuitem name="Rangos de Aprobación Venta" id="custom_range_approve_sale_menu" parent="sale.menu_sale_config" action="custom_range_approve_sale_act_window"/>
-
+        <menuitem groups="sales_team.group_sale_manager" name="Rangos de Aprobación Venta" id="custom_range_approve_sale_menu" parent="sale.menu_sale_config" action="custom_range_approve_sale_act_window"/>
 </odoo>
