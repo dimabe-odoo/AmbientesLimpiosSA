@@ -2,6 +2,7 @@ from odoo import fields, models, api
 from dateutil.relativedelta import relativedelta
 from odoo.tools.config import config
 
+
 class CustomLoan(models.Model):
     _name = 'custom.loan'
 
@@ -11,7 +12,7 @@ class CustomLoan(models.Model):
 
     fee_value = fields.Monetary('Valor de Cuota')
 
-    loan_total = fields.Monetary('Total de Prestamo',compute='compute_loan_total')
+    loan_total = fields.Monetary('Total de Prestamo', compute='compute_loan_total')
 
     currency_id = fields.Many2one('res.currency', string='Moneda',
                                   default=lambda self: self.env['res.currency'].search([('name', '=', 'CLP')]))
@@ -20,21 +21,22 @@ class CustomLoan(models.Model):
 
     interest = fields.Float('Interes')
 
-    fee_ids = fields.One2many('custom.fee','loan_id')
+    fee_ids = fields.One2many('custom.fee', 'loan_id')
 
-    next_fee_id = fields.Many2one('custom.fee',compute='compute_next_fee')
+    next_fee_id = fields.Many2one('custom.fee', compute='compute_next_fee')
 
-    next_fee_date = fields.Date('Proxima Cuota',related='next_fee_id.expiration_date')
+    next_fee_date = fields.Date('Proxima Cuota', related='next_fee_id.expiration_date')
 
-    rule_id = fields.Many2one('hr.salary.rule', string='Regla',domain=[('discount_in_fee','=',True)])
+    rule_id = fields.Many2one('hr.salary.rule', string='Regla', domain=[('discount_in_fee', '=', True)])
 
-    indicator_id = fields.Many2one('custom.indicators',string="Indicador que se inciara")
+    indicator_id = fields.Many2one('custom.indicators', string="Indicador que se inciara")
 
-    state = fields.Selection([('draft','Borrador'),('in_process','En Proceso'),('done','Finalizado')],default='draft')
+    state = fields.Selection([('draft', 'Borrador'), ('in_process', 'En Proceso'), ('done', 'Finalizado')],
+                             default='draft')
 
     def compute_next_fee(self):
         for item in self:
-            if len(item.fee_ids) > 0:
+            if len(item.fee_ids.filtered(lambda a: not a.paid)) > 0 and item.state != 'done':
                 item.next_fee_id = item.fee_ids.filtered(lambda a: not a.paid)[0]
             else:
                 item.next_fee_id = None
