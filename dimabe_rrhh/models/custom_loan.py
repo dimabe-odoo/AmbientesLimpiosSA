@@ -28,6 +28,10 @@ class CustomLoan(models.Model):
 
     rule_id = fields.Many2one('hr.salary.rule', string='Regla',domain=[('discount_in_fee','=',True)])
 
+    indicator_id = fields.Many2one('custom.indicators',string="Indicador que se inciara")
+
+    state = fields.Selection([('draft','Borrador'),('in_process','En Proceso'),('done','Finalizado')],default='draft')
+
     def compute_next_fee(self):
         for item in self:
             if len(item.fee_ids) > 0:
@@ -51,3 +55,6 @@ class CustomLoan(models.Model):
                         'number': index
                     })
                     index += 1
+                item.write({
+                    'state': 'in_process'
+                })

@@ -79,27 +79,31 @@ class AccountMove(models.Model):
         doc_id = self.env['ir.attachment'].search(
             [('res_model', '=', 'account.move'), ('res_id', '=', self.id), ('name', 'like', 'SII')]).datas
         if doc_id:
-            doc_xml = base64.b64decode(doc_id).decode('utf-8')
-            data_dict = xmltodict.parse(doc_xml)
+            if len(doc_id) == 1:
+                doc_xml = base64.b64decode(doc_id).decode('utf-8')
+                data_dict = xmltodict.parse(doc_xml)
 
-            if self.l10n_latam_document_type_id.code == '39':
-                json_data = json.dumps(data_dict['EnvioBOLETA ']['SetDTE']['DTE']['Documento']['TED'])
-            else:
-                json_data = json.dumps(data_dict['EnvioDTE']['SetDTE']['DTE']['Documento']['TED'])
-            cols = 12
-            while True:
-                try:
-                    if cols == 31:
+                if self.l10n_latam_document_type_id.code == '39':
+                    json_data = json.dumps(data_dict['EnvioBOLETA ']['SetDTE']['DTE']['Documento']['TED'])
+                else:
+                    json_data = json.dumps(data_dict['EnvioDTE']['SetDTE']['DTE']['Documento']['TED'])
+                cols = 12
+                while True:
+                    try:
+                        if cols == 31:
+                            break
+                        codes = encode(json_data, cols)
+                        image = render_image(codes, scale=5, ratio=2)
+                        buffered = BytesIO()
+                        image.save(buffered, format="JPEG")
+                        img_str = base64.b64encode(buffered.getvalue())
+                        self.write({'ted': img_str})
                         break
-                    codes = encode(json_data, cols)
-                    image = render_image(codes, scale=5, ratio=2)
-                    buffered = BytesIO()
-                    image.save(buffered, format="JPEG")
-                    img_str = base64.b64encode(buffered.getvalue())
-                    self.write({'ted': img_str})
-                    break
-                except:
-                    cols += 1
+                    except:
+                        cols += 1
+                else:
+                    raise models.ValidationError(
+                        'Existen dos archivos DTE SII, favor dejar solo un archivo para obtener el código correspondiente')
         else:
             raise models.ValidationError(
                 'No se puede generar código de barra 2D ya que aun no se ha generado la Factura')

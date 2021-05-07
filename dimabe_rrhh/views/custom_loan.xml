@@ -7,6 +7,9 @@
             <field name="model">custom.loan</field>
             <field name="arch" type="xml">
                 <form string="ModelTitle">
+                    <header>
+                        <field name="state" widget="statusbar"/>
+                    </header>
                     <sheet>
                         <div class="oe_title">
                             <label for="employee_id"/>
@@ -24,6 +27,7 @@
                             </group>
                             <group>
                                 <field name="rule_id"/>
+                                <field name="indicator_id"/>
                                 <field name="date_start" required="1"/>
                             </group>
                         </group>

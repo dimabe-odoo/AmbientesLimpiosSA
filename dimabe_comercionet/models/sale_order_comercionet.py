@@ -1,6 +1,10 @@
+import json
+
 from odoo import models, fields
 from ..utils import comercionet_scrapper
 from ..utils import download_pdf
+import requests
+
 
 class SaleOrderComercionet(models.Model):
     _name = 'sale.order.comercionet'
@@ -27,26 +31,31 @@ class SaleOrderComercionet(models.Model):
             for doc in search:
                 documents.append(doc.doc_id)
             if len(documents) > 0:
-                res = download_pdf.download_pdfs(documents)
-                if res and len(res) > 0:
-                    for d in res:
+                url = self.env['ir.config_parameter'].search([('key','=','pdf_url')]).value
+                documents_json = {'documents': documents}
+                res = requests.post(url, json=documents_json)
+                result = res.json()
+                if res.status_code == 200:
+                    for d in result['result']:
                         so = self.env['sale.order.comercionet'].search([('doc_id', '=', d['doc_id'])], limit=1)
                         if so:
                             so.write(
-                                {'pdf_file' : d['pdf_file']}
+                                {'pdf_file': d['pdf_file']}
                             )
 
     def get_orders(self):
         orders = comercionet_scrapper.get_sale_orders()
         if orders:
             for order in orders:
-                sale = self.env['sale.order.comercionet'].search([('purchase_order', '=', order['purchase_order'].strip())])
+                sale = self.env['sale.order.comercionet'].search(
+                    [('purchase_order', '=', order['purchase_order'].strip())])
                 if not sale:
                     client_code = order['client_code_comercionet'].strip()
                     secondary_client_code = order['secondary_comercionet_box'].strip()
                     client = self.env['res.partner'].search([('comercionet_box', 'like', f'%{client_code}%')], limit=1)
                     if not client:
-                        self.env['res.partner'].search([('comercionet_box', 'like', f'%{secondary_client_code}%')], limit=1)
+                        self.env['res.partner'].search([('comercionet_box', 'like', f'%{secondary_client_code}%')],
+                                                       limit=1)
                     comercionet = self.env['sale.order.comercionet'].create({
                         'purchase_order': order['purchase_order'].strip(),
                         'client_code_comercionet': client_code,

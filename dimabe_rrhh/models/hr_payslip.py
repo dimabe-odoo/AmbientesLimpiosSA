@@ -84,7 +84,7 @@ class HrPaySlip(models.Model):
     def compute_sheet(self):
         loan_id = self.env['custom.loan'].search([('employee_id', '=', self.employee_id.id)])
         loan_id = loan_id.filtered(lambda a: self.date_from <= a.next_fee_date <= self.date_to)
-        if self.input_line_ids.filtered(lambda a: a.code == loan_id.rule_id.code and a.amount > 0) and loan_id:
+        if not self.input_line_ids.filtered(lambda a: a.code == loan_id.rule_id.code and a.amount > 0) and loan_id:
             type_id = self.env['hr.payslip.input.type'].search([('code', '=', loan_id.rule_id.code)])
             if type_id:
                 self.env['hr.payslip.input'].create({
@@ -108,7 +108,20 @@ class HrPaySlip(models.Model):
                     'amount': loan_id.next_fee_id.value,
                     'input_type_id': input_type.id
                 })
+
+            self.write({
+                'loan_id': loan_id.id
+            })
         return super(HrPaySlip, self).compute_sheet()
+
+    def action_payslip_done(self):
+        for item in self:
+
+            if item.loan_id:
+                item.loan_id.next_fee_id.write({
+                    'paid': True
+                })
+            return super(HrPaySlip, self).action_payslip_done()
 
     # @api.model
     # def _get_worked_day_lines(self):

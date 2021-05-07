@@ -299,20 +299,20 @@
                     </td>
                   </t>
                   <td style="border-right:1px solid;border-bottom:1px solid;text-align:center;padding-right:4px;">
-                    <span t-esc="line.quantity"/>
+                    <span t-esc="d.roundclp(line.quantity)"/>
                   </td>
                   <td style="border-right:1px solid;border-bottom:1px solid;text-align:left;padding-right:4px;padding-left:4px;">
                     <span t-field="line.name"/>
                   </td>
                   <td style="border-right:1px solid;border-bottom:1px solid;text-align:right;padding-right:4px;">
-                    <span t-esc="(line.quantity * line.discount * line.price_unit) / 100"/>
+                    <span t-esc="d.roundclp(line.quantity * line.discount * line.price_unit) / 100"/>
                   </td>
                   <td style="border-right:1px solid;text-align:right;border-bottom:1px solid;text-align:right;padding-right:4px;padding-left:4px;">
                     <t t-if="d.l10n_latam_document_type_id.code == '39'">
-                      <span t-esc="line.taxes_amount + line.price_unit"/>
+                      <span t-esc="d.roundclp(line.taxes_amount + line.price_unit)"/>
                     </t>
                     <t t-else="">
-                      <span t-esc="int(line.price_unit)"/>
+                      <span t-esc="d.roundclp(line.price_unit)"/>
                     </t>
                   </td>
                   <td style="border-bottom:1px solid;text-align:right;padding-right:4px;">
@@ -320,7 +320,7 @@
                       <span t-esc="line.subtotal_with_taxes"/>
                     </t>
                     <t t-else="">
-                      <span t-esc="line.price_subtotal"/>
+                      <span t-esc="d.roundclp(line.price_subtotal)"/>
                     </t>
                   </td>
                 </tr>
@@ -510,7 +510,7 @@
               <table style="margin-left: 60px;">
                 <tr>
                   <td colspan="3" style="text-align: center;">
-                    <span t-field="res_company.name" style="font-size: 14px;   font-weight: bold;"/>
+                    <span t-field="res_company.name" style="font-size: 14px; font-weight: bold;"/>
                     <p style="font-size: 10px; " t-field="res_company.l10n_cl_activity_description"/>
                   </td>
                 </tr>
@@ -705,30 +705,30 @@
                     </td>
                     <t t-if="d.partner_id.l10n_cl_delivery_guide_price == 'product'">
                       <td style="border-right:1px solid;text-align:right;border-bottom:1px solid;text-align:right;padding-right:4px;padding-left:4px;">
-                        <span t-esc="int(line.product_id.list_price)"/>
+                        <span t-esc="d.roundclp(line.product_id.list_price)"/>
                       </td>
                       <td style="border-bottom:1px solid;text-align:right;padding-right:4px;">
                         <t t-if="d.state != 'done'">
-                          <span t-esc="line.product_uom_qty * line.product_id.list_price"/>
+                          <span t-esc="d.roundclp(line.product_uom_qty * line.product_id.list_price)"/>
                         </t>
                         <t t-if="d.state == 'done'">
-                          <span t-esc="line.qty_done * line.product_id.list_price"/>
+                          <span t-esc="d.roundclp(line.qty_done * line.product_id.list_price)"/>
                         </t>
                       </td>
                     </t>
                     <t t-if="d.partner_id.l10n_cl_delivery_guide_price == 'sale_order'">
                       <td style="border-right:1px solid;text-align:right;border-bottom:1px solid;text-align:right;padding-right:4px;padding-left:4px;">
                         <span
-                            t-esc="d.sale_id.order_line.filtered(lambda a: a.product_id.id == line.product_id.id).price_unit"/>
+                            t-esc="d.roundclp(d.sale_id.order_line.filtered(lambda a: a.product_id.id == line.product_id.id).price_unit)"/>
                       </td>
                       <td style="border-bottom:1px solid;text-align:right;padding-right:4px;">
                         <t t-if="d.state != 'done'">
                           <span
-                              t-esc="line.product_uom_qty * d.sale_id.order_line.filtered(lambda a: a.product_id.id == line.product_id.id).price_unit"/>
+                              t-esc="d.roundclp(line.product_uom_qty * d.sale_id.order_line.filtered(lambda a: a.product_id.id == line.product_id.id).price_unit)"/>
                         </t>
                         <t t-if="d.state == 'done'">
                           <span
-                              t-esc="line.qty_done * d.sale_id.order_line.filtered(lambda a: a.product_id.id == line.product_id.id).price_unit"/>
+                              t-esc="d.roundclp(line.qty_done * d.sale_id.order_line.filtered(lambda a: a.product_id.id == line.product_id.id).price_unit)"/>
                         </t>
                       </td>
                     </t>
@@ -762,7 +762,7 @@
                       <strong>TOTAL NETO</strong>
                     </td>
                     <td style="border-bottom: 1px solid; padding: 4px; text-align: right;">
-                      <span t-field="d.net_amount"/>
+                      <span t-esc="d.roundclp(d.net_amount)"/>
                     </td>
                   </tr>
                   <tr>
@@ -770,7 +770,7 @@
                       <strong>IVA 19%</strong>
                     </td>
                     <td style="border-bottom: 1px solid; padding: 4px; text-align: right;">
-                      <span t-field="d.tax_amount"/>
+                      <span t-esc="d.roundclp(d.tax_amount)"/>
                     </td>
                   </tr>
                   <tr>
@@ -778,7 +778,7 @@
                       <strong>MONTO TOTAL</strong>
                     </td>
                     <td style="padding: 4px; text-align: right;">
-                      <span t-field="d.amount_total"/>
+                      <span t-esc="d.roundclp(d.amount_total)"/>
                     </td>
                   </tr>
                 </table>
