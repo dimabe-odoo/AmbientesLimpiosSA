@@ -28,7 +28,7 @@ class PurchaseOrder(models.Model):
         if self.state == 'draft' and self.get_range_amount():
             self.order_to_amount_approve()
         if self.state == 'toamountapprove':
-            self.amount_approve_date = datetime.today()
+            self.write({'state': 'to approve', 'amount_approve_date': datetime.today()})
             return super(PurchaseOrder, self).button_confirm()
         if self.state == 'sent':
             res = super(PurchaseOrder, self).button_confirm()

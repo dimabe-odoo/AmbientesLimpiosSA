@@ -6,6 +6,5 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-        <menuitem name="Rangos de Aprobación Compra" id="custom_range_approve_purchase_menu" parent="purchase.menu_purchase_config" action="custom_range_approve_purchase_act_window"/>
-
+        <menuitem groups="purchase.group_purchase_manager" name="Rangos de Aprobación Compra" id="custom_range_approve_purchase_menu" parent="purchase.menu_purchase_config" action="custom_range_approve_purchase_act_window"/>
 </odoo>

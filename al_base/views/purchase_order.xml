@@ -9,20 +9,10 @@
         <xpath expr="//field[@name='origin']" position="before">
             <field name="date_delivered"/>
         </xpath>
-        <!--
-        <xpath expr="//button[@name='button_confirm'][1]" position="attributes">
-          <attribute name="attrs">{'invisible':[('invisible_btn_confirm', '=', True)]}</attribute>
-          <attribute name="string">Aprobar por Monto</attribute>
-        </xpath>
-        <xpath expr="//button[@name='button_confirm'][2]" position="attributes">
-          <attribute name="attrs">{'invisible':['|',('invisible_btn_confirm', '=', True),('invisible_custom_btn_confirm', '=', False)]}</attribute>
-        </xpath>
-        -->
         <xpath expr="//header" position="inside">
           <field name="invisible_custom_btn_confirm" invisible="1"/>
           <button type="object" string="Confirmar Pedido por Monto" name="button_confirm"
                   attrs="{'invisible':['|',('invisible_custom_btn_confirm','=',True),('state','!=','toamountapprove')]}" class="oe_highlight"/>
-
         </xpath>
       </field>
     </record>
