@@ -22,11 +22,11 @@ def download_pdfs(documents):
         cookies = []
         for key, value in s.cookies.get_dict().items():
             cookies.append((key, value))
-
-        
         options = {'cookie': cookies}
+        pdfkit.from_url(url, "order.pdf", options=options)
         with open("order.pdf", "rb") as pdf_file:
             pdf_b64 = base64.b64encode(pdf_file.read())
+        return None
         result.append({'doc_id': doc, 'pdf_file': pdf_b64})
     return result
 
