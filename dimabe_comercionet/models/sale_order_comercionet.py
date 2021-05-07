@@ -52,6 +52,8 @@ class SaleOrderComercionet(models.Model):
                 sale = self.env['sale.order.comercionet'].search(
                     [('purchase_order', '=', order['purchase_order'].strip())])
                 if not sale:
+                    if not order['client_code_comercionet']:
+                        order['client_code_comercionet'] = order['secondary_comercionet_box']
                     client_code = order['client_code_comercionet'].strip()
                     secondary_client_code = order['secondary_comercionet_box'].strip()
                     client = self.env['res.partner'].search([('comercionet_box', 'like', f'%{client_code}%')], limit=1)

@@ -59,7 +59,9 @@ def get_sale_orders():
                                     pass
                             if td_counter == 7 and td.text:
                                 doc['status'] = td.text
-                        if doc:
+                        if doc and len(documents)  == 0:
+                            documents.append(doc)
+                        if doc and len(documents) > 0 and documents[-1] != doc:
                             documents.append(doc)
                 else:
                     get_row = False
