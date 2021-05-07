@@ -4,7 +4,7 @@ from odoo import models, fields, api
 class HrPaySlip(models.Model):
     _inherit = 'hr.payslip'
 
-    indicator_id = fields.Many2one('custom.indicators', string='Indicadores')
+    indicator_id = fields.Many2one('custom.indicators', string='Indicadores',required=True)
 
     salary_id = fields.Many2one('hr.salary.rule', 'Agregar Entrada')
 

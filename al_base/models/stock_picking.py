@@ -11,7 +11,6 @@ class StockPicking(models.Model):
 
     _inherit = 'stock.picking'
 
-
     l10n_latam_document_type_sale_id = fields.Many2one('l10n_latam.document.type', string="Tipo de Documento")
 
     ted = fields.Binary('TED')

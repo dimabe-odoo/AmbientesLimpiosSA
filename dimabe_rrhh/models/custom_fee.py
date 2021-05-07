@@ -19,10 +19,11 @@ class CustomFee(models.Model):
 
     @api.model
     def write(self,values):
+        res = super(CustomFee, self).write(values)
         if all(self.loan_id.fee_ids.mapped('paid')):
             self.loan_id.write({
                 'state': 'done'
             })
-        return super(CustomFee, self).write(values)
+        return res
 
 

@@ -9,5 +9,9 @@
             <field name="key">pdf_password</field>
             <field name="value">Contraseña</field>
         </record>
+        <record id="pdf_user_parameter" model="ir.config_parameter">
+            <field name="key">pdf_user</field>
+            <field name="value">Usuario</field>
+        </record>
     </data>
 </odoo>
