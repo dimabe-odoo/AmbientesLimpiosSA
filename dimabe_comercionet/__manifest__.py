@@ -29,6 +29,7 @@
         'views/templates.xml',
         'views/sale_order_comercio_net.xml',
         #'views/cron_comercionet.xml'
+        'data/data_pdf.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

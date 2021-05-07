@@ -16,3 +16,10 @@ class ModelName(models.Model):
     expiration_date = fields.Date('Fecha de Vencimiento')
 
     loan_id = fields.Many2one('custom.loan')
+
+    @api.model
+    def write(self,values):
+        if all(self.loan_id.fee_ids.mapped('paid')):
+            values['state'] = 'done'
+
+
