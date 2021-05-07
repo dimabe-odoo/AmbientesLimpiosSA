@@ -1,7 +1,7 @@
 from odoo import fields, models, api
 
 
-class ModelName(models.Model):
+class CustomFee(models.Model):
     _name = 'custom.fee'
 
     number = fields.Integer('Numero')
@@ -20,6 +20,9 @@ class ModelName(models.Model):
     @api.model
     def write(self,values):
         if all(self.loan_id.fee_ids.mapped('paid')):
-            values['state'] = 'done'
+            self.loan_id.write({
+                'state': 'done'
+            })
+        return super(CustomFee, self).write(values)
 
 

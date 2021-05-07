@@ -73,14 +73,13 @@ class AccountMove(models.Model):
             self.l10n_latam_document_number = self.document_number
             self.name = f'{self.l10n_latam_document_type_id.doc_code_prefix} {self.document_number}'
 
-
     def get_ted(self):
         print(self._get_last_sequence())
         doc_id = self.env['ir.attachment'].search(
-            [('res_model', '=', 'account.move'), ('res_id', '=', self.id), ('name', 'like', 'SII')]).datas
+            [('res_model', '=', 'account.move'), ('res_id', '=', self.id), ('name', 'like', 'SII')])
         if doc_id:
             if len(doc_id) == 1:
-                doc_xml = base64.b64decode(doc_id).decode('utf-8')
+                doc_xml = base64.b64decode(doc_id.datas).decode('utf-8')
                 data_dict = xmltodict.parse(doc_xml)
 
                 if self.l10n_latam_document_type_id.code == '39':
