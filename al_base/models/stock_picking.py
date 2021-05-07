@@ -30,10 +30,12 @@ class StockPicking(models.Model):
     @api.model
     def _compute_show_btn_ted(self):
         for item in self:
-            if item.ted != False or (item.state == 'draft' or item.state == 'cancel'):
+            if item.ted or (item.state == 'draft' or item.state == 'cancel'):
                 item.invisible_btn_ted = True
             else:
                 item.invisible_btn_ted = False
+
+    @api.model
 
     def get_ted(self):
         doc_id = self.env['ir.attachment'].search(

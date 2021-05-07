@@ -63,8 +63,9 @@ class SaleOrder(models.Model):
                     item.invisible_btn_confirm = not user_can_access
                 else:
                     item.invisible_btn_confirm = False
-            if item.state == 'toconfirm':
+            else:
                 item.invisible_btn_confirm = True
+
 
     @api.model
     def get_range_discount(self):

@@ -3,7 +3,7 @@ import json, xmltodict
 from pdf417 import encode, render_image
 import base64
 from io import BytesIO
-
+from math import floor
 
 class AccountMove(models.Model):
     _inherit = 'account.move'
@@ -27,7 +27,7 @@ class AccountMove(models.Model):
 
     def _compute_show_btn_ted(self):
         for item in self:
-            if not item.ted or (item.state == 'draft' or item.state == 'cancel'):
+            if item.ted or (item.state == 'draft' or item.state == 'cancel'):
                 item.invisible_btn_ted = True
             else:
                 item.invisible_btn_ted = False
@@ -63,11 +63,7 @@ class AccountMove(models.Model):
                     total_exempt += line.price_unit * line.quantity * ((100 - line.discount) / 100)
             item.total_exempt = total_exempt
 
-    # @api.model
-    # def action_post(self):
-    #    res = super(AccountMove, self).action_post
-    #    doc_xml = self.env['ir.attachment'].search([('res_model','=','account.move'),('res_id','=',self.id),('SII','in','name')])
-    #    return res
+
 
     @api.depends('name')
     def _compute_l10n_latam_document_number(self):
@@ -118,3 +114,17 @@ class AccountMove(models.Model):
                     values['l10n_latam_document_type_id'] = sale_order.l10n_latam_document_type_id.id
 
         return super(AccountMove, self).create(values)
+
+    def roundclp(self, value):
+        value_str = str(value)
+        list_value = value_str.split('.')
+        if len(list_value) > 1:
+            decimal = int(list_value[1][0])
+            if decimal == 0:
+                return int(value)
+            elif decimal < 5:
+                return floor(value)
+            else:
+                return round(value)
+        else:
+            return value

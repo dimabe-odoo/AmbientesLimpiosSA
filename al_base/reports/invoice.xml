@@ -129,7 +129,8 @@
                   </td>
                   <td style="text-align:left;">
                     :
-                    <span style="text-transform: uppercase;" t-field="d.partner_shipping_id.state_id.name"/>
+                    <!--<span t-field="d.partner_shipping_id.state_id.name"/>-->
+                    <span t-field="d.partner_shipping_id.city_id.name"/>
                   </td>
                 </tr>
                 <tr>
@@ -229,7 +230,7 @@
                   <td style="text-align:left;">
                     :
                     <span
-                        t-esc="d.mapped('invoice_line_ids').mapped('sale_line_ids').mapped('order_id').mapped('picking_ids').name"/>
+                        t-esc="d.mapped('invoice_line_ids').mapped('sale_line_ids').mapped('order_id').mapped('picking_ids').filtered(lambda a: a.l10n_latam_document_number).name"/>
                   </td>
                   <td colspan="2"></td>
                 </tr>
@@ -382,10 +383,10 @@
                   </td>
                   <td style="width: 60%;border-bottom: 1px solid; padding: 4px; text-align: right;">
                     <t t-if="d.l10n_latam_document_type_id.code == '39'">
-                      <span t-esc="int(sum(d.mapped('invoice_line_ids').mapped('subtotal_with_taxes')))"/>
+                      <span t-esc="d.roundclp(sum(d.mapped('invoice_line_ids').mapped('subtotal_with_taxes')))"/>
                     </t>
                     <t t-else="">
-                      <span t-field="d.subtotal_amount"/>
+                      <span t-esc="d.roundclp(d.subtotal_amount)"/>
                     </t>
                   </td>
                 </tr>
@@ -395,7 +396,7 @@
                       <strong>TOTAL NETO</strong>
                     </td>
                     <td style="border-bottom: 1px solid; padding: 4px; text-align: right;">
-                      <span t-field="d.net_amount"/>
+                      <span t-esc="d.roundclp(d.net_amount)"/>
                     </td>
                   </tr>
                 </t>
@@ -405,7 +406,7 @@
                       <strong>TOTAL EXENTO</strong>
                     </td>
                     <td style="border-bottom: 1px solid; padding: 4px; text-align: right;">
-                      <span t-field="d.total_exempt"/>
+                      <span t-esc="d.roundclp(d.total_exempt)"/>
                     </td>
                   </tr>
                 </t>
@@ -418,7 +419,7 @@
                         </strong>
                       </td>
                       <td style="border-bottom: 1px solid; padding: 4px; text-align: right;">
-                        <span t-esc="tax[1]"/>
+                        <span t-esc="d.roundclp(tax[1])"/>
                       </td>
                     </tr>
                   </t>
@@ -428,7 +429,7 @@
                     <strong>TOTAL</strong>
                   </td>
                   <td style="padding: 4px; text-align: right;">
-                    <span t-field="d.amount_total"/>
+                    <span t-esc="d.roundclp(d.amount_total)"/>
                   </td>
                 </tr>
               </table>
@@ -642,7 +643,8 @@
                 </td>
                 <td style="text-align:left;">
                   :
-                  <span t-field="d.partner_id.state_id.name"/>
+                  <!--<span t-field="d.partner_id.state_id.name"/>-->
+                  <span t-field="d.partner_id.city_id.name"/>
                 </td>
                 <td style="text-align:left;">
                   <strong>CIUDAD</strong>
@@ -836,7 +838,8 @@
   </record>
 
   <report id="action_custom_invoice" string="Factura Custom" model="account.move" report_type="qweb-pdf"
-          name="al_base.custom_invoice" menu="True" paperformat="paper_format_letter_custom" groups="al_base.custom_templates"/>
+          name="al_base.custom_invoice" menu="True" paperformat="paper_format_letter_custom" groups="al_base.custom_templates"
+          print_report_name="object._get_custom_report_name()"/>
   <report id="action_custom_dispatch_guide" string="Guia de Despacho Custom" model="stock.picking"
           report_type="qweb-pdf"
           groups="al_base.custom_templates"
