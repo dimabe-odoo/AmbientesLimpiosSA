@@ -33,9 +33,9 @@ def get_sale_orders():
     }
     s.post('https://www.comercionet.cl/usuarios/login.php', data=login_data)
     documents = []
-    doc_type = [3, 9]
-    for i in doc_type:
-        url = f'https://www.comercionet.cl/listadoDocumentos.php?tido_id{i}=&tipo=recibidos&entrada=1&offset='
+    doc_types = [3, 9]
+    for i in doc_types:
+        url = 'https://www.comercionet.cl/listadoDocumentos.php?tido_id={}&tipo=recibidos&entrada=1&offset='.format(i)
         page = 0;
         get_row = True
         while get_row:
