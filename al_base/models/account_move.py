@@ -63,8 +63,6 @@ class AccountMove(models.Model):
                     total_exempt += line.price_unit * line.quantity * ((100 - line.discount) / 100)
             item.total_exempt = total_exempt
 
-
-
     @api.depends('name')
     def _compute_l10n_latam_document_number(self):
         if not self.is_jump_number:
