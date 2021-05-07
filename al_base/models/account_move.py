@@ -83,7 +83,7 @@ class AccountMove(models.Model):
                 data_dict = xmltodict.parse(doc_xml)
 
                 if self.l10n_latam_document_type_id.code == '39':
-                    json_data = json.dumps(data_dict['EnvioBOLETA ']['SetDTE']['DTE']['Documento']['TED'])
+                    json_data = json.dumps(data_dict['EnvioBOLETA']['SetDTE']['DTE']['Documento']['TED'])
                 else:
                     json_data = json.dumps(data_dict['EnvioDTE']['SetDTE']['DTE']['Documento']['TED'])
                 cols = 12
