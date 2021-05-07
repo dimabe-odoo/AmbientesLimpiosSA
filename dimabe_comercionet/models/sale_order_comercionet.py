@@ -31,8 +31,10 @@ class SaleOrderComercionet(models.Model):
             for doc in search:
                 documents.append(doc.doc_id)
             if len(documents) > 0:
-                url = self.env['ir.config_parameter'].search([('key','=','pdf_url')]).value
-                documents_json = {'documents': documents}
+                url = self.env['ir.config_parameter'].search([('key', '=', 'pdf_url')]).value
+                user = self.env['ir.config_parameter'].search([('key', '=', 'pdf_user')])
+                password = self.env['ir.config_parameter'].search([('key', '=', 'pdf_password')])
+                documents_json = {'documents': documents, "user": user.value, "password": password.password}
                 res = requests.post(url, json=documents_json)
                 result = res.json()
                 if res.status_code == 200:

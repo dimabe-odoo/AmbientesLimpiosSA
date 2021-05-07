@@ -5,5 +5,9 @@
             <field name="key">pdf_url</field>
             <field name="value">http://aresweb.dimabe.cl:7885/api/download_pdfs</field>
         </record>
+        <record id="pdf_password_parameter" model="ir.config_parameter">
+            <field name="key">pdf_password</field>
+            <field name="value">Contraseña</field>
+        </record>
     </data>
 </odoo>
