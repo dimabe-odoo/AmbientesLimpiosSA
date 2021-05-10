@@ -35,6 +35,17 @@ class SaleOrderComercionet(models.Model):
                 })
         return res
 
+    def create_sale_order(self):
+        if self.client_id and self.client_code_comercionet:
+            sale_order = {
+                
+            }
+            for line in self.comercionet_line_id:
+                if not line.product_id:
+                    raise models.ValidationError('la linea {} no cuenta con un producto asociado'.format(line.number))
+
+
+
 
     def download_pdfs(self):
         search = self.env['sale.order.comercionet'].search([('pdf_file', '=', None)])
