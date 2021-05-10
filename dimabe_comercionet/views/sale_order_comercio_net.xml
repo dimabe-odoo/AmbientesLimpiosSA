@@ -8,6 +8,7 @@
             <field name="arch" type="xml">
             <xpath expr="//header" position="inside">
                 <button type="object" string="Obtener PDF" name="download_pdfs" class="oe_highlight" />
+                <button type="object" string="Asignar Cliente" name="set_client" attrs="{'invisible':[('client_id','!=',None)]}" />
             </xpath>
                 <form>
                     <sheet>
@@ -19,11 +20,12 @@
                         </div>
                         <group>
                             <group>
-                                <field name="client_code_comercionet"/>
+                                <field name="client_code_comercionet" readonly="1" />
                             </group>
                             <group>
-                                <field name="sale_order_id"/>
-                                <field name="pdf_file"/>
+                                <field name="sale_order_id" readonly="1" />
+                                <field name="pdf_file" readonly="1"/>
+                                <field name="client_id" attrs="{'readonly':[('client_id','!=',None)]}" />
                             </group>
                         </group>
                         <notebook>
