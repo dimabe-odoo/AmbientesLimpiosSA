@@ -1,10 +1,25 @@
 <odoo>
   <record id="custom_range_approve_purchase_act_window" model="ir.actions.act_window">
-            <field name="name">Rangos de Aprobación Compra</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">custom.range.approve.purchase</field>
-            <field name="view_mode">tree,form</field>
-        </record>
+    <field name="name">Rangos de Aprobación Compra</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">custom.range.approve.purchase</field>
+    <field name="view_mode">tree,form</field>
+  </record>
 
-        <menuitem groups="purchase.group_purchase_manager" name="Rangos de Aprobación Compra" id="custom_range_approve_purchase_menu" parent="purchase.menu_purchase_config" action="custom_range_approve_purchase_act_window"/>
+  <record id="custom_range_approve_purchase_tree_view" model="ir.ui.view">
+    <field name="name">custom_range_approve_purchase.tree</field>
+    <field name="model">custom.range.approve.purchase</field>
+    <field name="arch" type="xml">
+      <tree>
+        <field name="name"/>
+        <field name="user_ids" widget="many2many_tags"/>
+        <field name="min_amount"/>
+        <field name="max_amount"/>
+      </tree>
+    </field>
+  </record>
+
+  <menuitem groups="purchase.group_purchase_manager" name="Rangos de Aprobación Compra"
+            id="custom_range_approve_purchase_menu" parent="purchase.menu_purchase_config"
+            action="custom_range_approve_purchase_act_window"/>
 </odoo>

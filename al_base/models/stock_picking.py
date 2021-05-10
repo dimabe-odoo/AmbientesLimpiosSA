@@ -5,7 +5,8 @@ import json, xmltodict
 from pdf417 import encode, render_image
 import base64
 from io import BytesIO
-from math import floor
+from ..utils.roundformat_clp import round_clp
+
 
 
 class StockPicking(models.Model):
@@ -151,15 +152,4 @@ class StockPicking(models.Model):
         return super(StockPicking, self).button_validate()
 
     def roundclp(self, value):
-        value_str = str(value)
-        list_value = value_str.split('.')
-        if len(list_value) > 1:
-            decimal = int(list_value[1][0])
-            if decimal == 0:
-                return int(value)
-            elif decimal < 5:
-                return floor(value)
-            else:
-                return round(value)
-        else:
-            return value
+        return round_clp(value)
