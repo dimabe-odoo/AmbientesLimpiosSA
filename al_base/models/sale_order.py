@@ -20,21 +20,23 @@ class SaleOrder(models.Model):
     invisible_btn_confirm = fields.Boolean(compute="_compute_invisible_btn_confirm", defaul=True)
 
     def order_to_discount_approve(self):
-        if not self.get_range_discount():
+        if self.state == 'draft':
+            self.state = 'todiscountapprove'
+            self.request_date = datetime.today()
+            template_id = self.env.ref('al_base.so_to_amount_approve_mail_template')
+            try:
+                self.message_post_with_template(template_id.id)
+            except Exception as e:
+                print(f'Error {e}')
+        elif self.state == 'todiscountapprove' or not self.get_range_discount():
             self.state_to_toconfirm()
-        else:
-            if self.state == 'draft':
-                self.state = 'todiscountapprove'
-                self.request_date = datetime.today()
-                template_id = self.env.ref('al_base.so_to_amount_approve_mail_template')
-                try:
-                    self.message_post_with_template(template_id.id)
-                except Exception as e:
-                    print(f'Error {e}')
+
 
     def state_to_toconfirm(self):
-        self.state = 'toconfirm'
-        self.discount_approve_date = datetime.today()
+        self.write({
+            'state': 'toconfirm',
+            'discount_approve_date': datetime.today()
+        })
         template_id = self.env.ref('al_base.so_to_approve_mail_template')
         self.message_post_with_template(template_id.id)
 
