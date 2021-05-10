@@ -24,6 +24,16 @@ class SaleOrderComercionet(models.Model):
         for item in self:
             item.total_price = sum(item.comercionet_line_id.mapped('final_price'))
 
+    def set_client(self):
+        client = self.env['res.partner'].search([('comercionet_box', '=', self.client_code_comercionet)])
+        if client:
+            raise models.ValidationError('Ya existe un cliente con el código asignado')
+        else:
+            if self.client_id:
+                self.write({
+                    'client_id':  self.client_id
+                })
+
     def download_pdfs(self):
         search = self.env['sale.order.comercionet'].search([('pdf_file', '=', None)])
         if search:
