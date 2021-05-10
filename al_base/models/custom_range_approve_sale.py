@@ -32,5 +32,5 @@ class CustomRangeApproveSale(models.Model):
                     'Monto máximo debe ser mayor que el monto mínimo, excepto si el monto máximo no tiene límite, éste debe ser 0')
 
     def valid_range(self, values):
-        range_ids = self.env['custom.range.approve.purchase'].search([])
+        range_ids = self.env['custom.range.approve.sale'].search([])
         valid_range(values, range_ids)
