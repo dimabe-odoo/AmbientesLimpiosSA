@@ -1,23 +1,37 @@
 from odoo import fields, models, api
-from dateutil.relativedelta import relativedelta
+from dateutil.relativedelta import relativedelta as relative
 from odoo.tools.config import config
+from datetime import date
+from dateutil import relativedelta
+from py_linq import Enumerable
 
 
 class CustomLoan(models.Model):
     _name = 'custom.loan'
+    _description = 'Prestamo'
+    _inherit = ['mail.thread']
 
-    employee_id = fields.Many2one('hr.employee', string='Empleado')
+    display_name = fields.Char('Nombre a mostrar')
 
-    fee_qty = fields.Integer('Cantidad de Cuota')
+    type_of_loan = fields.Selection([('new', 'Nuevo'), ('in_process', 'En proceso')], default='new',
+                                    string='Tipo de Prestamo', required=True)
 
-    fee_value = fields.Monetary('Valor de Cuota')
+    employee_id = fields.Many2one('hr.employee', string='Empleado', required=True)
 
-    loan_total = fields.Monetary('Total de Prestamo', compute='compute_loan_total')
+    fee_qty = fields.Integer('Cantidad de Cuota', track_visibility='onchange')
+
+    fee_value = fields.Monetary('Valor de Cuota', track_visibility='onchange')
+
+    fee_remaining = fields.Integer('Cuota Restantes', track_visibility='onchange')
+
+    loan_total = fields.Monetary('Total a prestar', track_visibility='onchange')
 
     currency_id = fields.Many2one('res.currency', string='Moneda',
                                   default=lambda self: self.env['res.currency'].search([('name', '=', 'CLP')]))
 
-    date_start = fields.Date('Fecha de Inicio')
+    date_start = fields.Date('Fecha de Primer Pago')
+
+    date_start_old = fields.Date('Fecha de Primer Pago')
 
     interest = fields.Float('Interes')
 
@@ -32,7 +46,14 @@ class CustomLoan(models.Model):
     indicator_id = fields.Many2one('custom.indicators', string="Indicador que se inciara")
 
     state = fields.Selection([('draft', 'Borrador'), ('in_process', 'En Proceso'), ('done', 'Finalizado')],
-                             default='draft')
+                             default='draft', track_visibility='onchan ge')
+
+    def compute_fee_remaining(self):
+        for item in self:
+            if item.state == 'in_process':
+                item.fee_remaining = len(item.fee_ids.filtered(lambda a: not a.paid))
+            else:
+                item.fee_remaining = 0
 
     def compute_next_fee(self):
         for item in self:
@@ -41,22 +62,74 @@ class CustomLoan(models.Model):
             else:
                 item.next_fee_id = None
 
-    def compute_loan_total(self):
-        for item in self:
-            item.loan_total = sum(item.fee_ids.mapped('value'))
+    def write(self, values):
+        res = super(CustomLoan, self).write(values)
+        if self.type_of_loan == 'in_process':
+            if self.date_start_old > date.today():
+                raise models.UserError('La fecha de primer pago no puede ser mayor al dia actual')
+            months = self.get_months_diff(res.date_start_old, res.date_start)
+            loan = self
+            res.loan_total = round(self.calculate_fee(loan=loan, qty=res.fee_qty, months=months))
+        else:
+            loan = self
+            res.loan_total = round(self.calculate_fee(loan=loan, qty=res.fee_qty))
+        return res
 
-    def calculate_fee(self):
+    @api.model
+    def create(self, values):
+        if values['fee_value'] == 0:
+            raise models.ValidationError('El valor de la cuota debe ser mayor a 0')
+        print(type(values['date_start']))
+        res = super(CustomLoan, self).create(values)
+        if res.type_of_loan == 'in_process':
+            if res.date_start_old > date.today():
+                raise models.UserError('La fecha de primer pago no puede ser mayor al dia actual')
+            months = self.get_months_diff(res.date_start_old, res.date_start)
+            loan = res
+            res.loan_total = round(self.calculate_fee(loan=loan, qty=res.fee_qty, months=months))
+        else:
+            res.loan_total = round(self.calculate_fee(loan=res, qty=res.fee_qty))
+        if res.type_of_loan == 'in_process':
+            self.env['mail.message'].create({
+                'subject': "Prestamo ya iniciado",
+                'message_type': 'notification',
+                'body': f'Se ingreso un prestamo que actualmente se encuentra en proceso al cual le encuentra en la cuota N° {months}',
+                'model': self._name,
+                'author_id': self.env.user.partner_id.id,
+                'res_id': res.id
+            })
+        return res
+
+    def get_months_diff(self, date1, date2):
+        r = relativedelta.relativedelta(date2, date1)
+        print(r)
+        months = r.months + (r.years * 12)
+        return months
+
+    def button_confirm(self):
         for item in self:
-            if len(item.fee_ids) == 0:
-                index = 1
-                for fee in range(item.fee_qty):
-                    self.env['custom.fee'].create({
-                        'loan_id': item.id,
-                        'value': item.fee_value,
-                        'expiration_date': item.date_start + relativedelta(months=index),
-                        'number': index
+            item.write({
+                'state': 'in_process'
+            })
+
+    def calculate_fee(self, loan, qty, months=0):
+        index = 0
+        for fee in range(qty):
+            self.env['custom.fee'].create({
+                'loan_id': loan.id,
+                'value': loan.fee_value,
+                'expiration_date': loan.date_start + relative(
+                    months=index) if loan.type_of_loan == 'new' else loan.date_start_old + relative(
+                    months=index),
+                'number': index + 1
+            })
+            index += 1
+        if loan.type_of_loan == 'in_process':
+            remaing = 1
+            for paid in loan.fee_ids:
+                if remaing <= months:
+                    paid.write({
+                        'paid': True
                     })
-                    index += 1
-                item.write({
-                    'state': 'in_process'
-                })
+                remaing += 1
+        return sum(loan.fee_ids.mapped('value'))

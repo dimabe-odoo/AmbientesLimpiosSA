@@ -6,33 +6,42 @@
             <field name="name">custom_loan.form</field>
             <field name="model">custom.loan</field>
             <field name="arch" type="xml">
-                <form string="ModelTitle">
+                <form>
                     <header>
+                        <button type="object" name="button_confirm" string="Confirmar"
+                                attrs="{'invisible': [('state','!=','draft')]}"/>
                         <field name="state" widget="statusbar"/>
                     </header>
                     <sheet>
                         <div class="oe_title">
                             <label for="employee_id"/>
                             <h1>
-                                <field name="employee_id"/>
+                                <field name="employee_id" attrs="{'readonly': [('state','!=','draft')]}"/>
                             </h1>
                         </div>
                         <group>
                             <group>
-                                <field name="fee_qty" required="1"/>
-                                <field name="fee_value" required="1"/>
+                                <field name="type_of_loan" attrs="{'invisible': [('state','!=','draft')]}"/>
+                                <field name="fee_qty" required="1" attrs="{'readonly': [('state','!=','draft')]}"/>
+                                <field name="fee_value" required="1"
+                                       attrs="{'readonly': [('state','!=','draft')]}"/>
                                 <field name="next_fee_date"/>
-                                <field name="loan_total"/>
-                                <button type="object" string="Calcular" name="calculate_fee" class="oe_inline oe_link"/>
+                                <field name="loan_total"
+                                       readonly="1"/>
+                                <button type="object" string="Calcular" name="calculate_fee" class="oe_inline oe_link"
+                                        attrs="{'invisible': [('state','!=','draft')],'readonly': [('state','!=','draft')]}"/>
                             </group>
                             <group>
-                                <field name="rule_id"/>
-                                <field name="indicator_id"/>
-                                <field name="date_start" required="1"/>
+                                <field name="rule_id" attrs="{'readonly': [('state','!=','draft')]}"/>
+                                <field name="date_start_old" attrs="{'invisible': [('type_of_loan','!=','new')]}"/>
+                                <field name="date_start" attrs="{'readonly': [('state','!=','draft')],'required': [('type_of_loan','=','new')]}"/>
                             </group>
                         </group>
                         <notebook>
                             <page string="Cuotas" name="fee">
+                                <group>
+                                    <field name="fee_remaining" attrs="{'invisible':[('state','=','draft')]}" readonly="1"/>
+                                </group>
                                 <field name="fee_ids">
                                     <tree create="false" editable="bottom" delete="false">
                                         <field name="paid" readonly="1"/>
@@ -44,6 +53,10 @@
                             </page>
                         </notebook>
                     </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
                 </form>
             </field>
         </record>
@@ -67,7 +80,8 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-        <menuitem name="Prestamos" id="custom_loan_menu" parent="hr_work_entry_contract.menu_hr_payroll_root" sequence="100" action="custom_loan_act_window"/>
+        <menuitem name="Prestamos" id="custom_loan_menu" parent="hr_work_entry_contract.menu_hr_payroll_root"
+                  sequence="100" action="custom_loan_act_window"/>
 
     </data>
 </odoo>

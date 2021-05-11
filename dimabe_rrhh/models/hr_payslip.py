@@ -4,7 +4,7 @@ from odoo import models, fields, api
 class HrPaySlip(models.Model):
     _inherit = 'hr.payslip'
 
-    indicator_id = fields.Many2one('custom.indicators', string='Indicadores',required=True)
+    indicator_id = fields.Many2one('custom.indicators', string='Indicadores', required=True)
 
     salary_id = fields.Many2one('hr.salary.rule', 'Agregar Entrada')
 
@@ -82,13 +82,14 @@ class HrPaySlip(models.Model):
             item.salary_id = None
 
     def compute_sheet(self):
-        loan_id = self.env['custom.loan'].search([('employee_id', '=', self.employee_id.id)])
+        loan_id = self.env['custom.loan'].search(
+            [('employee_id', '=', self.employee_id.id), ('state', '=', 'in_process')])
         loan_id = loan_id.filtered(lambda a: self.date_from <= a.next_fee_date <= self.date_to)
         if not self.input_line_ids.filtered(lambda a: a.code == loan_id.rule_id.code and a.amount > 0) and loan_id:
             type_id = self.env['hr.payslip.input.type'].search([('code', '=', loan_id.rule_id.code)])
             if type_id:
                 self.env['hr.payslip.input'].create({
-                    'name': loan_id.rule_id.name,
+                    'name': f'{loan_id.rule_id.name} Cuota ({loan_id.next_fee_id.number} de {loan_id.fee_qty})',
                     'code': loan_id.rule_id.code,
                     'contract_id': self.contract_id.id,
                     'payslip_id': self.id,
@@ -101,7 +102,7 @@ class HrPaySlip(models.Model):
                     'code': loan_id.rule_id.code
                 })
                 self.env['hr.payslip.input'].create({
-                    'name': loan_id.rule_id.name,
+                    'name': f'{loan_id.rule_id.name} Cuota ({loan_id.next_fee_id.number} de {loan_id.fee_qty})',
                     'code': loan_id.rule_id.code,
                     'contract_id': self.contract_id.id,
                     'payslip_id': self.id,
@@ -119,7 +120,8 @@ class HrPaySlip(models.Model):
 
             if item.loan_id:
                 item.loan_id.next_fee_id.write({
-                    'paid': True
+                    'paid': True,
+                    'paid_date': date
                 })
             return super(HrPaySlip, self).action_payslip_done()
 
