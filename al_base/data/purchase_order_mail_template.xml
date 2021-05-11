@@ -3,7 +3,7 @@
   <record id="po_to_amount_approve_mail_template" model="mail.template">
     <field name="name">Órden de Compra por aprobación por Monto</field>
     <field name="model_id" ref="al_base.model_purchase_order"/>
-    <field name="email_from">ventas@excellchile.cl</field>
+    <field name="email_from">compras@ambienteslimpiossa.cl</field>
     <field name="email_to">
       ${object.get_email_to_amount_approve()}
     </field>
@@ -11,10 +11,11 @@
     <field name="body_html">
       <![CDATA[
           <p>Estimados,<br/><br/>
-          Se ha generado una nueva órden de compra ${object.name}. La cual requiere aprobación por Monto
+          Se ha generado una nueva órden de compra <a href="${object.base_url}/web#id=${object.id}&action=432&model=purchase.order&view_type=form&cids=&menu_id=300">${object.name}</a>. La cual requiere aprobación por Monto
           <br/>
           </p>
-          Atte,<br/>
+          Atte,
+          <br/>
           ${(object.company_id.name)}
       ]]>
     </field>
