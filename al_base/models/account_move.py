@@ -3,7 +3,7 @@ import json, xmltodict
 from pdf417 import encode, render_image
 import base64
 from io import BytesIO
-from math import floor
+from ..utils.roundformat_clp import round_clp
 
 class AccountMove(models.Model):
     _inherit = 'account.move'
@@ -63,8 +63,6 @@ class AccountMove(models.Model):
                     total_exempt += line.price_unit * line.quantity * ((100 - line.discount) / 100)
             item.total_exempt = total_exempt
 
-
-
     @api.depends('name')
     def _compute_l10n_latam_document_number(self):
         if not self.is_jump_number:
@@ -83,7 +81,7 @@ class AccountMove(models.Model):
                 data_dict = xmltodict.parse(doc_xml)
 
                 if self.l10n_latam_document_type_id.code == '39':
-                    json_data = json.dumps(data_dict['EnvioBOLETA ']['SetDTE']['DTE']['Documento']['TED'])
+                    json_data = json.dumps(data_dict['EnvioBOLETA']['SetDTE']['DTE']['Documento']['TED'])
                 else:
                     json_data = json.dumps(data_dict['EnvioDTE']['SetDTE']['DTE']['Documento']['TED'])
                 cols = 12
@@ -118,16 +116,33 @@ class AccountMove(models.Model):
 
         return super(AccountMove, self).create(values)
 
+    #def roundclp(self, value):
+    #    value_str = str(value)
+    #    list_value = value_str.split('.')
+    #    if len(list_value) > 1:
+    #        decimal = int(list_value[1][0])
+    #        if decimal == 0:
+    #            return int(value)
+    #        elif decimal < 5:
+    #            return floor(value)
+    #        else:
+    #            return round(value)
+    #    else:
+    #        return value
+
+    #def roundclp(self, value):
+    #    value_str = str(value)
+    #    list_value = value_str.split('.')
+    #    if len(list_value) > 1:
+    #        decimal = int(list_value[1][0])
+    #        if decimal == 0:
+    #            return '{:,}'.format(int(value)).replace(',', '.')
+    #        elif decimal < 5:
+    #            return '{:,}'.format(floor(value)).replace(',', '.')
+    #        else:
+    #            return '{:,}'.format(ceil(value)).replace(',', '.')
+
+     #   else:
+     #       return value
     def roundclp(self, value):
-        value_str = str(value)
-        list_value = value_str.split('.')
-        if len(list_value) > 1:
-            decimal = int(list_value[1][0])
-            if decimal == 0:
-                return int(value)
-            elif decimal < 5:
-                return floor(value)
-            else:
-                return round(value)
-        else:
-            return value
+        return round_clp(value)

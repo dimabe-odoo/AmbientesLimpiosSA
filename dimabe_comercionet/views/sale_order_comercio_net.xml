@@ -19,11 +19,12 @@
                         </div>
                         <group>
                             <group>
-                                <field name="client_code_comercionet"/>
+                                <field name="client_code_comercionet" readonly="1" />
                             </group>
                             <group>
-                                <field name="sale_order_id"/>
-                                <field name="pdf_file"/>
+                                <field name="sale_order_id" readonly="1" />
+                                <field name="pdf_file" readonly="1"/>
+                                <field name="client_id" attrs="{'readonly':[('sale_order_id','!=',False)]}" />
                             </group>
                         </group>
                         <notebook>

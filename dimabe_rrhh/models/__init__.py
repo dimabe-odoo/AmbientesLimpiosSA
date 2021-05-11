@@ -26,3 +26,4 @@ from . import res_company
 from . import custom_payslip_payment_term
 from . import custom_loan
 from . import custom_fee
+from . import confirm_loan

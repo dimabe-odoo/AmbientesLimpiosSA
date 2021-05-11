@@ -283,9 +283,11 @@
                 <th style="width:50%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
                   DETALLE
                 </th>
-                <th style="width:10%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
-                  DSCTO.
-                </th>
+                <t t-if="d.l10n_latam_document_type_id.code != '39'">
+                  <th style="width:10%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
+                    DSCTO.
+                  </th>
+                </t>
                 <th style="width:10%;border-right:1px solid; border-bottom:1px solid;padding-top: 6px;">
                   PRECIO
                 </th>
@@ -299,17 +301,19 @@
                     </td>
                   </t>
                   <td style="border-right:1px solid;border-bottom:1px solid;text-align:center;padding-right:4px;">
-                    <span t-esc="d.roundclp(line.quantity)"/>
+                    <span t-esc="line.quantity"/>
                   </td>
                   <td style="border-right:1px solid;border-bottom:1px solid;text-align:left;padding-right:4px;padding-left:4px;">
                     <span t-field="line.name"/>
                   </td>
-                  <td style="border-right:1px solid;border-bottom:1px solid;text-align:right;padding-right:4px;">
-                    <span t-esc="d.roundclp(line.quantity * line.discount * line.price_unit) / 100"/>
-                  </td>
+                  <t t-if="d.l10n_latam_document_type_id.code != '39'">
+                    <td style="border-right:1px solid;border-bottom:1px solid;text-align:right;padding-right:4px;">
+                      <span t-esc="d.roundclp(line.quantity * line.discount * line.price_unit / 100)"/>
+                    </td>
+                  </t>
                   <td style="border-right:1px solid;text-align:right;border-bottom:1px solid;text-align:right;padding-right:4px;padding-left:4px;">
                     <t t-if="d.l10n_latam_document_type_id.code == '39'">
-                      <span t-esc="d.roundclp(line.taxes_amount + line.price_unit)"/>
+                      <span t-esc="d.roundclp(line.price_unit_with_discount + line.taxes_amount)"/>
                     </t>
                     <t t-else="">
                       <span t-esc="d.roundclp(line.price_unit)"/>
@@ -317,7 +321,7 @@
                   </td>
                   <td style="border-bottom:1px solid;text-align:right;padding-right:4px;">
                     <t t-if="d.l10n_latam_document_type_id.code == '39'">
-                      <span t-esc="line.subtotal_with_taxes"/>
+                      <span t-esc="d.roundclp(line.subtotal_with_taxes)"/>
                     </t>
                     <t t-else="">
                       <span t-esc="d.roundclp(line.price_subtotal)"/>

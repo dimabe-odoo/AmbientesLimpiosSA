@@ -1,6 +1,6 @@
 import json
 
-from odoo import models, fields
+from odoo import models, fields, api
 from ..utils import comercionet_scrapper
 from ..utils import download_pdf
 import requests
@@ -23,6 +23,18 @@ class SaleOrderComercionet(models.Model):
     def _compute_total(self):
         for item in self:
             item.total_price = sum(item.comercionet_line_id.mapped('final_price'))
+    
+    @api.model
+    def write(self, values):
+        res = super(SaleOrderComercionet, self).write(values)
+        if self.client_id:
+            if not self.client_id.comercionet_box:
+                box = self.secondary_comercionet_box if self.secondary_comercionet_box else self.client_code_comercionet
+                self.client_id.write({
+                    'comercionnet_box' : box
+                })
+        return res
+
 
     def download_pdfs(self):
         search = self.env['sale.order.comercionet'].search([('pdf_file', '=', None)])

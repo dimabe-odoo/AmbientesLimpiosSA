@@ -33,6 +33,7 @@ class PurchaseOrder(models.Model):
         if self.state == 'sent':
             res = super(PurchaseOrder, self).button_confirm()
             return res
+
     @api.model
     def get_email_to_amount_approve(self):
         approve_sale_ids = self.env['custom.range.approve.purchase']
