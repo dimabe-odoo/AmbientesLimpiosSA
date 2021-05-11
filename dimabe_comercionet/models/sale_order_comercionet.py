@@ -37,9 +37,6 @@ class SaleOrderComercionet(models.Model):
 
     def create_sale_order(self):
         if self.client_id and self.client_code_comercionet:
-            sale_order = {
-                
-            }
             for line in self.comercionet_line_id:
                 if not line.product_id:
                     raise models.ValidationError('la linea {} no cuenta con un producto asociado'.format(line.number))
@@ -68,6 +65,19 @@ class SaleOrderComercionet(models.Model):
                                 {'pdf_file': d['pdf_file']}
                             )
 
+    def assingn_clients(self):
+        orders = self.env['sale.order.comercionet'].search([('client_id', '=', False)])
+        if orders and len(orders) > 0:
+            for order in orders:
+                client = self.env['res.partner'].search([('comercionet_box', 'like', f'%{order.client_code_comercionet}%')], limit=1)
+                if not client:
+                    client = self.env['res.partner'].search([('comercionet_box', 'like', f'%{order.secondary_comercionet_box}%')],
+                                                    limit=1)
+                if client:
+                    self.write({
+                        'client_id': client.id
+                    })
+
     def get_orders(self):
         orders = comercionet_scrapper.get_sale_orders()
         if orders:
@@ -81,7 +91,7 @@ class SaleOrderComercionet(models.Model):
                     secondary_client_code = order['secondary_comercionet_box'].strip()
                     client = self.env['res.partner'].search([('comercionet_box', 'like', f'%{client_code}%')], limit=1)
                     if not client:
-                        self.env['res.partner'].search([('comercionet_box', 'like', f'%{secondary_client_code}%')],
+                        client = self.env['res.partner'].search([('comercionet_box', 'like', f'%{secondary_client_code}%')],
                                                        limit=1)
                     comercionet = self.env['sale.order.comercionet'].create({
                         'purchase_order': order['purchase_order'].strip(),
