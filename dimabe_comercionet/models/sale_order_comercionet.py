@@ -3,6 +3,7 @@ import json
 from odoo import models, fields, api
 from ..utils import comercionet_scrapper
 from ..utils import download_pdf
+from ..utils import edi_comercionet
 import requests
 
 
@@ -23,7 +24,7 @@ class SaleOrderComercionet(models.Model):
     def _compute_total(self):
         for item in self:
             item.total_price = sum(item.comercionet_line_id.mapped('final_price'))
-    
+
     @api.model
     def write(self, values):
         res = super(SaleOrderComercionet, self).write(values)
@@ -31,7 +32,7 @@ class SaleOrderComercionet(models.Model):
             if not self.client_id.comercionet_box:
                 box = self.secondary_comercionet_box if self.secondary_comercionet_box else self.client_code_comercionet
                 self.client_id.write({
-                    'comercionnet_box' : box
+                    'comercionnet_box': box
                 })
         return res
 
@@ -41,8 +42,12 @@ class SaleOrderComercionet(models.Model):
                 if not line.product_id:
                     raise models.ValidationError('la linea {} no cuenta con un producto asociado'.format(line.number))
 
-
-
+    def update_secondary_box(self):
+        if not self.secondary_comercionet_box and self.doc:
+            sale_order = edi_comercionet.create_sale_order_by_edi(self.doc)
+            self.write({
+                'secondary_comercionet_box': sale_order['secondary_comercionet_box']
+            })
 
     def download_pdfs(self):
         search = self.env['sale.order.comercionet'].search([('pdf_file', '=', None)])
@@ -65,18 +70,17 @@ class SaleOrderComercionet(models.Model):
                                 {'pdf_file': d['pdf_file']}
                             )
 
-    def assingn_clients(self):
-        orders = self.env['sale.order.comercionet'].search([('client_id', '=', None)])
-        if orders and len(orders) > 0:
-            for order in orders:
-                client = self.env['res.partner'].search([('comercionet_box', 'like', f'%{order.client_code_comercionet}%')], limit=1)
-                if not client:
-                    client = self.env['res.partner'].search([('comercionet_box', 'like', f'%{order.secondary_comercionet_box}%')],
-                                                    limit=1)
-                if client:
-                    self.write({
-                        'client_id': client.id
-                    })
+    def assign_client(self):
+        client = self.env['res.partner'].search([('comercionet_box', 'like', f'%{self.client_code_comercionet}%')],
+                                                limit=1)
+        if not client:
+            client = self.env['res.partner'].search(
+                [('comercionet_box', 'like', f'%{self.secondary_comercionet_box}%')],
+                limit=1)
+        if client:
+            self.write({
+                'client_id': client.id
+            })
 
     def get_orders(self):
         orders = comercionet_scrapper.get_sale_orders()
@@ -91,8 +95,9 @@ class SaleOrderComercionet(models.Model):
                     secondary_client_code = order['secondary_comercionet_box'].strip()
                     client = self.env['res.partner'].search([('comercionet_box', 'like', f'%{client_code}%')], limit=1)
                     if not client:
-                        client = self.env['res.partner'].search([('comercionet_box', 'like', f'%{secondary_client_code}%')],
-                                                       limit=1)
+                        client = self.env['res.partner'].search(
+                            [('comercionet_box', 'like', f'%{secondary_client_code}%')],
+                            limit=1)
                     comercionet = self.env['sale.order.comercionet'].create({
                         'purchase_order': order['purchase_order'].strip(),
                         'client_code_comercionet': client_code,
@@ -125,13 +130,13 @@ class SaleOrderComercionet(models.Model):
                         })
 
 
-class SaleOrderComercionetLine(models.Model):
-    _name = 'sale.order.comercionet.line'
-    number = fields.Integer('Linea de Pedido')
-    product_code = fields.Char('Código Producto (DUN)')
-    final_price = fields.Integer('Precio Final')
-    price = fields.Integer('Precio Unitario')
-    quantity = fields.Integer('Cantidad')
-    discount_percent = fields.Float('Descuento')
-    comercionet_id = fields.Many2one('sale.order.comercionet')
-    product_id = fields.Many2one('product.product', string='Producto')
+    class SaleOrderComercionetLine(models.Model):
+        _name = 'sale.order.comercionet.line'
+        number = fields.Integer('Linea de Pedido')
+        product_code = fields.Char('Código Producto (DUN)')
+        final_price = fields.Integer('Precio Final')
+        price = fields.Integer('Precio Unitario')
+        quantity = fields.Integer('Cantidad')
+        discount_percent = fields.Float('Descuento')
+        comercionet_id = fields.Many2one('sale.order.comercionet')
+        product_id = fields.Many2one('product.product', string='Producto')

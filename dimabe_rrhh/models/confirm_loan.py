@@ -7,7 +7,6 @@ class ConfirmDoneLoan(models.TransientModel):
 
     loan_id = fields.Many2one('custom.loan')
 
-    @api.one
     def done(self):
         self.loan_id.write({
             'state': 'done'
