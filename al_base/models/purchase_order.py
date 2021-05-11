@@ -34,9 +34,12 @@ class PurchaseOrder(models.Model):
                 return super(PurchaseOrder, self).button_confirm()
             else:
                 raise models.ValidationError('Usted no tiene los permisos correspondientes para aprobar por monto el Pedido de Compra')
-        elif self.state == 'sent':
-            res = super(PurchaseOrder, self).button_confirm()
-            return res
+        else:
+            return super(PurchaseOrder, self).button_confirm()
+        #elif self.state == 'sent' or (self.state == 'draft' and not self.get_range_amount()):
+        #    res = super(PurchaseOrder, self).button_confirm()
+        #    return res
+
 
     @api.model
     def get_email_to_amount_approve(self):
