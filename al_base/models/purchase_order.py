@@ -1,5 +1,6 @@
 from odoo import fields, models, api
 from datetime import datetime
+from ..utils.get_range_to_approve import get_range_amount
 
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
@@ -27,46 +28,29 @@ class PurchaseOrder(models.Model):
     def button_confirm(self):
         if self.state == 'draft' and self.get_range_amount():
             self.order_to_amount_approve()
-        if self.state == 'toamountapprove':
-            self.write({'state': 'to approve', 'amount_approve_date': datetime.today()})
-            return super(PurchaseOrder, self).button_confirm()
-        if self.state == 'sent':
+        elif self.state == 'toamountapprove':
+            if not self.invisible_custom_btn_confirm:
+                self.write({'state': 'to approve', 'amount_approve_date': datetime.today()})
+                return super(PurchaseOrder, self).button_confirm()
+            else:
+                raise models.ValidationError('Usted no tiene los permisos correspondientes para aprobar por monto el Pedido de Compra')
+        elif self.state == 'sent':
             res = super(PurchaseOrder, self).button_confirm()
             return res
 
     @api.model
     def get_email_to_amount_approve(self):
-        approve_sale_ids = self.env['custom.range.approve.purchase']
-        approve_sale_id = 0
-        for item in approve_sale_ids:
-            if item.max_amount != 0:
-                if self.amount_total >= item.min_amount and self.amount_total <= item.max_amount:
-                    approve_sale_id = item.id
-                    break
-            else:
-                if self.amount_total >= item.min_amount:
-                    approve_sale_id = item.id
-                    break
-        email_list = [
-            usr.partner_id.email for usr in approve_sale_ids.filtered(lambda a: a.id == approve_sale_id).user_ids if
-            usr.email
-        ]
-        return ','.join(email_list)
+        approve_purchase_id = self.get_range_amount()
+        if len(approve_purchase_id) > 0:
+            email_list = [
+                usr.partner_id.email for usr in approve_purchase_id.user_ids if usr.email
+            ]
+            return ','.join(email_list)
 
     @api.model
     def get_range_amount(self):
         approve_purchase_ids = self.env['custom.range.approve.purchase'].search([])
-        approve_purchase_id = 0
-        for item in approve_purchase_ids:
-            if item.max_amount != 0:
-                if item.min_amount <= self.amount_total <= item.max_amount:
-                    approve_purchase_id = item.id
-                    break
-            else:
-                if self.amount_total >= item.min_amount:
-                    approve_purchase_id = item.id
-                    break
-        return approve_purchase_ids.filtered(lambda a: a.id == approve_purchase_id)
+        return get_range_amount(approve_purchase_ids, self.amount_total)
 
     @api.model
     def _compute_invisible_custom_btn_confirm(self):
