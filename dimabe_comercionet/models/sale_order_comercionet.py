@@ -66,7 +66,7 @@ class SaleOrderComercionet(models.Model):
                             )
 
     def assingn_clients(self):
-        orders = self.env['sale.order.comercionet'].search([('client_id', '=', False)])
+        orders = self.env['sale.order.comercionet'].search([('client_id', '=', None)])
         if orders and len(orders) > 0:
             for order in orders:
                 client = self.env['res.partner'].search([('comercionet_box', 'like', f'%{order.client_code_comercionet}%')], limit=1)
