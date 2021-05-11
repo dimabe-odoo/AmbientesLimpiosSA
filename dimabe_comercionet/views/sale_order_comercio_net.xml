@@ -8,6 +8,7 @@
             <field name="arch" type="xml">
             <xpath expr="//header" position="inside">
                 <button type="object" string="Obtener PDF" name="download_pdfs" class="oe_highlight" />
+                <button type="object" string="Asignar clientes" name="assingn_clients" class="oe_highlight" />
             </xpath>
                 <form>
                     <sheet>
