@@ -4,6 +4,8 @@ from odoo import models, fields, api
 from ..utils import comercionet_scrapper
 from ..utils import download_pdf
 from ..utils import edi_comercionet
+from datetime import datetime
+from py_linq import Enumerable
 import requests
 
 
@@ -20,27 +22,89 @@ class SaleOrderComercionet(models.Model):
     doc_id = fields.Char('Id Documento Comercionet')
     doc = fields.Char('Documento EDI')
     pdf_file = fields.Binary('OC PDF')
+    have_client = fields.Boolean('Tiene Cliente',compute='compute_have_client')
+    have_sale_order = fields.Boolean('Tiene Nota de Venta',compute='compute_have_sale_order')
+    line_without_product = fields.Boolean('Tiene Una linea sin producto',compute='compute_line_without_product')
+    have_pdf = fields.Boolean('Tiene PDF',compute='compute_have_pdf')
+
+    def compute_have_pdf(self):
+        show = True
+        if not self.pdf_file:
+            show = False
+        self.have_pdf = show
+
+    def compute_have_client(self):
+        show = True
+        if not self.client_id:
+            show = False
+        self.have_client = show
+
+    def compute_have_sale_order(self):
+        show = True
+        if not self.sale_order_id:
+            show = False
+        self.have_sale_order = show
+
+    def compute_line_without_product(self):
+        show = True
+        lines = Enumerable(self.comercionet_line_id)
+        if lines.any(lambda x: not x.product_id):
+            show = False
+        self.line_without_product = show
 
     def _compute_total(self):
         for item in self:
             item.total_price = sum(item.comercionet_line_id.mapped('final_price'))
 
-    @api.model
     def write(self, values):
         res = super(SaleOrderComercionet, self).write(values)
         if self.client_id:
             if not self.client_id.comercionet_box:
                 box = self.secondary_comercionet_box if self.secondary_comercionet_box else self.client_code_comercionet
                 self.client_id.write({
-                    'comercionnet_box': box
+                    'comercionet_box': box
                 })
         return res
 
+    def update_product_id_line(self):
+        for line in self.comercionet_line_id:
+            if not line.product_id:
+                product = self.env['product.product'].search([('al_dun','=',line.product_code)])
+                line.write({
+                    'product_id': product.id
+                })
+
     def create_sale_order(self):
+        if not self.client_id:
+            raise models.ValidationError('El cliente no se encuentra establecido')
         if self.client_id and self.client_code_comercionet:
             for line in self.comercionet_line_id:
                 if not line.product_id:
                     raise models.ValidationError('la linea {} no cuenta con un producto asociado'.format(line.number))
+        sale_order = self.env['sale.order'].create({
+            'date_order': datetime.now(),
+            'l10n_latam_document_type_id': self.env['l10n_latam.document.type'].search([('code','=',33)]).id,
+            'partner_id': self.client_id.parent_id.id if self.client_id.parent_id else self.client_id.id,
+            'partner_shipping_id': self.client_id.id,
+            'state': 'toconfirm',
+            'picking_policy': 'direct',
+            'pricelist_id': self.client_id.property_product_pricelist.id,
+            'warehouse_id': self.env['stock.warehouse'].search([('code','=','BoD01')]).id,
+        })
+        for line in self.comercionet_line_id:
+            self.env['sale.order.line'].create({
+                'product_id': line.product_id.id,
+                'customer_lead': 3,
+                'name': line.product_id.display_name,
+                'order_id': sale_order.id,
+                'price_unit': line.price,
+                'product_uom_qty': line.quantity,
+                'price_subtotal': line.final_price,
+                'discount': line.discount_percent if line.discount_percent > 0 else 0
+            })
+        self.write({
+            'sale_order_id': sale_order.id
+        })
 
     def update_secondary_box(self):
         if not self.secondary_comercionet_box and self.doc:
@@ -49,7 +113,22 @@ class SaleOrderComercionet(models.Model):
                 'secondary_comercionet_box': sale_order['secondary_comercionet_box']
             })
 
+    def download_oc_pdf(self):
+        attachment = self.env['ir.attachment'].sudo().create({
+            'name': f"OC {self.purchase_order}.pdf",
+            'datas': self.pdf_file
+        })
+        action = {
+            'type': 'ir.actions.act_url',
+            'url': '/web/content/{}?download=true'.format(attachment.id, ),
+            'target': 'self',
+        }
+        return action
+
+
+
     def download_pdfs(self):
+        print("Hola")
         search = self.env['sale.order.comercionet'].search([('pdf_file', '=', None)])
         if search:
             documents = []

@@ -36,9 +36,7 @@ class PurchaseOrder(models.Model):
                 raise models.ValidationError('Usted no tiene los permisos correspondientes para aprobar por monto el Pedido de Compra')
         else:
             return super(PurchaseOrder, self).button_confirm()
-        #elif self.state == 'sent' or (self.state == 'draft' and not self.get_range_amount()):
-        #    res = super(PurchaseOrder, self).button_confirm()
-        #    return res
+
 
 
     @api.model

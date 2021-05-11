@@ -8,8 +8,13 @@
             <field name="arch" type="xml">
                 <form>
                     <header>
-                        <button type="object" string="Obtener PDF" name="download_pdfs" class="oe_highlight"/>
-                        <button type="object" string="Asignar cliente" name="assingn_client"/>
+                        <field name="have_client" invisible="1"/>
+                        <field name="have_sale_order" invisible="1"/>
+                        <field name="line_without_product" invisible="1" />
+                        <field name="have_pdf" invisible="1"/>
+                        <button type="object" string="Asignar cliente" attrs="{'invisible': [('have_client','=',True)]}" name="assign_client"/>
+                        <button type="object" string="Crear Orden de Venta" attrs="{'invisible': [('have_sale_order','=',True)]}"  name="create_sale_order"/>
+                        <button type="object" string="Asignar Producto" attrs="{'invisible': [('line_without_product','=',True)]}" name="update_product_id_line"/>
                     </header>
                     <sheet>
                         <div class="oe_title">
@@ -82,6 +87,12 @@
             <field name="res_model">sale.order.comercionet</field>
             <field name="view_mode">tree,form</field>
         </record>
+
+        <template id="button_render_js" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script src="dimabe_comercionet/static/src/js/action_pdf.js" type="text/javascript"/>
+            </xpath>
+        </template>
 
         <menuitem name="Ordenes de Venta ComercioNet" id="sale_order_comercio_net_menu" parent="sale.sale_menu_root"
                   action="sale_order_comercio_net_act_window"/>
