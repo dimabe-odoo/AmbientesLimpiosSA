@@ -9,7 +9,7 @@
                 <form>
                     <header>
                         <button type="object" string="Obtener PDF" name="download_pdfs" class="oe_highlight"/>
-                        <button type="object" string="Asignar cliente" name="assingn_client"/>
+                        <button type="object" string="Asignar cliente" name="assign_client"/>
                     </header>
                     <sheet>
                         <div class="oe_title">
