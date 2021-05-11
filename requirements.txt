@@ -2,3 +2,4 @@ pydifact
 xmltodict
 pdf417
 pdfkit
+py_linq
