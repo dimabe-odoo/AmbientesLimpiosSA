@@ -11,26 +11,32 @@ class CustomRangeApproveSale(models.Model):
 
     @api.model
     def create(self, values):
+        res = super(CustomRangeApproveSale, self).create(values)
         if values['max_amount'] > values['min_amount'] or values['max_amount'] == 0:
-            if self.valid_range(self, values):
-                return super(CustomRangeApproveSale, self).create(values)
+            if self.valid_range_create(values, res.id):
+                return res
         else:
             raise models.ValidationError(
                 'Monto máximo debe ser mayor que el monto mínimo, excepto si el monto máximo no tiene límite, éste debe ser 0')
 
     def write(self, values):
-        if 'max_amount' in values.keys() and 'min_amount' not in values.keys():
+        res = super(CustomRangeApproveSale, self).write(values)
+        if 'min_amount' not in values.keys():
             values['min_amount'] = self.min_amount
-        if 'max_amount' not in values.keys() and 'min_amount' in values.keys():
+        if 'max_amount' not in values.keys():
             values['max_amount'] = self.max_amount
         if 'max_amount' in values.keys() and 'min_amount' in values.keys():
             if values['max_amount'] > values['min_amount'] or values['max_amount'] == 0:
-                if self.valid_range(self, values):
-                    return super(CustomRangeApproveSale, self).write(values)
+                if self.valid_range_write(values):
+                    return res
             else:
                 raise models.ValidationError(
                     'Monto máximo debe ser mayor que el monto mínimo, excepto si el monto máximo no tiene límite, éste debe ser 0')
 
-    def valid_range(self, values):
-        range_ids = self.env['custom.range.approve.sale'].search([])
-        valid_range(values, range_ids)
+    def valid_range_create(self, values, id):
+        range_ids = self.env['custom.range.approve.sale'].search([('id','!=',id)])
+        return valid_range(values, range_ids)
+
+    def valid_range_write(self, values):
+        range_ids = self.env['custom.range.approve.sale'].search([('id','!=',self.id)])
+        return valid_range(values, range_ids)

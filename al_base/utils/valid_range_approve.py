@@ -9,21 +9,35 @@ def valid_range(values, range_ids):
 
     for item in range_ids:
         if 'min_amount' in values.keys() and 'max_amount' in values.keys():
-            if item.max_amount != 0:
-                if values['min_amount'] in range(item.min_amount, item.max_amount + 1) or values[
-                    'max_amount'] in range(item.min_amount, item.max_amount + 1):
-                    can_create = False
-                    range_affected = item.name
-                    max_affected = item.max_amount
-                    min_affected = item.min_amount
-                    break
+            have_max_unlimited = range_ids.filtered(lambda a: a.max_amount == 0)
+            if len(have_max_unlimited) == 1 and values['max_amount'] == 0:
+                raise models.ValidationError(
+                    'No se puede guardar el registro. El {} tiene como monto máximo 0 (sin limites)'.format(
+                        have_max_unlimited.name))
             else:
-                if values['min_amount'] >= item.min_amount:
-                    can_create = False
-                    range_affected = item.name
-                    max_affected = item.max_amount
-                    min_affected = item.min_amount
-                    break
+                if item.max_amount != 0:
+                    if values['max_amount'] > 0:
+                        if values['min_amount'] in range(item.min_amount, item.max_amount + 1) or values[
+                            'max_amount'] in range(item.min_amount, item.max_amount + 1):
+                            can_create = False
+                            range_affected = item.name
+                            max_affected = item.max_amount
+                            min_affected = item.min_amount
+                            break
+                    else:
+                        if values['min_amount'] in range(item.min_amount, item.max_amount + 1):
+                            can_create = False
+                            range_affected = item.name
+                            max_affected = item.max_amount
+                            min_affected = item.min_amount
+                            break
+                else:
+                    if values['min_amount'] >= item.min_amount:
+                        can_create = False
+                        range_affected = item.name
+                        max_affected = item.max_amount
+                        min_affected = item.min_amount
+                        break
 
 
     if not can_create:
