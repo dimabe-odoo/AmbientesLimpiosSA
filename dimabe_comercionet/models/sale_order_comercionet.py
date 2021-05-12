@@ -61,15 +61,35 @@ class SaleOrderComercionet(models.Model):
         if self.client_id:
             if not self.client_id.comercionet_box:
                 box = self.secondary_comercionet_box if self.secondary_comercionet_box else self.client_code_comercionet
+                c_box = self.env['res.partner'].search([('comercionet_box', 'like', f'%{box}%')])
+                if c_box:
+                    raise models.ValidationError(f'La casilla {box} se encuentra asociada a {c_box.name}')
                 self.client_id.write({
                     'comercionet_box': box
                 })
         return res
 
+    def get_product(self, product_code):
+        product = self.env['product.product'].search([('al_dun', '=', product_code)], limit=1)
+        if not product:
+            p_tmpl = self.env['product.template'].search([('al_dun', '=', product_code)], limit=1)
+            if p_tmpl:
+                product = self.env['product.product'].search([('product_tmpl_id', '=', p_tmpl.id)])
+                if product:
+                    product.write({
+                        'al_dun': p_tmpl.al_dun,
+                        'al_sku': p_tmpl.al_sku
+                    })
+            else:
+                product = self.env['product.product'].search([('barcode', '=', product_code)], limit=1)
+                if not product:
+                    product = self.env['product.template'].search([('barcode', '=', product_code)], limit=1)
+        return product
+
     def update_product_id_line(self):
         for line in self.comercionet_line_id:
             if not line.product_id:
-                product = self.env['product.product'].search([('al_dun','=',line.product_code)])
+                product = self.get_product(line.product_code)
                 line.write({
                     'product_id': product.id
                 })
@@ -187,16 +207,7 @@ class SaleOrderComercionet(models.Model):
                     })
                     for line in order['lines']:
                         product_code = line['product_code'].strip()
-                        product = self.env['product.product'].search([('al_dun', '=', product_code)], limit=1)
-                        if not product:
-                            p_tmpl = self.env['product.template'].search([('al_dun', '=', product_code)], limit=1)
-                            if p_tmpl:
-                                product = self.env['product.product'].search([('product_tmpl_id', '=', p_tmpl.id)])
-                                if product:
-                                    product.write({
-                                        'al_dun': p_tmpl.al_dun,
-                                        'al_sku': p_tmpl.al_sku
-                                    })
+                        product = self.get_product(product_code)
                         self.env['sale.order.comercionet.line'].create({
                             'number': line['number'],
                             'product_code': product_code,
