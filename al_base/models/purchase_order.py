@@ -21,9 +21,11 @@ class PurchaseOrder(models.Model):
             self.request_date = datetime.today()
             template_id = self.env.ref('al_base.po_to_amount_approve_mail_template')
             try:
+                #self.message_post_with_template(template_id.id)
                 self.message_post_with_template(template_id.id)
             except Exception as e:
                 print(f'Error {e}')
+
 
     def button_confirm(self):
         if self.state == 'draft' and self.get_range_amount():
@@ -44,7 +46,7 @@ class PurchaseOrder(models.Model):
         approve_purchase_id = self.get_range_amount()
         if len(approve_purchase_id) > 0:
             email_list = [
-                usr.partner_id.email for usr in approve_purchase_id.user_ids if usr.email
+                usr.email for usr in approve_purchase_id.user_ids if usr.email
             ]
             return ','.join(email_list)
 
@@ -66,3 +68,9 @@ class PurchaseOrder(models.Model):
                     item.invisible_custom_btn_confirm = False
             else:
                 item.invisible_custom_btn_confirm = False
+
+
+    @api.model
+    def _get_picking_type(self, company_id):
+        self.picking_type_id = None
+        return None

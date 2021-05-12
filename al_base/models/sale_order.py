@@ -91,6 +91,6 @@ class SaleOrder(models.Model):
         approve_sale_id = self.get_range_discount()
         if len(approve_sale_id) > 0:
             email_list = [
-                usr.partner_id.email for usr in approve_sale_id.user_ids if usr.email
+                usr.email for usr in approve_sale_id.user_ids if usr.email
             ]
             return ','.join(email_list)
