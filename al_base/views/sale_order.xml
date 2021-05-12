@@ -26,18 +26,18 @@
       </field>
     </record>
 
-    <record id="view_order_tree_inherit" model="ir.ui.view">
-      <field name="name">Tree de Venta Heredado</field>
-      <field name="model">sale.order</field>
-      <field name="inherit_id" ref="sale.view_order_tree"/>
-      <field name="priority">1000</field>
-      <field name="arch" type="xml">
-        <xpath expr="//field[@name='invoice_status']" position="after">
-          <button type="object" string="Aprobar por Crédito y Riesgo" name="action_confirm" class="oe_highlight"
-                  attrs="{'invisible':[('state', '!=', 'toconfirm')]}" groups="al_base.group_order_confirmation"/>
-        </xpath>
-      </field>
-    </record>
+<!--    <record id="view_order_tree_inherit" model="ir.ui.view">-->
+<!--      <field name="name">Tree de Venta Heredado</field>-->
+<!--      <field name="model">sale.order</field>-->
+<!--      <field name="inherit_id" ref="sale.view_order_tree"/>-->
+<!--      <field name="priority">1000</field>-->
+<!--      <field name="arch" type="xml">-->
+<!--        <xpath expr="//field[@name='invoice_status']" position="after">-->
+<!--          <button type="object" string="Aprobar por Crédito y Riesgo" name="action_confirm" class="oe_highlight"-->
+<!--                  attrs="{'invisible':[('state', '!=', 'toconfirm')]}" groups="al_base.group_order_confirmation"/>-->
+<!--        </xpath>-->
+<!--      </field>-->
+<!--    </record>-->
 
   </data>
 </odoo>
