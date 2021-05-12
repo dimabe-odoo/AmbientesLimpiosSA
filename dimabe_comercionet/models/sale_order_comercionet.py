@@ -61,6 +61,9 @@ class SaleOrderComercionet(models.Model):
         if self.client_id:
             if not self.client_id.comercionet_box:
                 box = self.secondary_comercionet_box if self.secondary_comercionet_box else self.client_code_comercionet
+                c_box = self.env['res.partner'].search([('comercionet_box', 'like', f'%{box}%')])
+                if c_box:
+                    raise models.ValidationError(f'La casilla {box} se encuentra asociada a {c_box.name}')
                 self.client_id.write({
                     'comercionet_box': box
                 })
