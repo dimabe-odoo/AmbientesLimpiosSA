@@ -66,7 +66,10 @@ class CustomLoan(models.Model):
         if 'fee_value' in values.keys():
             if values['fee_value'] == 0:
                 raise models.ValidationError('El valor de la cuota debe ser mayor a 0')
+        if self.type_of_loan == 'in_process' and self.state != 'done' and self.verify_is_complete():
+            values['state'] = 'done'
         res = super(CustomLoan, self).write(values)
+
         return res
 
     def recalculate_loan(self):
@@ -87,6 +90,13 @@ class CustomLoan(models.Model):
             fee.write({
                 'loan_id': self.id
             })
+        self.verify_is_complete()
+
+    def verify_is_complete(self):
+        if all(self.fee_ids.mapped('paid')):
+            return False
+        else:
+            return True
 
     @api.model
     def create(self, values):
@@ -112,7 +122,10 @@ class CustomLoan(models.Model):
             fee.write({
                 'loan_id': res.id
             })
-        if all(res.fee_ids.mapped('paid')):
+        if res.type_of_loan == 'in_process':
+            res.message_post(
+                body=f"Se creado prestamo que se encuentra en proceso , la cual se encuentra en la cuota N° {res.next_fee_id.number}")
+        if self.verify_is_complete() and res.type_of_loan == 'in_process':
             res.state = 'done'
         return res
 
@@ -130,6 +143,7 @@ class CustomLoan(models.Model):
 
     def calculate_fee(self, fee_value, date_start, type_of_loan, qty, date_start_old=None, months=0):
         index = 0
+        remaing = 0
         fee_list = []
         for fee in range(qty):
             fee = self.env['custom.fee'].create({
@@ -137,18 +151,12 @@ class CustomLoan(models.Model):
                 'expiration_date': date_start + relative(
                     months=index) if type_of_loan == 'new' else date_start_old + relative(
                     months=index),
-                'number': index + 1
+                'number': index + 1,
+                'paid': type_of_loan == 'in_process' and remaing <= months + 1
             })
             fee_list.append(fee)
+            remaing += 1
             index += 1
-        if type_of_loan == 'in_process':
-            remaing = 1
-            for paid in fee_list:
-                if remaing <= months + 1:
-                    paid.write({
-                        'paid': True
-                    })
-                remaing += 1
         total = []
         for fee in fee_list:
             total.append(fee.value)
