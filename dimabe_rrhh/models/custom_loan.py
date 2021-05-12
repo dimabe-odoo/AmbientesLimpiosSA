@@ -94,9 +94,9 @@ class CustomLoan(models.Model):
 
     def verify_is_complete(self):
         if all(self.fee_ids.mapped('paid')):
-            return False
-        else:
             return True
+        else:
+            return False
 
     @api.model
     def create(self, values):
