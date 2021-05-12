@@ -110,6 +110,7 @@ class SaleOrderComercionet(models.Model):
             'state': 'toconfirm',
             'picking_policy': 'direct',
             'pricelist_id': self.client_id.property_product_pricelist.id,
+            'client_order_ref': self.purchase_order,
             'user_id': self.client_id.user_id.id if self.client_id.user_id else None,
             'warehouse_id': self.env['stock.warehouse'].search([('code','=','BoD01')]).id,
         })
