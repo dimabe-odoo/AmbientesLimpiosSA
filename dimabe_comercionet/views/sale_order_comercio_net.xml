@@ -12,6 +12,7 @@
                         <field name="have_sale_order" invisible="1"/>
                         <field name="line_without_product" invisible="1" />
                         <field name="have_pdf" invisible="1"/>
+                        <button type="object" name="download_pdfs" string="Obtener PDF"/>
                         <button type="object" string="Asignar cliente" attrs="{'invisible': [('have_client','=',True)]}" name="assign_client"/>
                         <button type="object" string="Crear Orden de Venta" attrs="{'invisible': [('have_sale_order','=',True)]}"  name="create_sale_order"/>
                         <button type="object" string="Asignar Producto" attrs="{'invisible': [('line_without_product','=',True)]}" name="update_product_id_line"/>
@@ -30,7 +31,7 @@
                             <group>
                                 <field name="sale_order_id" readonly="1"/>
                                 <field name="pdf_file" readonly="1"/>
-                                <field name="client_id" attrs="{'readonly':[('sale_order_id','!=',False)]}"/>
+                                <field name="client_id" attrs="{'readonly':[('have_client','=',True)]}"/>
                             </group>
                         </group>
                         <notebook>

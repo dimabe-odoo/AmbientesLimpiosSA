@@ -49,7 +49,8 @@
         'report/report_payslip.xml',
         'views/resource_calendar.xml',
         'views/res_company.xml',
-        'views/custom_loan.xml'
+        'views/custom_loan.xml',
+        'views/confirm_loan.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

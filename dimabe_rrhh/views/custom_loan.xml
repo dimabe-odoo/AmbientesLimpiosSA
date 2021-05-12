@@ -33,7 +33,7 @@
                             </group>
                             <group>
                                 <field name="rule_id" attrs="{'readonly': [('state','!=','draft')]}"/>
-                                <div class="o_form_label">
+                                <div class="o_form_label" style="width:50%;">
                                     <label for="date_start_old" string="Fecha de Primer Pago"
                                            attrs="{'invisible': [('type_of_loan', '=', 'new')]}"
                                            style="font-weight:bold;"/>
@@ -44,7 +44,7 @@
                                            attrs="{'invisible': [('type_of_loan', '!=', 'new')]}"
                                            style="font-weight:bold;"/>
                                 </div>
-                                <field name="date_start_old" nolabel="1"
+                                <field name="date_start_old" nolabel="1" style="width:50%;"
                                        attrs="{'invisible': [('type_of_loan','=','new')]}"/>
                                 <field name="date_start" nolabel="1"
                                        attrs="{'readonly': [('state','!=','draft')],'required': [('type_of_loan','=','new')]}"/>

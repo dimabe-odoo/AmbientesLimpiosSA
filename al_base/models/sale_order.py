@@ -18,7 +18,7 @@ class SaleOrder(models.Model):
 
     confirm_date = fields.Datetime('Fecha de aprobación desde Cobranza')
 
-    invisible_btn_confirm = fields.Boolean(compute="_compute_invisible_btn_confirm", defaul=True)
+    invisible_btn_confirm = fields.Boolean(compute="_compute_invisible_btn_confirm", default=True)
 
     amount_discount = fields.Float(compute="_compute_amount_discount")
 
