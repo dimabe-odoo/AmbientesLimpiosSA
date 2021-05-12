@@ -89,7 +89,7 @@ class HrPaySlip(models.Model):
             type_id = self.env['hr.payslip.input.type'].search([('code', '=', loan_id.rule_id.code)])
             if type_id:
                 self.env['hr.payslip.input'].create({
-                    'name': f'{loan_id.rule_id.name} Cuota ({loan_id.next_fee_id.number} de {loan_id.fee_qty})',
+                    'name': loan_id.rule_id.name,
                     'code': loan_id.rule_id.code,
                     'contract_id': self.contract_id.id,
                     'payslip_id': self.id,
@@ -102,7 +102,7 @@ class HrPaySlip(models.Model):
                     'code': loan_id.rule_id.code
                 })
                 self.env['hr.payslip.input'].create({
-                    'name': f'{loan_id.rule_id.name} Cuota ({loan_id.next_fee_id.number} de {loan_id.fee_qty})',
+                    'name': loan_id.rule_id.name,
                     'code': loan_id.rule_id.code,
                     'contract_id': self.contract_id.id,
                     'payslip_id': self.id,
@@ -121,8 +121,11 @@ class HrPaySlip(models.Model):
             if item.loan_id:
                 item.loan_id.next_fee_id.write({
                     'paid': True,
-                    'paid_date': date
                 })
+                if item.loan_id.verify_is_complete():
+                    item.loan_id.write({
+                        'state':'done'
+                    })
             return super(HrPaySlip, self).action_payslip_done()
 
     # @api.model
