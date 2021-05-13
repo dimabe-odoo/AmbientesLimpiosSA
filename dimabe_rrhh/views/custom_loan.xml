@@ -35,11 +35,11 @@
                             <group>
                                 <field name="rule_id" attrs="{'readonly': [('state','!=','draft')]}"/>
                                 <field name="date_start_old" string="Fecha de Primer Pago"
-                                       attrs="{'invisible': [('type_of_loan','=','new')],'required':[('type_of_loan','=','in_progress')]}"/>
+                                       attrs="{'invisible': [('type_of_loan','=','new')],'required':[('type_of_loan','=','in_progress')],'readonly':[('state','!=','draft')]}"/>
                                 <field name="date_start" string="Fecha de Ingreso"
                                        attrs="{'invisible': [('type_of_loan','=','new')]}"/>
                                 <field name="date_start" string="Fecha de Primer Pago"
-                                       attrs="{'invisible': [('type_of_loan','!=','new')]}"/>
+                                       attrs="{'invisible': [('type_of_loan','!=','new')],'readonly': [('state','!=','draft')]}"/>
                             </group>
                         </group>
                         <notebook>

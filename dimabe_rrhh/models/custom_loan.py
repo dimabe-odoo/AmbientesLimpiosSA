@@ -10,6 +10,7 @@ class CustomLoan(models.Model):
     _name = 'custom.loan'
     _description = 'Prestamo'
     _inherit = ['mail.thread']
+    _rec_name = 'display_name'
 
     display_name = fields.Char('Nombre a mostrar')
 
@@ -77,6 +78,10 @@ class CustomLoan(models.Model):
             data = self.calculate_fee(loan=self, qty=self.fee_qty)
         else:
             months = self.get_months_diff(date1=self.date_start_old, date2=self.date_start)
+            if months > self.fee_qty:
+                self.write({
+                    'state': 'done'
+                })
             data = self.calculate_fee(loan=self,qty=self.fee_qty,months=months)
             self.message_post(
                 body=f"Se recalcula prestamo que se encuentra en proceso , la cual se encuentra en la cuota N° {self.next_fee_id.number}")
@@ -94,7 +99,8 @@ class CustomLoan(models.Model):
     def create(self, values):
         if values['fee_value'] == 0:
             raise models.ValidationError('El valor de la cuota debe ser mayor a 0')
-
+        employee = self.env['hr.employee'].search([('id','=',values['employee_id'])])
+        values['display_name'] = f'Prestamo de {employee.display_name}'
         res = super(CustomLoan, self).create(values)
         months = 0
 
@@ -108,6 +114,20 @@ class CustomLoan(models.Model):
         if res.type_of_loan == 'in_process':
             loan = res
             if months > res.fee_qty:
+                view_id = self.env.ref('dimabe_rrhh.view_confirm_loan')
+                wiz_id = self.env['confirm.done.loan'].create({
+                    'loan_id': self.id
+                })
+                return {
+                    'name': "Confirmar Prestamo",
+                    'type': 'ir.actions.act_window',
+                    'view_mode': 'form',
+                    'res_model': 'confirm.done.loan',
+                    'views': [(view_id.id,'form')],
+                    'view_id': view_id.id,
+                    'target': 'new',
+                    'res_id': wiz_id.id
+                }
                 res.state = 'done'
             res.message_post(
                 body=f"Se creado prestamo que se encuentra en proceso , la cual se encuentra en la cuota N° {res.next_fee_id.number}")
@@ -140,7 +160,7 @@ class CustomLoan(models.Model):
         if loan.type_of_loan == 'in_process':
             remaing = 1
             for paid in loan.fee_ids:
-                if remaing <= months:
+                if remaing <= months + 1:
                     paid.write({
                         'paid': True
                     })

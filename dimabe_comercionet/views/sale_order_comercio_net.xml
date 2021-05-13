@@ -12,6 +12,7 @@
                         <field name="have_sale_order" invisible="1"/>
                         <field name="line_without_product" invisible="1" />
                         <field name="have_pdf" invisible="1"/>
+                        <button type="object" name="update_date" string="Prueba"/>
                         <button type="object" name="download_pdfs" string="Obtener PDF"/>
                         <button type="object" string="Asignar cliente" attrs="{'invisible': [('have_client','=',True)]}" name="assign_client"/>
                         <button type="object" string="Crear Orden de Venta" attrs="{'invisible': [('have_sale_order','=',True)]}"  name="create_sale_order"/>
@@ -31,6 +32,8 @@
                             <group>
                                 <field name="sale_order_id" readonly="1"/>
                                 <field name="pdf_file" readonly="1"/>
+                                <field name="comercionet_create_date" readonly="1"/>
+                                <field name="comercionet_dispatched_date" readonly="1"/>
                                 <field name="client_id" attrs="{'readonly':[('have_client','=',True)]}"/>
                             </group>
                         </group>
@@ -62,6 +65,8 @@
                     <field name="create_date" string="Fecha de Creación"/>
                     <field name="purchase_order"/>
                     <field name="client_id"/>
+                    <field name="comercionet_create_date"/>
+                    <field name="comercionet_dispatched_date"/>
                     <field name="client_code_comercionet"/>
                     <field name="sale_order_id"/>
                     <field name="total_price"/>
