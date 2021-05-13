@@ -28,8 +28,15 @@ class SaleOrderComercionet(models.Model):
     comercionet_dispatched_date = fields.Date('Fecha Entrega')
     have_client = fields.Boolean('Tiene Cliente',compute='compute_have_client')
     have_sale_order = fields.Boolean('Tiene Nota de Venta',compute='compute_have_sale_order')
+    have_dates = fields.Boolean('Tiene Fechas',compute='compute_have_dates')
     line_without_product = fields.Boolean('Tiene Una linea sin producto',compute='compute_line_without_product')
     have_pdf = fields.Boolean('Tiene PDF',compute='compute_have_pdf')
+
+    def compute_have_dates(self):
+        show = True
+        if not self.comercionet_create_date and self.comercionet_dispatched_date:
+            show = False
+        self.have_dates = show
 
     def compute_have_pdf(self):
         show = True
@@ -145,11 +152,12 @@ class SaleOrderComercionet(models.Model):
             })
 
     def update_date(self):
-        sale_order = edi_comercionet.create_sale_order_by_edi(self.doc)
-        self.write({
-            'comercionet_create_date': sale_order['create_date'],
-            'comercionet_dispatched_date': sale_order['dispatch_date'],
-        })
+        if not self.comercionet_dispatched_date or not self.comercionet_create_date and self.doc:
+            sale_order = edi_comercionet.create_sale_order_by_edi(self.doc)
+            self.write({
+                'comercionet_create_date': sale_order['create_date'],
+                'comercionet_dispatched_date': sale_order['dispatch_date'],
+            })
 
     def download_oc_pdf(self):
         attachment = self.env['ir.attachment'].sudo().create({
