@@ -17,9 +17,5 @@ class CustomFee(models.Model):
 
     loan_id = fields.Many2one('custom.loan')
 
-    @api.model
-    def write(self,values):
-        res = super(CustomFee, self).write(values)
-        return res
 
 

@@ -29,7 +29,7 @@ class CustomLoan(models.Model):
     currency_id = fields.Many2one('res.currency', string='Moneda',
                                   default=lambda self: self.env['res.currency'].search([('name', '=', 'CLP')]))
 
-    date_start = fields.Date(default=datetime.today())
+    date_start = fields.Date(default=datetime.today(),required=True)
 
     date_start_old = fields.Date()
 
@@ -41,12 +41,12 @@ class CustomLoan(models.Model):
 
     next_fee_date = fields.Date('Proxima Cuota', related='next_fee_id.expiration_date')
 
-    rule_id = fields.Many2one('hr.salary.rule', string='Regla', domain=[('discount_in_fee', '=', True)])
+    rule_id = fields.Many2one('hr.salary.rule', string='Regla', domain=[('discount_in_fee', '=', True)],required=True)
 
     indicator_id = fields.Many2one('custom.indicators', string="Indicador que se inciara")
 
     state = fields.Selection([('draft', 'Borrador'), ('in_process', 'En Proceso'), ('done', 'Finalizado')],
-                             default='draft', track_visibility='onchan ge')
+                             default='draft', track_visibility='onchange')
 
     def compute_fee_remaining(self):
         for item in self:
@@ -66,8 +66,6 @@ class CustomLoan(models.Model):
         if 'fee_value' in values.keys():
             if values['fee_value'] == 0:
                 raise models.ValidationError('El valor de la cuota debe ser mayor a 0')
-        if self.type_of_loan == 'in_process' and self.state != 'done' and self.verify_is_complete():
-            values['state'] = 'done'
         res = super(CustomLoan, self).write(values)
 
         return res
@@ -76,57 +74,43 @@ class CustomLoan(models.Model):
         for fee in self.fee_ids:
             fee.unlink()
         if self.type_of_loan == 'new':
-            data = self.calculate_fee(fee_value=self.fee_value, type_of_loan=self.type_of_loan,
-                                      date_start=self.date_start, qty=self.fee_qty)
+            data = self.calculate_fee(loan=self, qty=self.fee_qty)
         else:
             months = self.get_months_diff(date1=self.date_start_old, date2=self.date_start)
-            data = self.calculate_fee(fee_value=self.fee_value, type_of_loan=self.type_of_loan,
-                                      date_start=self.date_start, qty=self.fee_qty, date_start_old=self.date_start_old,
-                                      months=months)
+            data = self.calculate_fee(loan=self,qty=self.fee_qty,months=months)
+            self.message_post(
+                body=f"Se recalcula prestamo que se encuentra en proceso , la cual se encuentra en la cuota N° {self.next_fee_id.number}")
         self.write({
-            'loan_total': data['total']
+            'loan_total': data
         })
-        for fee in data['fees']:
-            fee.write({
-                'loan_id': self.id
-            })
-        self.verify_is_complete()
 
     def verify_is_complete(self):
         if all(self.fee_ids.mapped('paid')):
-            return False
-        else:
             return True
+        else:
+            return False
 
     @api.model
     def create(self, values):
         if values['fee_value'] == 0:
             raise models.ValidationError('El valor de la cuota debe ser mayor a 0')
-        date_start = datetime.strptime(values['date_start'], '%Y-%m-%d').date()
-        if values['type_of_loan'] == 'in_process':
-            date_start_old = datetime.strptime(values['date_start_old'], '%Y-%m-%d').date()
 
-            if date_start_old > date.today():
-                raise models.UserError('La fecha de primer pago no puede ser mayor al dia actual')
-            months = self.get_months_diff(date_start_old, date_start)
-            data = self.calculate_fee(fee_value=values['fee_value'], type_of_loan=values['type_of_loan'],
-                                      date_start=date_start, qty=values['fee_qty'],
-                                      date_start_old=date_start_old, months=months)
-            values['loan_total'] = round(data['total'])
-        else:
-            data = self.calculate_fee(fee_value=values['fee_value'], type_of_loan=values['type_of_loan'],
-                                      date_start=date_start, qty=values['fee_qty'])
-            values['loan_total'] = round(data['total'])
         res = super(CustomLoan, self).create(values)
-        for fee in data['fees']:
-            fee.write({
-                'loan_id': res.id
-            })
+        months = 0
+
         if res.type_of_loan == 'in_process':
+            months = self.get_months_diff(res.date_start_old, res.date_start)
+            data = self.calculate_fee(loan=res,qty=res.fee_qty, months=months)
+            res.loan_total = round(data)
+        else:
+            data = self.calculate_fee(loan=res,qty=res.fee_qty)
+            res.loan_total = round(data)
+        if res.type_of_loan == 'in_process':
+            loan = res
+            if months > res.fee_qty:
+                res.state = 'done'
             res.message_post(
                 body=f"Se creado prestamo que se encuentra en proceso , la cual se encuentra en la cuota N° {res.next_fee_id.number}")
-        if self.verify_is_complete() and res.type_of_loan == 'in_process':
-            res.state = 'done'
         return res
 
     def get_months_diff(self, date1, date2):
@@ -141,23 +125,24 @@ class CustomLoan(models.Model):
                 'state': 'in_process'
             })
 
-    def calculate_fee(self, fee_value, date_start, type_of_loan, qty, date_start_old=None, months=0):
+    def calculate_fee(self, loan, qty, months=0):
         index = 0
-        remaing = 0
-        fee_list = []
         for fee in range(qty):
-            fee = self.env['custom.fee'].create({
-                'value': fee_value,
-                'expiration_date': date_start + relative(
-                    months=index) if type_of_loan == 'new' else date_start_old + relative(
+            self.env['custom.fee'].create({
+                'loan_id': loan.id,
+                'value': loan.fee_value,
+                'expiration_date': loan.date_start + relative(
+                    months=index) if loan.type_of_loan == 'new' else loan.date_start_old + relative(
                     months=index),
-                'number': index + 1,
-                'paid': type_of_loan == 'in_process' and remaing <= months + 1
+                'number': index + 1
             })
-            fee_list.append(fee)
-            remaing += 1
             index += 1
-        total = []
-        for fee in fee_list:
-            total.append(fee.value)
-        return {'total': sum(total), 'fees': fee_list}
+        if loan.type_of_loan == 'in_process':
+            remaing = 1
+            for paid in loan.fee_ids:
+                if remaing <= months:
+                    paid.write({
+                        'paid': True
+                    })
+                remaing += 1
+        return sum(loan.fee_ids.mapped('value'))
