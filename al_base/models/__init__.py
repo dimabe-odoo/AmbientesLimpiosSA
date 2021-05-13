@@ -17,3 +17,4 @@ from . import account_move_reversal
 from . import custom_range_approve_sale
 from . import custom_range_approve_purchase
 from . import account_move_line
+from . import custom_collection_group
