@@ -3,4 +3,6 @@ access_al_custom_truck,al_base.custom_driver,model_custom_driver,,1,1,1,1
 access_al_custom_driver,al_base.custom_truck,model_custom_truck,,1,1,1,1
 access_custom_range_approve_sale,al_base.custom_range_approve_sale,model_custom_range_approve_sale,,1,1,1,1
 access_custom_range_approve_purchase,al_base.custom_range_approve_purchase,model_custom_range_approve_purchase,,1,1,1,1
+access_custom_collection_group,al_base.custom_collection_group,model_custom_collection_group,,1,1,0,1
+
 
