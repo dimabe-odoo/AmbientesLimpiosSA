@@ -148,10 +148,7 @@ class SaleOrderComercionet(models.Model):
         }
         return action
 
-
-
     def download_pdfs(self):
-        print("Hola")
         search = self.env['sale.order.comercionet'].search([('pdf_file', '=', None)])
         if search:
             documents = []

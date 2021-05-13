@@ -29,7 +29,7 @@ class CustomLoan(models.Model):
     currency_id = fields.Many2one('res.currency', string='Moneda',
                                   default=lambda self: self.env['res.currency'].search([('name', '=', 'CLP')]))
 
-    date_start = fields.Date(default=datetime.today())
+    date_start = fields.Date(default=datetime.today(),required=True)
 
     date_start_old = fields.Date()
 
@@ -41,12 +41,12 @@ class CustomLoan(models.Model):
 
     next_fee_date = fields.Date('Proxima Cuota', related='next_fee_id.expiration_date')
 
-    rule_id = fields.Many2one('hr.salary.rule', string='Regla', domain=[('discount_in_fee', '=', True)])
+    rule_id = fields.Many2one('hr.salary.rule', string='Regla', domain=[('discount_in_fee', '=', True)],required=True)
 
     indicator_id = fields.Many2one('custom.indicators', string="Indicador que se inciara")
 
     state = fields.Selection([('draft', 'Borrador'), ('in_process', 'En Proceso'), ('done', 'Finalizado')],
-                             default='draft', track_visibility='onchan ge')
+                             default='draft', track_visibility='onchange')
 
     def compute_fee_remaining(self):
         for item in self:
@@ -94,9 +94,10 @@ class CustomLoan(models.Model):
     def create(self, values):
         if values['fee_value'] == 0:
             raise models.ValidationError('El valor de la cuota debe ser mayor a 0')
-        date_start = datetime.strptime(values['date_start'], '%Y-%m-%d').date()
+
         res = super(CustomLoan, self).create(values)
         months = 0
+
         if res.type_of_loan == 'in_process':
             months = self.get_months_diff(res.date_start_old, res.date_start)
             data = self.calculate_fee(loan=res,qty=res.fee_qty, months=months)

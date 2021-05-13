@@ -1,43 +1,46 @@
 <odoo>
-  <data>
-    <record id="sale_view_order_form_inherit" model="ir.ui.view">
-      <field name="name">Formulario de Venta Heredado</field>
-      <field name="model">sale.order</field>
-      <field name="inherit_id" ref="sale.view_order_form"/>
-      <field name="arch" type="xml">
-        <xpath expr="//field[@name='payment_term_id']" position="after">
-          <field name="l10n_latam_document_type_id"/>
-          <field name="client_order_ref" string="OC Cliente"/>
-        </xpath>
-        <xpath expr="//button[@name='action_confirm'][1]" position="attributes">
-          <attribute name="attrs">{'invisible':[('state', '!=', 'toconfirm')]}</attribute>
-          <attribute name="groups">al_base.group_order_confirmation</attribute>
-          <attribute name="string">Aprobar por Crédito y Riesgo</attribute>
-        </xpath>
-        <xpath expr="//button[@name='action_confirm'][2]" position="attributes">
-          <attribute name="invisible">1</attribute>
-          <attribute name="groups">al_base.group_order_confirmation</attribute>
-        </xpath>
-        <xpath expr="//header" position="inside">
-          <field name="invisible_btn_confirm" invisible="1"/>
-          <button type="object" string="Confirmar" name="order_to_discount_approve" class="oe_highlight"
-                  attrs="{'invisible':[('invisible_btn_confirm','=',True)]}"/>
-        </xpath>
-      </field>
-    </record>
+    <data>
+        <record id="sale_view_order_form_inherit" model="ir.ui.view">
+            <field name="name">Formulario de Venta Heredado</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='payment_term_id']" position="after">
+                    <field name="l10n_latam_document_type_id"/>
+                    <field name="client_order_ref" string="OC Cliente"/>
+                </xpath>
+                <xpath expr="//button[@name='action_confirm'][1]" position="attributes">
+                    <attribute name="attrs">{'invisible': [('state', '!=', 'toconfirm')]}</attribute>
+                    <attribute name="groups">al_base.group_order_confirmation</attribute>
+                    <attribute name="string">Aprobar por Crédito y Riesgo</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_confirm'][2]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                    <attribute name="groups">al_base.group_order_confirmation</attribute>
+                </xpath>
+                <xpath expr="//header" position="inside">
+                    <field name="invisible_btn_confirm" invisible="1"/>
+                    <button type="object" string="Confirmar" name="order_to_discount_approve" class="oe_highlight"
+                            attrs="{'invisible':[('invisible_btn_confirm','=',True)]}"/>
+                </xpath>
+                <xpath expr="//field[@name='order_line']/tree//field[@name='discount']" position="attributes">
+                    <attribute name="digits">"[0, 0]"</attribute>
+                </xpath>
+            </field>
+        </record>
 
-<!--    <record id="view_order_tree_inherit" model="ir.ui.view">-->
-<!--      <field name="name">Tree de Venta Heredado</field>-->
-<!--      <field name="model">sale.order</field>-->
-<!--      <field name="inherit_id" ref="sale.view_order_tree"/>-->
-<!--      <field name="priority">1000</field>-->
-<!--      <field name="arch" type="xml">-->
-<!--        <xpath expr="//field[@name='invoice_status']" position="after">-->
-<!--          <button type="object" string="Aprobar por Crédito y Riesgo" name="action_confirm" class="oe_highlight"-->
-<!--                  attrs="{'invisible':[('state', '!=', 'toconfirm')]}" groups="al_base.group_order_confirmation"/>-->
-<!--        </xpath>-->
-<!--      </field>-->
-<!--    </record>-->
+        <!--    <record id="view_order_tree_inherit" model="ir.ui.view">-->
+        <!--      <field name="name">Tree de Venta Heredado</field>-->
+        <!--      <field name="model">sale.order</field>-->
+        <!--      <field name="inherit_id" ref="sale.view_order_tree"/>-->
+        <!--      <field name="priority">1000</field>-->
+        <!--      <field name="arch" type="xml">-->
+        <!--        <xpath expr="//field[@name='invoice_status']" position="after">-->
+        <!--          <button type="object" string="Aprobar por Crédito y Riesgo" name="action_confirm" class="oe_highlight"-->
+        <!--                  attrs="{'invisible':[('state', '!=', 'toconfirm')]}" groups="al_base.group_order_confirmation"/>-->
+        <!--        </xpath>-->
+        <!--      </field>-->
+        <!--    </record>-->
 
-  </data>
+    </data>
 </odoo>
