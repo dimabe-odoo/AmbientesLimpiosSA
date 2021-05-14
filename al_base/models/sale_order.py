@@ -1,6 +1,7 @@
 from odoo import models, fields, api
-from datetime import datetime
+from datetime import datetime, timedelta
 from ..utils.get_range_to_approve import get_range_discount
+from ..utils.calculate_business_day_dates import calculate_business_day_dates
 
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
@@ -95,6 +96,11 @@ class SaleOrder(models.Model):
             ]
             return ','.join(email_list)
 
+    @api.onchange('date_order')
+    def _onchange_date_order(self):
+        for item in self:
+            item.validity_date = calculate_business_day_dates(item.date_order, 3)
+
 
 class SaleOrderLine(models.Model):
 
@@ -110,3 +116,4 @@ class SaleOrderLine(models.Model):
                             raise models.ValidationError('No puede agregar el producto {} más de una vez'.format(values['name']))
 
         return super(SaleOrderLine, self).create(values)
+
