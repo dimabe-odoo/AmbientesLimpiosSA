@@ -16,5 +16,5 @@ access_dimabe_wizard_hr_payslip,dimabe_rrhh.wizard_hr_payslip,model_wizard_hr_pa
 access_dimabe_custom_payslip_payment_term,dimabe_rrhh.custom_payslip_payment_term,model_custom_payslip_payment_term,,1,1,1,1 
 access_dimabe_custom_loan,dimabe_rrhh.custom_loan,model_custom_loan,,1,1,1,1
 access_dimabe_custom_fee,dimabe_rrhh.custom_fee,model_custom_fee,,1,1,1,1
-
+access_dimabe_confirm_done_loan,dimabe_rrhh.confirm_done_loan,model_confirm_done_loan,,1,1,1,1
 

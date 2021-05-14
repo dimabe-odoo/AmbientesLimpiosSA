@@ -20,7 +20,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base'],
+    'depends': ['base','sale'],
 
     # always loaded
     'data': [
@@ -30,6 +30,7 @@
         'views/sale_order_comercio_net.xml',
         #'views/cron_comercionet.xml'
         #'data/data_pdf.xml',
+        'views/sale_order.xml',
         'views/ir_config_parameter.xml'
     ],
     # only loaded in demonstration mode

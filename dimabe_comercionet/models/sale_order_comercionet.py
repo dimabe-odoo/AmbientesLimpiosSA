@@ -6,12 +6,14 @@ from ..utils import download_pdf
 from ..utils import edi_comercionet
 from datetime import datetime
 from py_linq import Enumerable
+import pytz
 import requests
 
 
 class SaleOrderComercionet(models.Model):
     _name = 'sale.order.comercionet'
     _rec_name = 'purchase_order'
+    _order = 'create_date desc'
     purchase_order = fields.Char('Orden de compra')
     client_code_comercionet = fields.Char('Casilla Comercionet')
     secondary_comercionet_box = fields.Char('Segunda Casilla Comercionet')
@@ -22,10 +24,19 @@ class SaleOrderComercionet(models.Model):
     doc_id = fields.Char('Id Documento Comercionet')
     doc = fields.Char('Documento EDI')
     pdf_file = fields.Binary('OC PDF')
+    comercionet_create_date = fields.Date('Fecha OC')
+    comercionet_dispatched_date = fields.Date('Fecha Entrega')
     have_client = fields.Boolean('Tiene Cliente',compute='compute_have_client')
     have_sale_order = fields.Boolean('Tiene Nota de Venta',compute='compute_have_sale_order')
+    have_dates = fields.Boolean('Tiene Fechas',compute='compute_have_dates')
     line_without_product = fields.Boolean('Tiene Una linea sin producto',compute='compute_line_without_product')
     have_pdf = fields.Boolean('Tiene PDF',compute='compute_have_pdf')
+
+    def compute_have_dates(self):
+        show = True
+        if not self.comercionet_create_date and self.comercionet_dispatched_date:
+            show = False
+        self.have_dates = show
 
     def compute_have_pdf(self):
         show = True
@@ -56,8 +67,10 @@ class SaleOrderComercionet(models.Model):
         for item in self:
             item.total_price = sum(item.comercionet_line_id.mapped('final_price'))
 
+
     def write(self, values):
         res = super(SaleOrderComercionet, self).write(values)
+
         if self.client_id:
             if not self.client_id.comercionet_box:
                 box = self.secondary_comercionet_box if self.secondary_comercionet_box else self.client_code_comercionet
@@ -111,6 +124,7 @@ class SaleOrderComercionet(models.Model):
             'picking_policy': 'direct',
             'pricelist_id': self.client_id.property_product_pricelist.id,
             'client_order_ref': self.purchase_order,
+            'commitment_date': self.comercionet_dispatched_date,
             'user_id': self.client_id.user_id.id if self.client_id.user_id else None,
             'warehouse_id': self.env['stock.warehouse'].search([('code','=','BoD01')]).id,
         })
@@ -132,8 +146,17 @@ class SaleOrderComercionet(models.Model):
     def update_secondary_box(self):
         if not self.secondary_comercionet_box and self.doc:
             sale_order = edi_comercionet.create_sale_order_by_edi(self.doc)
+            print(sale_order)
             self.write({
                 'secondary_comercionet_box': sale_order['secondary_comercionet_box']
+            })
+
+    def update_date(self):
+        if not self.comercionet_dispatched_date or not self.comercionet_create_date and self.doc:
+            sale_order = edi_comercionet.create_sale_order_by_edi(self.doc)
+            self.write({
+                'comercionet_create_date': sale_order['create_date'],
+                'comercionet_dispatched_date': sale_order['dispatch_date'],
             })
 
     def download_oc_pdf(self):
@@ -203,6 +226,8 @@ class SaleOrderComercionet(models.Model):
                         'secondary_comercionet_box': secondary_client_code,
                         'doc_id': order['doc_id'],
                         'doc': order['doc'],
+                        'comercionet_create_date':order['create_date'],
+                        'comercionet_dispatched_date': order['dispatch_date'],
                         'client_id': client.id if client else None
                     })
                     for line in order['lines']:
@@ -218,6 +243,7 @@ class SaleOrderComercionet(models.Model):
                             'comercionet_id': comercionet.id,
                             'product_id': product.id if product else None
                         })
+
 
 
     class SaleOrderComercionetLine(models.Model):
