@@ -114,20 +114,6 @@ class CustomLoan(models.Model):
         if res.type_of_loan == 'in_process':
             loan = res
             if months > res.fee_qty:
-                view_id = self.env.ref('dimabe_rrhh.view_confirm_loan')
-                wiz_id = self.env['confirm.done.loan'].create({
-                    'loan_id': self.id
-                })
-                return {
-                    'name': "Confirmar Prestamo",
-                    'type': 'ir.actions.act_window',
-                    'view_mode': 'form',
-                    'res_model': 'confirm.done.loan',
-                    'views': [(view_id.id,'form')],
-                    'view_id': view_id.id,
-                    'target': 'new',
-                    'res_id': wiz_id.id
-                }
                 res.state = 'done'
             res.message_post(
                 body=f"Se creado prestamo que se encuentra en proceso , la cual se encuentra en la cuota N° {res.next_fee_id.number}")
