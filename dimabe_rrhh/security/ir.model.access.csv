@@ -17,4 +17,4 @@ access_dimabe_custom_payslip_payment_term,dimabe_rrhh.custom_payslip_payment_ter
 access_dimabe_custom_loan,dimabe_rrhh.custom_loan,model_custom_loan,,1,1,1,1
 access_dimabe_custom_fee,dimabe_rrhh.custom_fee,model_custom_fee,,1,1,1,1
 access_dimabe_confirm_done_loan,dimabe_rrhh.confirm_done_loan,model_confirm_done_loan,,1,1,1,1
-
+access_dimabe_custom_personal_movements,dimabe_rrhh.custom_personal_movements,model_custom_personal_movements,,1,1,1,1

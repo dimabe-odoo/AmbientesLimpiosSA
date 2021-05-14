@@ -18,20 +18,9 @@ class HrPaySlip(models.Model):
 
     payment_term_id = fields.Many2one('custom.payslip.payment.term', 'Forma de Pago')
 
-    personal_movements = fields.Selection([('0', 'Sin Movimiento en el Mes'),
-                                           ('1', 'Contratación a plazo indefinido'),
-                                           ('2', 'Retiro'),
-                                           ('3', 'Subsidios (L Médicas)'),
-                                           ('4', 'Permiso Sin Goce de Sueldos'),
-                                           ('5', 'Incorporación en el Lugar de Trabajo'),
-                                           ('6', 'Accidentes del Trabajo'),
-                                           ('7', 'Contratación a plazo fijo'),
-                                           ('8', 'Cambio Contrato plazo fijo a plazo indefinido'),
-                                           ('11', 'Otros Movimientos (Ausentismos)'),
-                                           ('12', 'Reliquidación, Premio, Bono')
-                                           ], 'Movimientos Personal', default="0")
-
     loan_id = fields.Many2one('custom.loan')
+
+    personal_movement_ids = fields.One2many('custom.personal.movements','payslip_id')
 
     @api.model
     def _compute_basic_salary(self):
@@ -83,7 +72,7 @@ class HrPaySlip(models.Model):
 
     def compute_sheet(self):
         loan_id = self.env['custom.loan'].search(
-            [('employee_id', '=', self.employee_id.id), ('state', '=', 'in_process')])
+            [('employee_id', '=', self.employee_id.id), ('state', '=', 'in_process'),('rule_id.code','not in',self.input_line_ids.mapped('code'))])
         loan_id = loan_id.filtered(lambda a: self.date_from <= a.next_fee_date <= self.date_to)
         if not self.input_line_ids.filtered(lambda a: a.code == loan_id.rule_id.code and a.amount > 0) and loan_id:
             type_id = self.env['hr.payslip.input.type'].search([('code', '=', loan_id.rule_id.code)])
@@ -119,9 +108,13 @@ class HrPaySlip(models.Model):
         for item in self:
 
             if item.loan_id:
+                item.write({
+                    'fee_id': item.loan_id.next_fee_id.id,
+                })
                 item.loan_id.next_fee_id.write({
                     'paid': True,
                 })
+
                 if item.loan_id.verify_is_complete():
                     item.loan_id.write({
                         'state':'done'

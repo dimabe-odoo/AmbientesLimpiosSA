@@ -42,7 +42,7 @@
         </record>
         <menuitem name="Feriados"
                   id="dimabe_billing_rut.custom_holidays"
-                  parent="hr_payroll.menu_hr_payroll_root"
+                  parent="hr_work_entry_contract.menu_hr_payroll_configuration"
                   action="custom_holidays_action"
         />
 

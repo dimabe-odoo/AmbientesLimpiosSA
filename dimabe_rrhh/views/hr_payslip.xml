@@ -20,13 +20,23 @@
                 <field name="account_analytic_id"/>
             </xpath>
             <xpath expr="//field[@name='name']" position="after">
-                <field name="personal_movements"/>
                 <field name="payment_term_id"/>
             </xpath>
             <xpath expr="//page[1]" position="after">
                 <page string="Prevision">
                     <group string="Indicadores">
                         <field name="indicator_id"/>
+                    </group>
+                </page>
+                <page string="Movimientos de Personal">
+                    <group>
+                        <field name="personal_movement_ids">
+                            <tree editable="bottom">
+                                <field name="personal_movements"/>
+                                <field name="date_start"/>
+                                <field name="date_end"/>
+                            </tree>
+                        </field>
                     </group>
                 </page>
             </xpath>

@@ -47,6 +47,7 @@
         'views/custom_data.xml',
         'views/templates.xml',
         'report/report_payslip.xml',
+        'report/report_loan.xml',
         'views/resource_calendar.xml',
         'views/res_company.xml',
         'views/custom_loan.xml',
