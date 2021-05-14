@@ -36,6 +36,6 @@ class AccountMoveLine(models.Model):
             if len(product_ids) > 0:
                 if 'product_id' in values.keys() and 'name' in values.keys():
                     if values['product_id'] in product_ids.ids:
-                        raise models.ValidationError('No puede agregar el El producto {} más de una vez'.format(values['name']))
+                        raise models.ValidationError('No puede agregar el producto {} más de una vez'.format(values['name']))
 
         return super(AccountMoveLine, self).create(values)
