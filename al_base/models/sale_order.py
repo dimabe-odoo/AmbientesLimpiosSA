@@ -94,3 +94,19 @@ class SaleOrder(models.Model):
                 usr.email for usr in approve_sale_id.user_ids if usr.email
             ]
             return ','.join(email_list)
+
+
+class SaleOrderLine(models.Model):
+
+    _inherit = 'sale.order.line'
+
+    @api.model
+    def create(self, values):
+        if 'order_id' in values.keys():
+            product_ids = self.env['sale.order.line'].search([('order_id','=',values['order_id'])]).mapped('product_id')
+            if len(product_ids) > 0:
+                if 'product_id' in values.keys() and 'name' in values.keys():
+                        if values['product_id'] in product_ids.ids:
+                            raise models.ValidationError('No puede agregar el producto {} más de una vez'.format(values['name']))
+
+        return super(SaleOrderLine, self).create(values)
