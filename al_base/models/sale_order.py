@@ -53,9 +53,12 @@ class SaleOrder(models.Model):
             raise models.ValidationError('Usted no tiene los permisos correspondientes para aprobar por descuento el Pedido de Venta')
 
     def action_confirm(self):
-        res = super(SaleOrder, self).action_confirm()
-        self.confirm_date = datetime.today()
-        return res
+        if self.state == 'draft' and self.get_range_discount():
+            self.order_to_discount_approve()
+        else:
+            res = super(SaleOrder, self).action_confirm()
+            self.confirm_date = datetime.today()
+            return res
 
     # Grupo Cobranza
     @api.model

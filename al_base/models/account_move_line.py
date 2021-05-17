@@ -29,13 +29,4 @@ class AccountMoveLine(models.Model):
         for item in self:
             item.subtotal_with_taxes = item.price_subtotal + item.taxes_amount
 
-    @api.model
-    def create(self, values):
-        if 'move_id' in values.keys():
-            product_ids = self.env['account.move.line'].search([('move_id','=',values['move_id'])]).mapped('product_id')
-            if len(product_ids) > 0:
-                if 'product_id' in values.keys() and 'name' in values.keys():
-                    if values['product_id'] in product_ids.ids:
-                        raise models.ValidationError('No puede agregar el producto {} más de una vez'.format(values['name']))
 
-        return super(AccountMoveLine, self).create(values)

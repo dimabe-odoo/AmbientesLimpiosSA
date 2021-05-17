@@ -72,7 +72,6 @@ class AccountMove(models.Model):
             self.name = f'{self.l10n_latam_document_type_id.doc_code_prefix} {self.document_number}'
 
     def get_ted(self):
-        print(self._get_last_sequence())
         doc_id = self.env['ir.attachment'].search(
             [('res_model', '=', 'account.move'), ('res_id', '=', self.id), ('name', 'like', 'SII')])
         if doc_id:
