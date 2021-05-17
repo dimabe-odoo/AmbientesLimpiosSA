@@ -30,6 +30,7 @@
         'views/sale_order_comercio_net.xml',
         #'views/cron_comercionet.xml'
         #'data/data_pdf.xml',
+        'views/res_partner.xml',
         'views/sale_order.xml',
         'views/ir_config_parameter.xml'
     ],

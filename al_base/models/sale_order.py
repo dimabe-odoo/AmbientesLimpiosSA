@@ -60,6 +60,10 @@ class SaleOrder(models.Model):
             self.confirm_date = datetime.today()
             return res
 
+    def create(self, values):
+        res = super(SaleOrder, self).create(values)
+        return res
+
     # Grupo Cobranza
     @api.model
     def get_email_to(self, ref_id):
