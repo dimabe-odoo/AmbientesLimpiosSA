@@ -26,11 +26,11 @@ class SaleOrderComercionet(models.Model):
     pdf_file = fields.Binary('OC PDF')
     comercionet_create_date = fields.Date('Fecha OC')
     comercionet_dispatched_date = fields.Date('Fecha Entrega')
-    have_client = fields.Boolean('Tiene Cliente',compute='compute_have_client')
-    have_sale_order = fields.Boolean('Tiene Nota de Venta',compute='compute_have_sale_order')
-    have_dates = fields.Boolean('Tiene Fechas',compute='compute_have_dates')
-    line_without_product = fields.Boolean('Tiene Una linea sin producto',compute='compute_line_without_product')
-    have_pdf = fields.Boolean('Tiene PDF',compute='compute_have_pdf')
+    have_client = fields.Boolean('Tiene Cliente', compute='compute_have_client')
+    have_sale_order = fields.Boolean('Tiene Nota de Venta', compute='compute_have_sale_order')
+    have_dates = fields.Boolean('Tiene Fechas', compute='compute_have_dates')
+    line_without_product = fields.Boolean('Tiene Una linea sin producto', compute='compute_line_without_product')
+    have_pdf = fields.Boolean('Tiene PDF', compute='compute_have_pdf')
 
     def compute_have_dates(self):
         show = True
@@ -66,7 +66,6 @@ class SaleOrderComercionet(models.Model):
     def _compute_total(self):
         for item in self:
             item.total_price = sum(item.comercionet_line_id.mapped('final_price'))
-
 
     def write(self, values):
         res = super(SaleOrderComercionet, self).write(values)
@@ -115,18 +114,25 @@ class SaleOrderComercionet(models.Model):
             for line in self.comercionet_line_id:
                 if not line.product_id:
                     raise models.ValidationError('la linea {} no cuenta con un producto asociado'.format(line.number))
+        test_1 = fields.Datetime.to_string(
+            pytz.timezone(self.env.context['tz']).localize(fields.Datetime.from_string(self.comercionet_dispatched_date),
+                                                           is_dst=None).astimezone(pytz.utc))
+
         sale_order = self.env['sale.order'].create({
             'date_order': datetime.now(),
-            'l10n_latam_document_type_id': self.env['l10n_latam.document.type'].search([('code','=',33)]).id,
+            'l10n_latam_document_type_id': self.env['l10n_latam.document.type'].search([('code', '=', 33)]).id,
             'partner_id': self.client_id.parent_id.id if self.client_id.parent_id else self.client_id.id,
             'partner_shipping_id': self.client_id.id,
             'state': 'toconfirm',
             'picking_policy': 'direct',
+            'payment_term_id': self.client_id.parent_id.property_payment_term_id.id,
             'pricelist_id': self.client_id.property_product_pricelist.id,
             'client_order_ref': self.purchase_order,
-            'commitment_date': self.comercionet_dispatched_date,
+            'commitment_date': fields.Datetime.to_string(
+            pytz.timezone(self.env.context['tz']).localize(fields.Datetime.from_string(self.comercionet_dispatched_date),
+                                                           is_dst=None).astimezone(pytz.utc)),
             'user_id': self.client_id.user_id.id if self.client_id.user_id else None,
-            'warehouse_id': self.env['stock.warehouse'].search([('code','=','BoD01')]).id,
+            'warehouse_id': self.env['stock.warehouse'].search([('code', '=', 'BoD01')]).id,
         })
         for line in self.comercionet_line_id:
             self.env['sale.order.line'].create({
@@ -226,7 +232,7 @@ class SaleOrderComercionet(models.Model):
                         'secondary_comercionet_box': secondary_client_code,
                         'doc_id': order['doc_id'],
                         'doc': order['doc'],
-                        'comercionet_create_date':order['create_date'],
+                        'comercionet_create_date': order['create_date'],
                         'comercionet_dispatched_date': order['dispatch_date'],
                         'client_id': client.id if client else None
                     })
@@ -243,8 +249,6 @@ class SaleOrderComercionet(models.Model):
                             'comercionet_id': comercionet.id,
                             'product_id': product.id if product else None
                         })
-
-
 
     class SaleOrderComercionetLine(models.Model):
         _name = 'sale.order.comercionet.line'

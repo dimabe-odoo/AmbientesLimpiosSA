@@ -6,3 +6,4 @@ from . import stock_picking
 from . import ir_http
 from . import route_map_line
 from . import product_line
+from . import account_move

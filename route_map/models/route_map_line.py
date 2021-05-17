@@ -1,5 +1,5 @@
 import datetime
-
+import pytz
 from odoo import models, fields, api
 
 
@@ -84,7 +84,9 @@ class RouteMapLine(models.Model):
             if self.verify_all_line(item.map_id.dispatch_ids):
                 item.map_id.write({
                     'state': 'done',
-                    'date_done': datetime.datetime.now()
+                    'date_done': fields.Datetime.to_string(
+            pytz.timezone(self.env.context['tz']).localize(fields.Datetime.from_string(datetime.datetime.now()),
+                                                           is_dst=None).astimezone(pytz.utc))
                 })
 
     def button_done(self):
