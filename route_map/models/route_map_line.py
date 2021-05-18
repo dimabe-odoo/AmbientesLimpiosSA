@@ -9,7 +9,7 @@ class RouteMapLine(models.Model):
 
     display_name = fields.Char('Nombre a mostrar', compute='compute_display_name')
 
-    map_id = fields.Many2one('route.map', string='Hoja de Calculo')
+    map_id = fields.Many2one('route.map', string='Hoja de Ruta')
 
     dispatch_id = fields.Many2one('stock.picking', string='Despacho', required=True)
 
