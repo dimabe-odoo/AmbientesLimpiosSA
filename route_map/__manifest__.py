@@ -33,7 +33,8 @@
         'views/stock_picking.xml',
         'views/route_map_line.xml',
         'data/route_map_sequence.xml',
-        'views/account_move.xml'
+        'views/account_move.xml',
+        'views/custom_user.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

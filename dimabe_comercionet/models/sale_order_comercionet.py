@@ -114,10 +114,6 @@ class SaleOrderComercionet(models.Model):
             for line in self.comercionet_line_id:
                 if not line.product_id:
                     raise models.ValidationError('la linea {} no cuenta con un producto asociado'.format(line.number))
-        test_1 = fields.Datetime.to_string(
-            pytz.timezone(self.env.context['tz']).localize(fields.Datetime.from_string(self.comercionet_dispatched_date),
-                                                           is_dst=None).astimezone(pytz.utc))
-
         sale_order = self.env['sale.order'].create({
             'date_order': datetime.now(),
             'l10n_latam_document_type_id': self.env['l10n_latam.document.type'].search([('code', '=', 33)]).id,
