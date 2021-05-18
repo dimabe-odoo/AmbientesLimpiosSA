@@ -19,12 +19,15 @@ class PurchaseOrder(models.Model):
         if self.state == 'draft':
             self.state = 'toamountapprove'
             self.request_date = datetime.today()
-            template_id = self.env.ref('al_base.po_to_amount_approve_mail_template')
-            try:
-                #self.message_post_with_template(template_id.id)
-                self.message_post_with_template(template_id.id)
-            except Exception as e:
-                print(f'Error {e}')
+            user_list = self.get_partners_by_range(self.get_range_amount())
+            self.send_message(user_list, 'Monto')
+
+
+    def send_message(self, partner_list, approve_type):
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        body = f'<p>Estimados.<br/><br/>Se ha generado una nueva órden de compra <a href="{base_url}/web#id={self.id}&action=432&model=purchase.order&view_type=form&cids=&menu_id=300">{self.name}</a>. La cual requiere aprobación por Monto'
+        subject = f'Nueva órden de compra - Aprobar por {approve_type}'
+        self.message_post(author_id=2, subject=subject, body=body, partner_ids=partner_list)
 
 
     def button_confirm(self):
@@ -42,13 +45,19 @@ class PurchaseOrder(models.Model):
 
 
     @api.model
-    def get_email_to_amount_approve(self):
+    def get_partner_to_amount_approve(self):
         approve_purchase_id = self.get_range_amount()
         if len(approve_purchase_id) > 0:
             email_list = [
-                usr.email for usr in approve_purchase_id.user_ids if usr.email
+                usr.partner_id.id for usr in approve_purchase_id.user_ids if usr.partner_id
             ]
             return ','.join(email_list)
+
+    def get_partners_by_range(self, range):
+        user_list = [
+            usr.partner_id.id for usr in range.user_ids if usr.partner_id
+        ]
+        return user_list
 
     @api.model
     def get_range_amount(self):

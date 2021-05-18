@@ -4,8 +4,7 @@
     <field name="name">Órden de Compra por aprobación por Monto</field>
     <field name="model_id" ref="al_base.model_purchase_order"/>
     <field name="email_from">info@ambienteslimpiossa.cl</field>
-    <field name="email_to">
-      ${object.get_email_to_amount_approve()}
+    <field name="email_to">${object.get_email_to_amount_approve()}
     </field>
     <field name="subject">Nueva órden de compra</field>
     <field name="body_html">
