@@ -124,9 +124,7 @@ class SaleOrderComercionet(models.Model):
             'payment_term_id': self.client_id.parent_id.property_payment_term_id.id,
             'pricelist_id': self.client_id.property_product_pricelist.id,
             'client_order_ref': self.purchase_order,
-            'commitment_date': fields.Datetime.to_string(
-            pytz.timezone(self.env.context['tz']).localize(fields.Datetime.from_string(self.comercionet_dispatched_date),
-                                                           is_dst=None).astimezone(pytz.utc)),
+            'validity_date': self.comercionet_dispatched_date,
             'user_id': self.client_id.user_id.id if self.client_id.user_id else None,
             'warehouse_id': self.env['stock.warehouse'].search([('code', '=', 'BoD01')]).id,
         })
