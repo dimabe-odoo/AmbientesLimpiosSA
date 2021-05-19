@@ -51,10 +51,14 @@
         'views/resource_calendar.xml',
         'views/res_company.xml',
         'views/custom_loan.xml',
-        'views/confirm_loan.xml'
+        'views/confirm_loan.xml',
+        'views/custom_holidays.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
         'demo/demo.xml',
     ],
+    'qweb': [
+        'static/src/xml/get_holidays_button.xml'
+    ]
 }

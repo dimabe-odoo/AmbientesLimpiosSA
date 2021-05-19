@@ -36,8 +36,6 @@
         'views/account_move.xml',
         'views/purchase_order.xml',
         'views/account_move_reversal.xml',
-        'data/sale_order_mail_template.xml',
-        'data/purchase_order_mail_template.xml',
         'reports/invoice.xml',
         'views/custom_range_approve_sale.xml',
         'views/custom_range_approve_purchase.xml',

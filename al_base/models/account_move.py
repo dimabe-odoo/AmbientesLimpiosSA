@@ -72,7 +72,6 @@ class AccountMove(models.Model):
             self.name = f'{self.l10n_latam_document_type_id.doc_code_prefix} {self.document_number}'
 
     def get_ted(self):
-        print(self._get_last_sequence())
         doc_id = self.env['ir.attachment'].search(
             [('res_model', '=', 'account.move'), ('res_id', '=', self.id), ('name', 'like', 'SII')])
         if doc_id:
@@ -116,33 +115,6 @@ class AccountMove(models.Model):
 
         return super(AccountMove, self).create(values)
 
-    #def roundclp(self, value):
-    #    value_str = str(value)
-    #    list_value = value_str.split('.')
-    #    if len(list_value) > 1:
-    #        decimal = int(list_value[1][0])
-    #        if decimal == 0:
-    #            return int(value)
-    #        elif decimal < 5:
-    #            return floor(value)
-    #        else:
-    #            return round(value)
-    #    else:
-    #        return value
 
-    #def roundclp(self, value):
-    #    value_str = str(value)
-    #    list_value = value_str.split('.')
-    #    if len(list_value) > 1:
-    #        decimal = int(list_value[1][0])
-    #        if decimal == 0:
-    #            return '{:,}'.format(int(value)).replace(',', '.')
-    #        elif decimal < 5:
-    #            return '{:,}'.format(floor(value)).replace(',', '.')
-    #        else:
-    #            return '{:,}'.format(ceil(value)).replace(',', '.')
-
-     #   else:
-     #       return value
     def roundclp(self, value):
         return round_clp(value)

@@ -1,6 +1,7 @@
 from odoo import models, fields, api
-from datetime import datetime
+from datetime import datetime, timedelta
 from ..utils.get_range_to_approve import get_range_discount
+from ..utils.calculate_business_day_dates import calculate_business_day_dates
 
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
@@ -27,15 +28,19 @@ class SaleOrder(models.Model):
         for item in self:
             item.amount_discount = (item.amount_undiscounted - (item.amount_total - item.amount_tax))
 
+    def send_message(self, partner_list, approve_type):
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        body = f'<p>Estimados.<br/><br/>Se ha generado una nueva órden de venta <a href="{base_url}/web#id={self.id}&action=343&model=sale.order&view_type=form&cids=&menu_id=229">{self.name}</a>. La cual requiere aprobación por {approve_type}<br/></p>Atte,<br/>{self.company_id.name}'
+        subject = f'Nueva órden de venta - Aprobar por {approve_type}'
+        self.message_post(author_id=2,subject=subject,body=body,partner_ids=partner_list)
+
+
     def order_to_discount_approve(self):
         if self.state == 'draft' and self.get_range_discount():
             self.state = 'todiscountapprove'
             self.request_date = datetime.today()
-            template_id = self.env.ref('al_base.so_to_amount_approve_mail_template')
-            try:
-                self.message_post_with_template(template_id.id)
-            except Exception as e:
-                print(f'Error {e}')
+            user_list = self.get_partners_by_range(self.get_range_discount())
+            self.send_message(user_list, 'Descuento')
         elif self.state == 'todiscountapprove' or not self.get_range_discount():
             self.state_to_toconfirm()
 
@@ -46,28 +51,28 @@ class SaleOrder(models.Model):
                 'state': 'toconfirm',
                 'discount_approve_date': datetime.today()
             })
-            template_id = self.env.ref('al_base.so_to_approve_mail_template')
-            self.message_post_with_template(template_id.id)
+            partner_list = self.get_partner_to()
+            self.send_message(partner_list, 'Cobranza')
         else:
-            raise models.ValidationError('Usted no tiene los permisos correspondientes para aprobar por descuento el Pedido de Venta')
+            raise models.ValidationError('Usted no tiene los permisos correspondientes para aprobar por Descuento el Pedido de Venta')
 
     def action_confirm(self):
-        res = super(SaleOrder, self).action_confirm()
-        self.confirm_date = datetime.today()
-        return res
-
-    def create(self, values):
-        res = super(SaleOrder, self).create(values)
-        return res
+        if self.env.user.partner_id.id not in self.get_partner_to() and self.state == 'toconfirm':
+            raise models.ValidationError('Usted no tiene los permisos correspondientes para aprobar por Cobranza el Pedido de Venta')
+        else:
+            res = super(SaleOrder, self).action_confirm()
+            self.confirm_date = datetime.today()
+            return res
 
     # Grupo Cobranza
     @api.model
-    def get_email_to(self, ref_id):
-        user_group = self.env.ref(ref_id)
-        email_list = [
-            usr.partner_id.email for usr in user_group.users if usr.partner_id.email
+    def get_partner_to(self):
+        user_group = self.env.ref('al_base.group_order_confirmation')
+        partner_list = [
+            usr.partner_id.id for usr in user_group.users if usr.partner_id
         ]
-        return ','.join(email_list)
+        return partner_list
+
 
     @api.model
     def _compute_invisible_btn_confirm(self):
@@ -83,21 +88,30 @@ class SaleOrder(models.Model):
             else:
                 item.invisible_btn_confirm = True
 
+    def get_partners_by_range(self, range):
+        user_list = [
+            usr.partner_id.id for usr in range.user_ids if usr.partner_id
+        ]
+        return user_list
 
     @api.model
     def get_range_discount(self):
-        approve_sale_ids = self.env['custom.range.approve.sale'].search([])
+        approve_sale_ids = self.env['custom.range.approve.sale'].sudo().search([])
         return get_range_discount(approve_sale_ids, self.amount_discount)
-
 
     @api.model
     def get_email_to_discount_approve(self):
         approve_sale_id = self.get_range_discount()
         if len(approve_sale_id) > 0:
             email_list = [
-                usr.email for usr in approve_sale_id.user_ids if usr.email
+                usr.partner_id.email for usr in approve_sale_id.user_ids if usr.partner_id.email
             ]
             return ','.join(email_list)
+
+    @api.onchange('date_order')
+    def _onchange_date_order(self):
+        for item in self:
+            item.validity_date = calculate_business_day_dates(item.date_order, 3)
 
 
 class SaleOrderLine(models.Model):
@@ -114,3 +128,4 @@ class SaleOrderLine(models.Model):
                             raise models.ValidationError('No puede agregar el producto {} más de una vez'.format(values['name']))
 
         return super(SaleOrderLine, self).create(values)
+
