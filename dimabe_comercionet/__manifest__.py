@@ -40,6 +40,7 @@
     ],
     'qweb': [
         'static/src/xml/download_pdfs_button.xml',
+        'static/src/xml/get_orders_button.xml',
         'static/src/xml/javascript.xml'
     ]
 }

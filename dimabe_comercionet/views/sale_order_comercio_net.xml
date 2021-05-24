@@ -13,6 +13,7 @@
                         <field name="line_without_product" invisible="1" />
                         <field name="have_pdf" invisible="1"/>
                         <field name="have_dates" invisible="1" />
+                        <button type="object" name="get_orders" string="Obtener Ordenes desde Comercionet" class="btn btn-primary oe_action_button"/>
                         <button type="object" name="update_date" string="Obtener Fechas" attrs="{'invisible': [('have_dates','=',True)]}"/>
                         <button type="object" name="download_pdfs" string="Obtener PDF"/>
                         <button type="object" string="Asignar cliente" attrs="{'invisible': [('have_client','=',True)]}" name="assign_client"/>
@@ -97,7 +98,8 @@
 
         <template id="button_render_js" inherit_id="web.assets_backend">
             <xpath expr="." position="inside">
-                <script src="dimabe_comercionet/static/src/js/action_get_holidays.js" type="text/javascript"/>
+                <script src="dimabe_comercionet/static/src/js/action_orders.js" type="text/javascript"/>
+                <script src="dimabe_comercionet/static/src/js/action_pdf.js" type="text/javascript"/>
             </xpath>
         </template>
 
