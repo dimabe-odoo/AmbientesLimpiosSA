@@ -18,13 +18,16 @@ def decrypt_password(password):
 
 
 def get_key():
-    if os.path.isfile('key.key'):
-        file = open('key.key', 'rb')
-        key = file.read()
-        file.close()
-    else:
-        key = Fernet.generate_key()
-        file = open('key.key', 'wb')
-        file.write(key)
-        file.close()
-    return key
+    try:
+        if os.path.isfile('key.key'):
+            file = open('key.key', 'rb')
+            key = file.read()
+            file.close()
+        else:
+            key = Fernet.generate_key()
+            file = open('key.key', 'wb')
+            file.write(key)
+            file.close()
+        return key
+    except Exception:
+        print("Cago")

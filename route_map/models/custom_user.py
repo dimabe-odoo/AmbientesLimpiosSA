@@ -27,6 +27,7 @@ class CustomUser(models.Model):
             'name': values['name'],
             'sel_groups_1_9_10': 9,
             'password': values['password'],
+            'email': values['email']
         })
         values['partner_id'] = user.partner_id.id
         values['password'] = password_encoding.create_password(values['password'])
@@ -47,17 +48,22 @@ class CustomUser(models.Model):
         self.has_password = show
 
     def reset_password(self):
-        hash_password = password_encoding.hash_password('inicio01')
-        self.write({
-            'password': hash_password
-        })
+        self.user_id.action_reset_password()
 
     def write(self, values):
+        if 'email' in values.keys():
+            self.user_id.write({
+                'login': values['email']
+            })
         if 'truck_id' in values.keys():
             truck = self.env['fleet.vehicle'].sudo().search([('id', '=', values['truck_id'])])
             if truck:
                 truck.write({
                     'driver_id': self.partner_id.id
                 })
+        if not self.partner_id.email:
+            self.partner_id.write({
+                'email': values['email'] if 'email' in values.keys() else self.email
+            })
         res = super(CustomUser, self).write(values)
         return res
