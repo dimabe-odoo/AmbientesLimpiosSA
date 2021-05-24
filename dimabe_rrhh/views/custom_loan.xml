@@ -87,7 +87,7 @@
         </record>
 
         <menuitem name="Prestamos" id="custom_loan_menu" parent="hr_work_entry_contract.menu_hr_payroll_root"
-                  sequence="100" action="custom_loan_act_window"/>
+                  sequence="100" action="custom_loan_act_window" groups="hr_payroll.group_hr_payroll_manager"/>
 
     </data>
 </odoo>
