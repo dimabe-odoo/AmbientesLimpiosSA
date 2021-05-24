@@ -6,11 +6,11 @@ from ..utils import hash_pasword as password_encoding
 class CustomUser(models.Model):
     _name = 'custom.user'
 
-    email = fields.Char('Email', trim=True)
+    email = fields.Char('Email', trim=True, required=True)
 
-    name = fields.Char('Nombre')
+    name = fields.Char('Nombre', trim=True, required=True)
 
-    password = fields.Char('Contraseña')
+    password = fields.Char('Contraseña', trim=True, required=True)
 
     truck_id = fields.Many2one(comodel_name='fleet.vehicle', string='Camion', domain=[('driver_id', '=', None)])
 

@@ -41,6 +41,8 @@ class RouteMap(Model):
 
     invoices_name = fields.Char('Facturas',compute='compute_invoices_name')
 
+
+
     def action_dispatch(self):
         for item in self:
             item.write({

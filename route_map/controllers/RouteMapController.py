@@ -22,7 +22,7 @@ class RouteMapController(http.Controller):
 
     @http.route('/api/route_map', type='json', auth='token', method='GET', cors='*')
     def get_route_map(self, map_id):
-        map_object = request.env['route.map'].sudo().search([('id', '=', map_id),('state','!=','done')])
+        map_object = request.env['route.map'].sudo().search([('id', '=', map_id), ('state', '!=', 'done')])
         lines = []
         if map_object:
             for line in map_object.dispatch_ids:
@@ -81,6 +81,10 @@ class RouteMapController(http.Controller):
                 'driver_observations': observations
             })
             line.sudo().set_state(state)
+            for invoice in line.invoice_ids:
+                invoice.write({
+                    'file_ids': [(4, f.id) for f in line.image_ids]
+                })
             if line.map_id.state == 'done':
                 return {'ok': True, 'is_Completed': True, "message": "Hoja Completada"}
         return {'ok': True, "message": "Pedido entregado"}
