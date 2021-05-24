@@ -29,5 +29,5 @@ def get_key():
             file.write(key)
             file.close()
         return key
-    except Exception:
+    except:
         print("Cago")
