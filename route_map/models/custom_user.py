@@ -67,3 +67,4 @@ class CustomUser(models.Model):
             })
         res = super(CustomUser, self).write(values)
         return res
+

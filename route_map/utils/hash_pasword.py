@@ -1,4 +1,5 @@
 from cryptography.fernet import Fernet
+import sys
 import os
 
 
@@ -25,9 +26,12 @@ def get_key():
             file.close()
         else:
             key = Fernet.generate_key()
+            print(os.path.abspath('key.key'))
             file = open('key.key', 'wb')
             file.write(key)
             file.close()
         return key
-    except:
-        print("Cago")
+    except ValueError as e:
+        print(e)
+
+
