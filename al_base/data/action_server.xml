@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="1">
-        <record id="action_server_secondary_comercionet" model="ir.actions.server">
+        <record id="action_server_aprovee" model="ir.actions.server">
             <field name="name">Aprobar por Cobranza</field>
             <field name="model" ref="sale.model_sale_order"/>
             <field name="state">code</field>
@@ -9,7 +9,7 @@
   if record.state == 'toconfirm':
     record.action_confirm()</field>
         </record>
-        <record id="action_server_secondary_comercionet" model="ir.actions.server">
+        <record id="action_server_update_street" model="ir.actions.server">
             <field name="name">Actualizar Direccion</field>
             <field name="model" ref="bus.model_res_partner"/>
             <field name="state">code</field>
