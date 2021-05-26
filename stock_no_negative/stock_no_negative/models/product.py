@@ -13,7 +13,6 @@ class ProductCategory(models.Model):
         help="Allow negative stock levels for the stockable products "
         "attached to this category. The options doesn't apply to products "
         "attached to sub-categories of this category.",
-        default=False
     )
 
 
@@ -26,5 +25,4 @@ class ProductTemplate(models.Model):
         "product category and that this product is a stockable product, "
         "then the validation of the related stock moves will be blocked if "
         "the stock level becomes negative with the stock move.",
-        default=False
     )
