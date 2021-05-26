@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="route_map_sequence" model="ir.sequence">
+            <field name="name">Hoja de Ruta</field>
+            <field name="code">route.map.seq</field>
+            <field name="prefix">HR/%(y)s/</field>
+            <field name="padding">4</field>
+        </record>
+
+    </data>
+</odoo>

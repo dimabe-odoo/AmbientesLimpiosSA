@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="pdf_url_parameter" model="ir.config_parameter">
+            <field name="key">pdf_url</field>
+            <field name="value">http://aresweb.dimabe.cl:7885/api/download_pdfs</field>
+        </record>
+        <record id="pdf_password_parameter" model="ir.config_parameter">
+            <field name="key">pdf_password</field>
+            <field name="value">Contraseña</field>
+        </record>
+        <record id="pdf_user_parameter" model="ir.config_parameter">
+            <field name="key">pdf_user</field>
+            <field name="value">Usuario</field>
+        </record>
+        <record id="action_server_secondary_comercionet" model="ir.actions.server">
+            <field name="name">Actualizar Casilla Secundaria de ComercioNet</field>
+            <field name="model" ref="dimabe_comercionet.access_dimabe_comercionet_sale_order_comercionet"/>
+            <field name="state">code</field>
+            <field name="code">for record in records:
+  record.update_secondary_box()</field>
+        </record>
+        <record id="action_server_asign_client" model="ir.actions.server">
+            <field name="name">Asignar Cliente</field>
+            <field name="model" ref="dimabe_comercionet.access_dimabe_comercionet_sale_order_comercionet"/>
+            <field name="state">code</field>
+            <field name="code">for record in records:
+  record.assign_client()</field>
+        </record>
+    </data>
+</odoo>

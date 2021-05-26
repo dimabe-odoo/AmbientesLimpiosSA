@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="route_map_line_form" model="ir.ui.view">
+            <field name="name">route_map_line.form</field>
+            <field name="model">route.map.line</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="dispatch_id"/>
+                                <field name="sale_id"/>
+                                <field name="partner_id"/>
+                                <field name="address_to_delivery"/>
+                            </group>
+                            <group>
+                                <field name="create_date"/>
+                                <field name="dispatch_date"/>
+                                <field name="date_done"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="product" string="Productos a entregar">
+                                <field name="product_line_ids">
+                                    <tree>
+                                        <field name="product_id"/>
+                                        <field name="qty_to_delivery"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page name="invoice" string="Factura">
+                                <field name="invoice_ids">
+                                    <tree>
+                                        <field name="name"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page name="image" string="Causas de Cancelacion"
+                                  attrs="{'invisible':[('state','=','to_delivered')]}">
+                                <group><field name="driver_observations"/></group>
+                                <field name="image_ids">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="datas" widget="binary"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="route_map_line_tree_view" model="ir.ui.view">
+            <field name="name">route_map_line.tree</field>
+            <field name="model">route.map.line</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="display_name"/>
+                    <field name="partner_id"/>
+                    <field name="address_to_delivery"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="route_map_line_search_view" model="ir.ui.view">
+            <field name="name">route_map_line.search</field>
+            <field name="model">route.map.line</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="map_id"/>
+                    <group expand="1" string="Group By">
+                        <filter string="Hoja de Ruta" name="map_filter"
+                                context="{'group_by':'map_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="route_map_line_act_window" model="ir.actions.act_window">
+            <field name="name">Despacho Hoja de Ruta</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">route.map.line</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="Linea de Hoja de Ruta" id="route_map_line_menu" parent="route_map_parent_menu"
+                  action="route_map_line_act_window"/>
+
+    </data>
+</odoo>

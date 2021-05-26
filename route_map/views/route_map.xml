@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="route_map_form_view" model="ir.ui.view">
+            <field name="name">route_map.form</field>
+            <field name="model">route.map</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button type="object" name="action_dispatch" string="Despachar"
+                                attrs="{'invisible':[('state','!=','draft')]}"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="display_name"/>
+                            <h1>
+                                <field name="display_name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="driver_id"/>
+                                <field name="truck_id" domain="[('driver_id','!=',None)]"/>
+                                <field name="sell"/>
+                                <field name="add_more"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="dispatch" string="Despachos">
+                                <field name="picking_id" attrs="{'invisible': [('state','!=','draft')]}"
+                                       context="{'isRouteMap':'Prueba'}"/>
+                                <button type="object" name="add_picking" string="Agregar"
+                                        attrs="{'invisible': [('state','!=','draft')]}"/>
+                                <field name="dispatch_ids" widget="one2many"
+                                       attrs="{'readonly':['|',('state','!=','draft'),('add_more','=',False)]}">
+                                    <tree editable="bottom" delete="true" create="false">
+                                        <button type="object" name="button_done" string="Entregar"
+                                                attrs="{'column_invisible':[('parent.state','=','draft')],'invisible': [('state','not in',('draft','to_delivered'))]}"/>
+                                        <button type="object" name="button_cancel" string="Cancelar"
+                                                attrs="{'invisible':[('state','not in',('draft','to_delivered'))]}"/>
+                                        <field name="dispatch_id" readonly="1"/>
+                                        <field name="sale_id" readonly="1"/>
+                                        <field name="invoices_name" readonly="1"/>
+                                        <field name="address_to_delivery" readonly="1"/>
+                                        <field name="dispatch_date" readonly="1"
+                                               attrs="{'column_invisible': [('parent.state','=','draft')]}"/>
+                                        <field name="date_done" readonly="1"/>
+                                        <field name="state" readonly="1"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Observaciones" name="observations">
+                                <group>
+                                    <field name="observations"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="route_map_tree_view" model="ir.ui.view">
+            <field name="name">route_map.tree</field>
+            <field name="model">route.map</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="display_name"/>
+                    <field name="driver_id"/>
+                    <field name="truck_id"/>
+                    <field name="dispatch_date"/>
+                    <field name="date_done"/>
+                    <field name="dispatch_ids" widget="many2many_tags"/>
+                    <field name="invoices_name"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="route_map_act_window" model="ir.actions.act_window">
+            <field name="name">Hoja de Ruta</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">route.map</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="Hoja de Ruta" id="route_map_parent_menu" parent="stock.menu_stock_root"/>
+
+        <menuitem name="Hojas de Ruta" id="route_map_menu" parent="route_map.route_map_parent_menu"
+                  action="route_map.route_map_act_window"/>
+
+    </data>
+</odoo>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="ir_config_parameter_inherit" model="ir.ui.view">
+            <field name="name">ir_config_parameter_inherit</field>
+            <field name="model">ir.config_parameter</field>
+            <field name="inherit_id" ref="base.view_ir_config_form"/>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='value']" position="after">
+                    <field name="is_password"/>
+                    <field name="password" password="true" attrs="{'invisible':[('is_password','=',False)]}"/>
+                </xpath>
+                <xpath expr="//field[@name='value']" position="attributes">
+                    <attribute name="attrs">{'invisible': [('is_password','=',True)]}</attribute>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

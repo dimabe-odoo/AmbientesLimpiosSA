@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_dimabe_comercionet_sale_order_comercionet,dimabe_comercionet.sale_order_comercionet,model_sale_order_comercionet,,1,1,1,1
+access_dimabe_comercionet_sale_order_comercionet_line,dimabe_comercionet.sale_order_comercionet_line,model_sale_order_comercionet_line,,1,1,1,1

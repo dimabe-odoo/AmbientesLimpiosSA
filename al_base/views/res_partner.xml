@@ -24,8 +24,10 @@
                     <attribute name="required">1</attribute>
                 </xpath>
 
-                <xpath expr="//field[@name='child_ids']/form//field[@name='name']" position="after">
-                    <field name="comercionet_box" placeholder="Casilla Comercionet"/>
+
+
+                <xpath expr="//field[@name='child_ids']/form//field[@name='mobile']" position="after">
+                    <field name="user_id" placeholder="Vendedor"/>
                 </xpath>
             </field>
         </record>

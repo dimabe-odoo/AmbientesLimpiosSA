@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+    <record id="custom_collection_group_form_view" model="ir.ui.view">
+      <field name="name">custom_collection_group.form</field>
+      <field name="model">custom.collection.group</field>
+      <field name="arch" type="xml">
+        <form string="Grupo Cobranza">
+          <sheet>
+            <div class="oe_title">
+              <label for="name"/>
+              <h1>
+                <field name="name" placeholder="Title" readonly="1"/>
+              </h1>
+            </div>
+            <group>
+              <field name="user_ids"/>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+
+    <record id="custom_collection_group_act_window" model="ir.actions.act_window">
+      <field name="name">Grupo Cobranza</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">custom.collection.group</field>
+      <field name="view_mode">form</field>
+      <field name="res_id" ref="custom_collection_group_data"/>
+    </record>
+
+    <menuitem name="Configuración Grupo Cobranza" id="custom_collection_group_menu" parent="sale.menu_sale_config" groups="sales_team.group_sale_manager" action="custom_collection_group_act_window"/>
+
+  </data>
+</odoo>

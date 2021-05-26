@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="custom_user_form_view" model="ir.ui.view">
+            <field name="name">custom_user.form</field>
+            <field name="model">custom.user</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button type="object" name="reset_password" string="Reestableser Contraseña"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="email"/>
+                            <h1>
+                                <field name="email" placeholder="Correo"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="has_password" invisible="1"/>
+                                <field name="name" />
+                                <field name="truck_id"/>
+                                <field name="password" attrs="{'invisible':[('has_password','=',True)]}" password="true"/>
+                                <field name="partner_id" readonly="1"/>
+                            </group>
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="custom_user_tree_view" model="ir.ui.view">
+            <field name="name">custom_user.tree</field>
+            <field name="model">custom.user</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="email"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="custom_user_act_window" model="ir.actions.act_window">
+            <field name="name">Usuarios</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">custom.user</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="Usuarios" id="custom_user_menu" parent="fleet.fleet_configuration" action="custom_user_act_window"/>
+
+    </data>
+</odoo>
