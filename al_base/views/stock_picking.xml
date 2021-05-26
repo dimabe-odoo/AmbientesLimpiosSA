@@ -49,9 +49,9 @@
         <xpath expr="//page[@name='detailed_operations_shown']" position="attributes">
           <attribute name="attrs">{'invisible': [('display_action_record_components','=',True)]}</attribute>
         </xpath>
-        <xpath expr="//page[@name='detailed_operations_hidden']" position="attributes">
-          <attribute name="attrs">{'invisible': [('display_action_record_components','=',True)]}</attribute>
-        </xpath>
+<!--        <xpath expr="//page[@name='detailed_operations_hidden']" position="attributes">-->
+<!--          <attribute name="attrs">{'invisible': [('display_action_record_components','=',True)]}</attribute>-->
+<!--        </xpath>-->
         <xpath expr="//header" position="inside">
           <field name="invisible_btn_ted" invisible="1"/>
           <button type="object" string="Generar código de barra 2D" name="get_ted" class="oe_highlight"
