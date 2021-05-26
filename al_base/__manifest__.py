@@ -40,7 +40,8 @@
         'views/custom_range_approve_sale.xml',
         'views/custom_range_approve_purchase.xml',
         'data/custom_collection_group_data.xml',
-        'views/custom_collection_group.xml'
+        'views/custom_collection_group.xml',
+        'views/mrp_production.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

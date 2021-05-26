@@ -1,9 +1,11 @@
 from odoo import fields, models, api
-class $ModelName$ (models.Model):
-    _name = '$ProjectName$.$TableName$'
-    _description = '$Description$'
-
-    name = fields.Char()
-    $END$
 
 
+class StockQuant(models.Model):
+    _inherit = 'stock.quant'
+
+    @api.constrains("product_id","quantity")
+    def check_negative_qty(self):
+        if 'Subcontract' in self.location_id.name:
+            return
+        return super(StockQuant, self).check_negative_qty()
