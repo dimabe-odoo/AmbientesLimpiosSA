@@ -42,7 +42,7 @@
         'data/custom_collection_group_data.xml',
         'views/custom_collection_group.xml',
         'views/mrp_production.xml',
-        'data/action_server.xml'
+        #'data/action_server.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
