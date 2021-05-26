@@ -44,15 +44,17 @@
       <field name="name">stock_picking_form_inherit</field>
       <field name="model">stock.picking</field>
       <field name="inherit_id" ref="stock.view_picking_form"/>
-      <field name="priority" eval="8"/>
+      <field name="priority" eval="1"/>
       <field name="arch" type="xml">
         <xpath expr="//page[@name='detailed_operations_hidden']" position="attributes">
-          <attribute name="attrs">{'invisible': [('display_action_record_components','=',True)]}</attribute>
+          <attribute name="attrs">{'invisible': ['|', ('show_operations', '=', False), ('show_reserved', '=', True),'&amp;',('is_subcontract','=',True)]}</attribute>
         </xpath>
         <xpath expr="//header" position="inside">
+          <field name="is_subcontract" invisible="1"/>
           <field name="invisible_btn_ted" invisible="1"/>
           <button type="object" string="Generar código de barra 2D" name="get_ted" class="oe_highlight"
                   attrs="{'invisible':[('invisible_btn_ted','=',True)]}"/>
+          <button type="object" string="Prueba" name="test"/>
         </xpath>
       </field>
     </record>
