@@ -8,7 +8,7 @@
             <field name="arch" type="xml">
                 <form>
                     <header>
-                        <button type="submit" name="reset_password" string="Reestableser Contraseña"/>
+                        <button type="object" name="reset_password" string="Reestableser Contraseña"/>
                     </header>
                     <sheet>
                         <div class="oe_title">

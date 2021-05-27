@@ -5,6 +5,7 @@ import base64
 from io import BytesIO
 from ..utils.roundformat_clp import round_clp
 
+
 class AccountMove(models.Model):
     _inherit = 'account.move'
 
@@ -31,7 +32,7 @@ class AccountMove(models.Model):
                 item.invisible_btn_ted = True
             else:
                 item.invisible_btn_ted = False
-    
+
     def action_invoice_sent(self):
         res = super(AccountMove, self).action_invoice_sent
         if not self.ted:
@@ -114,7 +115,6 @@ class AccountMove(models.Model):
                     values['l10n_latam_document_type_id'] = sale_order.l10n_latam_document_type_id.id
 
         return super(AccountMove, self).create(values)
-
 
     def roundclp(self, value):
         return round_clp(value)

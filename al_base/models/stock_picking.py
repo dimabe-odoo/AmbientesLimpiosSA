@@ -5,8 +5,8 @@ import json, xmltodict
 from pdf417 import encode, render_image
 import base64
 from io import BytesIO
+from py_linq import Enumerable
 from ..utils.roundformat_clp import round_clp
-
 
 
 class StockPicking(models.Model):
@@ -23,6 +23,13 @@ class StockPicking(models.Model):
     amount_total = fields.Float('TOTAL', compute="_compute_amount_total")
 
     invisible_btn_ted = fields.Boolean(compute="_compute_show_btn_ted", default=True)
+
+    is_subcontract = fields.Boolean(compute='compute_is_subcontract')
+
+    def compute_is_subcontract(self):
+        for item in self:
+            list = Enumerable(item.move_ids_without_package)
+            item.is_subcontract = list.any(lambda x: x.is_subcontract)
 
     def _get_custom_report_name(self):
         return '%s %s' % (
@@ -90,6 +97,10 @@ class StockPicking(models.Model):
                                 lambda a: a.product_id.id == line.product_id.id).price_unit
 
         item.net_amount = int(net_amount)
+
+    def test(self):
+        for item in self:
+            print(item)
 
     @api.model
     def _compute_tax_amount(self):

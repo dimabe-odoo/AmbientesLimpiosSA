@@ -6,11 +6,11 @@ from ..utils import hash_pasword as password_encoding
 class CustomUser(models.Model):
     _name = 'custom.user'
 
-    email = fields.Char('Email', trim=True)
+    email = fields.Char('Email', trim=True, required=True)
 
-    name = fields.Char('Nombre')
+    name = fields.Char('Nombre', trim=True, required=True)
 
-    password = fields.Char('Contraseña')
+    password = fields.Char('Contraseña', trim=True, required=True)
 
     truck_id = fields.Many2one(comodel_name='fleet.vehicle', string='Camion', domain=[('driver_id', '=', None)])
 
@@ -27,6 +27,7 @@ class CustomUser(models.Model):
             'name': values['name'],
             'sel_groups_1_9_10': 9,
             'password': values['password'],
+            'email': values['email']
         })
         values['partner_id'] = user.partner_id.id
         values['password'] = password_encoding.create_password(values['password'])
@@ -47,17 +48,23 @@ class CustomUser(models.Model):
         self.has_password = show
 
     def reset_password(self):
-        hash_password = password_encoding.hash_password('inicio01')
-        self.write({
-            'password': hash_password
-        })
+        self.user_id.action_reset_password()
 
     def write(self, values):
+        if 'email' in values.keys():
+            self.user_id.write({
+                'login': values['email']
+            })
         if 'truck_id' in values.keys():
             truck = self.env['fleet.vehicle'].sudo().search([('id', '=', values['truck_id'])])
             if truck:
                 truck.write({
                     'driver_id': self.partner_id.id
                 })
+        if not self.partner_id.email:
+            self.partner_id.write({
+                'email': values['email'] if 'email' in values.keys() else self.email
+            })
         res = super(CustomUser, self).write(values)
         return res
+

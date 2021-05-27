@@ -1,853 +1,909 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-  <template id="custom_invoice">
-    <t t-call="web.html_container">
-      <div class="page">
-        <t t-foreach="docs" t-as="d">
-          <div style="width: 100%;">
-            <div style="width: 49%; height: 130px; display: inline-block;">
-              <table style="margin-left: 60px;">
-                <tr>
-                  <td colspan="3" style="text-align: center;">
-                    <t t-if="d.l10n_latam_document_type_id.code == '39'">
-                      <span t-field="res_company.vat" style="font-size: 14px; font-weight: bold;"/>
-                      <br/>
+    <template id="custom_invoice">
+        <t t-call="web.html_container">
+            <t t-set="l" t-value="0"/>
+            <t t-foreach="range(res_company.copies_qty)" t-as="q">
+                <div class="page">
+                    <t t-foreach="docs" t-as="d">
+                        <div style="width: 100%;">
+                            <div style="width: 49%; height: 130px; display: inline-block;">
+                                <table style="margin-left: 60px;">
+                                    <tr>
+                                        <td colspan="3" style="text-align: center;">
+                                            <t t-if="d.l10n_latam_document_type_id.code == '39'">
+                                                <span t-field="res_company.vat"
+                                                      style="font-size: 14px; font-weight: bold;"/>
+                                                <br/>
+                                            </t>
+                                            <span t-field="res_company.name"
+                                                  style="font-size: 14px; font-weight: bold;"/>
+                                            <p style="font-size: 10px; "
+                                               t-field="res_company.l10n_cl_activity_description"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 10%;">
+                                            <img t-att-src="'data:image/png;base64,%s' % to_text(res_company.logo)"
+                                                 style="max-width: 120px; max-height: 70px"/>
+                                        </td>
+                                        <td style="width: 80%; font-size: 10px; text-align: center;">
+                                            <span t-field="res_company.street"/>
+                                            <br/>
+                                            Mesa Central:
+                                            <span t-field="res_company.phone"/>
+                                            <br/>
+                                            E-mail:
+                                            <span t-field="res_company.email"/>
+                                            <br/>
+                                            <span t-field="res_company.website"/>
+                                        </td>
+                                        <td style="width: 10%;">
+                                            <img t-att-src="'data:image/png;base64,%s' % to_text(res_company.certificate_logo)"
+                                                 style="max-width: 120px; max-height: 70px"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <t t-if="d.l10n_latam_document_type_id.code != '39'">
+                                <div style="width: 50%; display: inline-block;">
+                                    <div style="float: right; width: 60%;">
+                                        <table style="border:4px solid; border-color: #ff0000; float: right; width: 100%; height: 120px;">
+                                            <tr>
+                                                <td style="text-align:center;color:#ff0000; font-weight: bold;">
+                                                    R.U.T.:
+                                                    <span style="color:#ff0000;" t-field="res_company.vat"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="text-align:center;color:#ff0000; font-weight: bold;">
+                                                    <span t-field="d.l10n_latam_document_type_id.name"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="text-align:center;color:#ff0000; font-weight: bold;">
+                                                    N°
+                                                    <span t-field="d.l10n_latam_document_number"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                            </tr>
+                                        </table>
+                                        <table style="width: 100%;">
+                                            <tr>
+                                                <td style="text-align: center; font-size: 11px;color:#ff0000;">
+                                                    <strong>S.I.I - UNIDAD SAN BERNARDO</strong>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                        <br/>
+                        <t t-if="d.l10n_latam_document_type_id.code != '39'">
+                            <div style="width:100%;margin:0 auto;border:1px solid; border-radius: 5px; ">
+                                <table style="width:98%;margin: 0 auto;font-size:11px; padding: 6px;" cellspacing="1">
+                                    <tr>
+                                        <td style="width: 16%;">
+                                            <strong>FECHA</strong>
+                                        </td>
+                                        <td style="width: 34%;">
+                                            :
+                                            <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y')"/>
+                                        </td>
+                                        <td style="width: 16%;"></td>
+                                        <td style="width: 34%;"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>SEÑORES</strong>
+                                        </td>
+                                        <td style="text-align:left;">
+                                            :
+                                            <span t-field="d.partner_id.name"/>
+                                        </td>
+                                        <td style="text-align:left;">
+                                            <strong>RUT</strong>
+                                        </td>
+                                        <td style="text-align:left;">
+                                            :
+                                            <span t-field="d.partner_id.vat"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left;">
+                                            <strong>SUCURSAL</strong>
+                                        </td>
+                                        <td style="text-align:left;">
+                                            :
+                                            <span t-field="d.partner_shipping_id.name"/>
+                                        </td>
+                                        <td style="text-align:left;">
+                                            <strong>COMUNA:</strong>
+                                        </td>
+                                        <td style="text-align:left;">
+                                            :
+                                            <!--<span t-field="d.partner_shipping_id.state_id.name"/>-->
+                                            <span t-field="d.partner_shipping_id.city_id.name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left;">
+                                            <strong>DIRECCION</strong>
+                                        </td>
+                                        <td style="text-align:left;">
+                                            :
+                                            <span t-field="d.partner_shipping_id.street"/>
+                                        </td>
+                                        <td style="text-align:left;">
+                                            <strong>CIUDAD</strong>
+                                        </td>
+                                        <td style="text-align:left;">
+                                            :
+                                            <span style="text-transform: uppercase;"
+                                                  t-field="d.partner_shipping_id.city_id.name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left;">
+                                            <strong>GIRO</strong>
+                                        </td>
+                                        <td style="text-align:left;">
+                                            :
+                                            <span t-field="d.partner_id.l10n_cl_activity_description"/>
+                                        </td>
+                                        <td colspan="2"></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left;">
+                                            <strong>COND. DE PAGO</strong>
+                                        </td>
+                                        <td style="text-align:left;">
+                                            :
+                                            <span t-field="d.invoice_payment_term_id.name"/>
+                                            <t t-if="d.invoice_payment_term_id.l10n_cl_sii_code">
+                                                <span style="margin-left: 4px"
+                                                      t-esc="d.invoice_payment_term_id.l10n_cl_sii_code[3:]"/>
+                                            </t>
+                                        </td>
+                                        <td style="text-align:left;">
+                                            <strong>TELEFONO</strong>
+                                        </td>
+                                        <td style="text-align:left;">
+                                            :
+                                            <t t-if="d.partner_id.phone">
+                                                <span t-field="d.partner_id.phone"/>
+                                            </t>
+                                            <t t-if="d.partner_id.phone and d.partner_id.mobile">
+                                                -
+                                            </t>
+                                            <t t-if="d.partner_id.mobile">
+                                                <span t-field="d.partner_id.mobile"/>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left;">
+                                            <strong>VENDEDOR</strong>
+                                        </td>
+                                        <td style="text-align:left;">
+                                            :
+                                            <span t-field="d.invoice_user_id"/>
+                                        </td>
+                                        <td style="text-align:left;">
+                                            <strong>N/PEDIDO</strong>
+                                        </td>
+                                        <td style="text-align:left;">
+                                            :
+                                            <span t-esc="d.mapped('invoice_line_ids').mapped('sale_line_ids').mapped('order_id').name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left;">
+                                            <strong>DIR. DESPACHO</strong>
+                                        </td>
+                                        <td style="text-align:left;">
+                                            :
+                                            <span t-field="d.partner_shipping_id.street"/>
+                                        </td>
+                                        <td style="text-align:left;">
+                                            <strong>Orden de Compra</strong>
+                                        </td>
+                                        <td style="text-align:left;">
+                                            :
+                                            <t t-if="d.mapped('invoice_line_ids').mapped('sale_line_ids').mapped('order_id').client_order_ref">
+                                                <span style="margin-left:2px;">OC</span>
+                                                <span style="margin-left:2px;"
+                                                      t-field="d.mapped('invoice_line_ids').mapped('sale_line_ids').mapped('order_id').client_order_ref"/>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left;">
+                                            <strong>GUIA DESP.</strong>
+                                        </td>
+                                        <td style="text-align:left;">
+                                            :
+                                            <span
+                                                    t-esc="d.mapped('invoice_line_ids').mapped('sale_line_ids').mapped('order_id').mapped('picking_ids').filtered(lambda a: a.l10n_latam_document_number).name"/>
+                                        </td>
+                                        <td colspan="2"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </t>
+                        <t t-if="d.l10n_latam_document_type_id.code == '39'">
+                            <table>
+                                <tr>
+                                    <td style="font-size: 14px; font-weight: bold;">
+                                        <strong>S.I.I. - SAN BERNARDO</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="font-size: 14px; font-weight: bold;">
+                                        <strong>FECHA EMISION:
+                                            <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y')"/>
+                                        </strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="font-size: 14px; font-weight: bold;">
+                                        <strong>
+                                            <span t-field="d.l10n_latam_document_type_id.name"/>:
+                                            <span t-field="d.l10n_latam_document_number"/>
+                                        </strong>
+                                    </td>
+                                </tr>
+                            </table>
+                        </t>
+                        <p style="font-size: 11px;">
+                            <strong>Sirvase Recibir Conforme lo siguiente según Detalle:</strong>
+                        </p>
+                        <div style="width:100%;margin:0 auto;height:500px;border:1px solid; border-radius: 5px; margin-top:4px;">
+                            <table style="width:100%;font-size:11px;" cellspacing="0">
+                                <tr>
+                                    <t t-if="d.l10n_latam_document_type_id.code == '39'">
+                                        <th style="width:10%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
+                                            CODIGO
+                                        </th>
+                                        <th style="width:6%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
+                                            CANT
+                                        </th>
+                                    </t>
+                                    <t t-else="">
+                                        <th style="width:10%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
+                                            CANTIDAD
+                                        </th>
+                                    </t>
+                                    <th style="width:50%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
+                                        DETALLE
+                                    </th>
+                                    <t t-if="d.l10n_latam_document_type_id.code != '39'">
+                                        <th style="width:10%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
+                                            DSCTO.
+                                        </th>
+                                    </t>
+                                    <th style="width:10%;border-right:1px solid; border-bottom:1px solid;padding-top: 6px;">
+                                        PRECIO
+                                    </th>
+                                    <th style="width:10%;border-bottom:1px solid;padding-top: 6px;">TOTAL</th>
+                                </tr>
+                                <t t-foreach="d.invoice_line_ids" t-as="line">
+                                    <tr>
+                                        <t t-if="d.l10n_latam_document_type_id.code == '39'">
+                                            <td style="border-right:1px solid;border-bottom:1px solid;text-align:center;padding-right:4px;">
+                                                <span t-esc="line.product_id.al_sku"/>
+                                            </td>
+                                        </t>
+                                        <td style="border-right:1px solid;border-bottom:1px solid;text-align:center;padding-right:4px;">
+                                            <span t-esc="line.quantity"/>
+                                        </td>
+                                        <td style="border-right:1px solid;border-bottom:1px solid;text-align:left;padding-right:4px;padding-left:4px;">
+                                            <span t-field="line.name"/>
+                                        </td>
+                                        <t t-if="d.l10n_latam_document_type_id.code != '39'">
+                                            <td style="border-right:1px solid;border-bottom:1px solid;text-align:right;padding-right:4px;">
+                                                <span t-esc="d.roundclp(line.quantity * line.discount * line.price_unit / 100)"/>
+                                            </td>
+                                        </t>
+                                        <td style="border-right:1px solid;text-align:right;border-bottom:1px solid;text-align:right;padding-right:4px;padding-left:4px;">
+                                            <t t-if="d.l10n_latam_document_type_id.code == '39'">
+                                                <span t-esc="d.roundclp(line.price_unit_with_discount + line.taxes_amount)"/>
+                                            </t>
+                                            <t t-else="">
+                                                <span t-esc="d.roundclp(line.price_unit)"/>
+                                            </t>
+                                        </td>
+                                        <td style="border-bottom:1px solid;text-align:right;padding-right:4px;">
+                                            <t t-if="d.l10n_latam_document_type_id.code == '39'">
+                                                <span t-esc="d.roundclp(line.subtotal_with_taxes)"/>
+                                            </t>
+                                            <t t-else="">
+                                                <span t-esc="d.roundclp(line.price_subtotal)"/>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </table>
+                        </div>
+                        <div style="width:100%;border:1px solid; border-radius: 5px; margin-top:4px;">
+                            <table style="padding: 6px; width: 98%">
+                                <tr>
+                                    <td>Son:
+                                        <span style="margin-left: 4px;"
+                                              t-esc="d.company_id.currency_id.amount_to_text(d.amount_total)"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div style="width:100%; min-height: 90px; margin-top:4px;">
+                            <t t-if="d.l10n_latam_document_type_id.code == '61' or d.l10n_latam_document_type_id.code == '56'">
+                                <div style="width: 58%; min-height: 80px;border:1px solid; border-radius: 5px; float:left;">
+                                    <p style="font-size: 12px; font-weight: bold; margin: 8px">DOCUMENTOS
+                                        REFERENCIADO</p>
+                                    <table style="width: 100%; font-size: 11px;" cellspacing="0">
+                                        <tr>
+                                            <th style="border-right: 1px solid; border-bottom: 1px solid; border-top: 1px solid;">
+                                                TIPO
+                                                OPERACION
+                                            </th>
+                                            <th style="border-right: 1px solid; border-bottom: 1px solid; border-top: 1px solid;">
+                                                RAZON
+                                            </th>
+                                            <th style="border-right: 1px solid; border-bottom: 1px solid; border-top: 1px solid;">
+                                                TIPO
+                                                DOCUMENTO
+                                            </th>
+                                            <th style="border-right: 1px solid; border-bottom: 1px solid; border-top: 1px solid;">
+                                                FOLIO
+                                            </th>
+                                            <th style="border-bottom: 1px solid; border-top: 1px solid;">FECHA</th>
+                                        </tr>
+                                        <t t-foreach="d.l10n_cl_reference_ids" t-as="line">
+                                            <tr>
+                                                <td style="border-right: 1px solid; border-bottom: 1px solid;">
+                                                    <span t-esc="line.reference_doc_code[3:]"/>
+                                                </td>
+                                                <td style="border-right: 1px solid; border-bottom: 1px solid;">
+                                                    <span t-field="line.reason"/>
+                                                </td>
+                                                <td style="border-right: 1px solid; border-bottom: 1px solid;">
+                                                    <span t-field="line.l10n_cl_reference_doc_type_selection"/>
+                                                </td>
+                                                <td style="border-right: 1px solid; border-bottom: 1px solid;">
+                                                    <span t-field="line.origin_doc_number"/>
+                                                </td>
+                                                <td style="border-bottom: 1px solid;">
+                                                    <span t-field="line.date"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </table>
+                                </div>
+                            </t>
+                            <div style="width:40%;border:1px solid; border-radius: 5px; float: right">
+                                <table style="width: 100%; font-size: 11px;" cellspacing="0">
+                                    <tr>
+                                        <td style="width: 40%;border-bottom: 1px solid; border-right: 1px solid; padding: 4px;">
+                                            <strong>SUB TOTAL</strong>
+                                        </td>
+                                        <td style="width: 60%;border-bottom: 1px solid; padding: 4px; text-align: right;">
+                                            <t t-if="d.l10n_latam_document_type_id.code == '39'">
+                                                <span t-esc="d.roundclp(sum(d.mapped('invoice_line_ids').mapped('subtotal_with_taxes')))"/>
+                                            </t>
+                                            <t t-else="">
+                                                <span t-esc="d.roundclp(d.subtotal_amount)"/>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                    <t t-if="d.l10n_latam_document_type_id.code != '39'">
+                                        <tr>
+                                            <td style="border-bottom: 1px solid; border-right: 1px solid; padding: 4px;">
+                                                <strong>TOTAL NETO</strong>
+                                            </td>
+                                            <td style="border-bottom: 1px solid; padding: 4px; text-align: right;">
+                                                <span t-esc="d.roundclp(d.net_amount)"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <t t-if="d.l10n_latam_document_type_id.code != '39'">
+                                        <tr>
+                                            <td style="border-bottom: 1px solid; border-right: 1px solid; padding: 4px;">
+                                                <strong>TOTAL EXENTO</strong>
+                                            </td>
+                                            <td style="border-bottom: 1px solid; padding: 4px; text-align: right;">
+                                                <span t-esc="d.roundclp(d.total_exempt)"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <t t-if="d.l10n_latam_document_type_id.code != '39'">
+                                        <t t-foreach="d.amount_by_group" t-as="tax">
+                                            <tr>
+                                                <td style="border-bottom: 1px solid; border-right: 1px solid; padding: 4px;">
+                                                    <strong>
+                                                        <span t-esc="tax[0]"/>
+                                                    </strong>
+                                                </td>
+                                                <td style="border-bottom: 1px solid; padding: 4px; text-align: right;">
+                                                    <span t-esc="d.roundclp(tax[1])"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                    <tr>
+                                        <td style="border-right: 1px solid; padding: 4px;">
+                                            <strong>TOTAL</strong>
+                                        </td>
+                                        <td style="padding: 4px; text-align: right;">
+                                            <span t-esc="d.roundclp(d.amount_total)"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 12px; width:100%; min-height:100px;">
+                            <div style="width:49%; float:left; ">
+                                <div style="width: 100%px; height: 150px; text-align:center;">
+                                    <div style="width: 100%;height: 150px;">
+                                        <img t-att-src="'data:image/png;base64,%s' % to_text(d.ted)"
+                                             style="width:320px"/>
+                                    </div>
+                                    <span style="font-size:10px">Timbre Electrónico SII</span>
+                                    <br/>
+                                    <span style="font-size:8px">Resolución 80 del 2014-08-22 Verifique Documento:
+                                        <a href="https://homer.sii.cl/"
+                                           style="margins-left:2px; color:black; text-decoration:none">
+                                            https://www.sii.cl
+                                        </a>
+                                    </span>
+                                </div>
+                            </div>
+                            <br/>
+                            <t t-if="d.l10n_latam_document_type_id.code == '33'">
+                                <div
+                                        style="width:50%; min-height:100px; float:right; padding-top:2px; border: 1px solid; border-radius: 5px;">
+                                    <table style="font-size:11px; width: 100%;" cellspacing="0">
+                                        <tr>
+                                            <th style="text-align: left; width: 20%; border-bottom: 1px solid; border-right: 1px solid; padding: 4px;">
+                                                Nombre
+                                            </th>
+                                            <td style="width: 80%;border-bottom: 1px solid;"></td>
+                                        </tr>
+                                        <tr>
+                                            <th style="text-align: left; width: 20%;;border-bottom: 1px solid; border-right: 1px solid;padding: 4px;">
+                                                R.U.T.
+                                            </th>
+                                            <td style="width: 80%;border-bottom: 1px solid;"></td>
+                                        </tr>
+                                        <tr>
+                                            <th style="text-align: left; width: 16%;;border-bottom: 1px solid; border-right: 1px solid;padding: 4px;">
+                                                Fecha
+                                            </th>
+                                            <td style="width: 80%;border-bottom: 1px solid;"></td>
+                                        </tr>
+                                        <tr>
+                                            <th style="text-align: left; width: 20%;;border-bottom: 1px solid; border-right: 1px solid;padding: 4px;">
+                                                Recinto
+                                            </th>
+                                            <td style="width: 80%;border-bottom: 1px solid;"></td>
+                                        </tr>
+                                        <tr>
+                                            <th style="text-align: left; width: 20%;;border-bottom: 1px solid; border-right: 1px solid;padding: 4px;">
+                                                Firma
+                                            </th>
+                                            <td style="width: 80%;border-bottom: 1px solid;"></td>
+                                        </tr>
+                                    </table>
+                                    <p style="font-size: 10px; padding: 6px;">
+                                        El acuse de recibo que se declara en este act. de acuerdo a lo dispuesto en la
+                                        letra
+                                        b) del Art. 4°. y la letra c) del Art. 5° de la Ley 19983, acredita que la
+                                        entrega
+                                        de
+                                        mercaderias o servicio(s) prestado(s) ha(n) sino recibido(s).
+                                    </p>
+                                    <br/>
+                                    <t t-if="l >= 1">
+                                        <div style="float: right;">
+                                            <span>CEDIBLE</span>
+                                        </div>
+                                    </t>
+                                    <t t-set="l" t-value="l+1"/>
+                                </div>
+
+                            </t>
+                        </div>
+                        <t t-if="l == res_company.copies_qty">
+                            <div style="page-break-after:avoid;"></div>
+                        </t>
+                        <t t-else="">
+                            <div style="page-break-after:always;"></div>
+                        </t>
                     </t>
-                    <span t-field="res_company.name" style="font-size: 14px; font-weight: bold;"/>
-                    <p style="font-size: 10px; " t-field="res_company.l10n_cl_activity_description"/>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="width: 10%;">
-                    <img t-att-src="'data:image/png;base64,%s' % to_text(res_company.logo)"
-                         style="max-width: 120px; max-height: 70px"/>
-                  </td>
-                  <td style="width: 80%; font-size: 10px; text-align: center;">
-                    <span t-field="res_company.street"/>
-                    <br/>
-                    Mesa Central:
-                    <span t-field="res_company.phone"/>
-                    <br/>
-                    E-mail:
-                    <span t-field="res_company.email"/>
-                    <br/>
-                    <span t-field="res_company.website"/>
-                  </td>
-                  <td style="width: 10%;">
-                    <img t-att-src="'data:image/png;base64,%s' % to_text(res_company.certificate_logo)"
-                         style="max-width: 120px; max-height: 70px"/>
-                  </td>
-                </tr>
-              </table>
-            </div>
-            <t t-if="d.l10n_latam_document_type_id.code != '39'">
-              <div style="width: 50%; display: inline-block;">
-                <div style="float: right; width: 60%;">
-                  <table style="border:4px solid; border-color: #ff0000; float: right; width: 100%; height: 120px;">
-                    <tr>
-                      <td style="text-align:center;color:#ff0000; font-weight: bold;">
-                        R.U.T.:
-                        <span style="color:#ff0000;" t-field="res_company.vat"/>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td style="text-align:center;color:#ff0000; font-weight: bold;">
-                        <span t-field="d.l10n_latam_document_type_id.name"/>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td style="text-align:center;color:#ff0000; font-weight: bold;">
-                        N°
-                        <span t-field="d.l10n_latam_document_number"/>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td></td>
-                    </tr>
-                  </table>
-                  <table style="width: 100%;">
-                    <tr>
-                      <td style="text-align: center; font-size: 11px;color:#ff0000;">
-                        <strong>S.I.I - UNIDAD SAN BERNARDO</strong>
-                      </td>
-                    </tr>
-                  </table>
                 </div>
-              </div>
+
             </t>
-          </div>
-          <br/>
-          <t t-if="d.l10n_latam_document_type_id.code != '39'">
-            <div style="width:100%;margin:0 auto;border:1px solid; border-radius: 5px; ">
-              <table style="width:98%;margin: 0 auto;font-size:11px; padding: 6px;" cellspacing="1">
-                <tr>
-                  <td style="width: 16%;">
-                    <strong>FECHA</strong>
-                  </td>
-                  <td style="width: 34%;">
-                    :
-                    <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y')"/>
-                  </td>
-                  <td style="width: 16%;"></td>
-                  <td style="width: 34%;"></td>
-                </tr>
-                <tr>
-                  <td>
-                    <strong>SEÑORES</strong>
-                  </td>
-                  <td style="text-align:left;">
-                    :
-                    <span t-field="d.partner_id.name"/>
-                  </td>
-                  <td style="text-align:left;">
-                    <strong>RUT</strong>
-                  </td>
-                  <td style="text-align:left;">
-                    :
-                    <span t-field="d.partner_id.vat"/>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="text-align:left;">
-                    <strong>SUCURSAL</strong>
-                  </td>
-                  <td style="text-align:left;">
-                    :
-                    <span t-field="d.partner_shipping_id.name"/>
-                  </td>
-                  <td style="text-align:left;">
-                    <strong>COMUNA:</strong>
-                  </td>
-                  <td style="text-align:left;">
-                    :
-                    <!--<span t-field="d.partner_shipping_id.state_id.name"/>-->
-                    <span t-field="d.partner_shipping_id.city_id.name"/>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="text-align:left;">
-                    <strong>DIRECCION</strong>
-                  </td>
-                  <td style="text-align:left;">
-                    :
-                    <span t-field="d.partner_shipping_id.street"/>
-                  </td>
-                  <td style="text-align:left;">
-                    <strong>CIUDAD</strong>
-                  </td>
-                  <td style="text-align:left;">
-                    :
-                    <span style="text-transform: uppercase;" t-field="d.partner_shipping_id.city_id.name"/>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="text-align:left;">
-                    <strong>GIRO</strong>
-                  </td>
-                  <td style="text-align:left;">
-                    :
-                    <span t-field="d.partner_id.l10n_cl_activity_description"/>
-                  </td>
-                  <td colspan="2"></td>
-                </tr>
-                <tr>
-                  <td style="text-align:left;">
-                    <strong>COND. DE PAGO</strong>
-                  </td>
-                  <td style="text-align:left;">
-                    :
-                    <span t-field="d.invoice_payment_term_id.name"/>
-                    <t t-if="d.invoice_payment_term_id.l10n_cl_sii_code">
-                        <span style="margin-left: 4px"
-                          t-esc="d.invoice_payment_term_id.l10n_cl_sii_code[3:]"/>
+        </t>
+    </template>
+
+    <template id="custom_dispatch_guide">
+        <t t-call="web.html_container">
+            <t t-set="l" t-value="0"/>
+            <t t-foreach="range(res_company.copies_qty)" t-as="w">
+                <div class="page">
+                    <t t-foreach="docs" t-as="d">
+                        <div style="width: 100%;">
+                            <div style="width: 49%; height: 130px; display: inline-block;">
+                                <table style="margin-left: 60px;">
+                                    <tr>
+                                        <td colspan="3" style="text-align: center;">
+                                            <span t-field="res_company.name"
+                                                  style="font-size: 14px; font-weight: bold;"/>
+                                            <p style="font-size: 10px; "
+                                               t-field="res_company.l10n_cl_activity_description"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 10%;">
+                                            <img t-att-src="'data:image/png;base64,%s' % to_text(res_company.logo)"
+                                                 style="max-width: 120px; max-height: 70px"/>
+                                        </td>
+                                        <td style="width: 80%; font-size: 10px; text-align: center;">
+                                            <span t-field="res_company.street"/>
+                                            <br/>
+                                            Mesa Central:
+                                            <span t-field="res_company.phone"/>
+                                            <br/>
+                                            E-mail:
+                                            <span t-field="res_company.email"/>
+                                            <br/>
+                                            <span t-field="res_company.website"/>
+                                        </td>
+                                        <td style="width: 10%;">
+                                            <img t-att-src="'data:image/png;base64,%s' % to_text(res_company.certificate_logo)"
+                                                 style="max-width: 120px; max-height: 70px"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div style="width: 50%; display: inline-block;">
+                                <div style="float: right; width: 60%;">
+                                    <table style="border:4px solid; border-color: #ff0000; float: right; width: 100%; height: 120px;">
+                                        <tr>
+                                            <td style="text-align:center;color:#ff0000; font-weight: bold;">
+                                                R.U.T.:
+                                                <span style="color:#ff0000;" t-field="res_company.vat"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align:center;color:#ff0000; font-weight: bold;">
+                                                <!--<span t-field="d.l10n_latam_document_type_id.name"/>-->
+                                                <span>GUÍA DE DESPACHO</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align:center;color:#ff0000; font-weight: bold;">
+                                                N°
+                                                <span t-field="d.l10n_latam_document_number"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                        </tr>
+                                    </table>
+                                    <table style="width: 100%;">
+                                        <tr>
+                                            <td style="text-align: center; font-size: 11px;color:#ff0000;">
+                                                <strong>S.I.I - UNIDAD SAN BERNARDO</strong>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                        <div style="width:100%;margin:0 auto;border:1px solid; border-radius: 5px; ">
+                            <table style="width:98%;margin: 0 auto;font-size:11px; padding: 6px;" cellspacing="1">
+                                <tr>
+                                    <td style="width: 16%;">
+                                        <strong>FECHA EMISION</strong>
+                                    </td>
+                                    <td style="width: 34%;">
+                                        :
+                                        <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y')"/>
+                                    </td>
+                                    <td style="width: 16%;"></td>
+                                    <td style="width: 34%;"></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>SEÑOR(ES)</strong>
+                                    </td>
+                                    <td style="text-align:left;">
+                                        :
+                                        <t t-if="d.partner_id.parent_id">
+                                            <span t-field="d.partner_id.parent_id.name"/>
+                                        </t>
+                                        <t t-else="">
+                                            <span t-field="d.partner_id.name"/>
+                                        </t>
+                                    </td>
+                                    <td style="text-align:left;">
+                                        <strong>R.U.T.</strong>
+                                    </td>
+                                    <td style="text-align:left;">
+                                        :
+                                        <t t-if="d.partner_id.parent_id">
+                                            <span t-field="d.partner_id.parent_id.vat"/>
+                                        </t>
+                                        <t t-else="">
+                                            <span t-field="d.partner_id.vat"/>
+                                        </t>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:left;">
+                                        <strong>DIRECCION</strong>
+                                    </td>
+                                    <td style="text-align:left;">
+                                        :
+                                        <span t-field="d.partner_id.street"/>
+                                    </td>
+                                    <td style="text-align:left;">
+                                        <strong>GIRO:</strong>
+                                    </td>
+                                    <td style="text-align:left;">
+                                        :
+                                        <span t-field="d.partner_id.l10n_cl_activity_description"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:left;">
+                                        <strong>COMUNA</strong>
+                                    </td>
+                                    <td style="text-align:left;">
+                                        :
+                                        <!--<span t-field="d.partner_id.state_id.name"/>-->
+                                        <span t-field="d.partner_id.city_id.name"/>
+                                    </td>
+                                    <td style="text-align:left;">
+                                        <strong>CIUDAD</strong>
+                                    </td>
+                                    <td style="text-align:left;">
+                                        :
+                                        <span t-field="d.partner_id.city_id.name"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:left;">
+                                        <strong>DIRECCION DESP.</strong>
+                                    </td>
+                                    <td style="text-align:left;">
+                                        :
+                                        <span t-field="d.partner_id.street"/>
+                                    </td>
+                                    <td style="text-align:left;">
+                                        <strong>IND. TRASLADO</strong>
+                                    </td>
+                                    <td style="text-align:left;">
+                                        :
+                                        <span t-esc="d.l10n_cl_delivery_guide_reason[3:] if d.l10n_cl_delivery_guide_reason else ''"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <p style="font-size: 11px;">
+                            <strong style="text-transform: uppercase;">Sirvase Recibir Conforme lo siguiente según
+                                Detalle:
+                            </strong>
+                        </p>
+                        <div style="width:100%;margin:0 auto;height:500px;border:1px solid; border-radius: 5px; margin-top:4px;">
+                            <table style="width:100%;font-size:11px;" cellspacing="0">
+                                <tr>
+                                    <th style="width:12%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
+                                        CANTIDAD
+                                    </th>
+                                    <th style="width:64%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
+                                        CONCEPTO
+                                    </th>
+                                    <t t-if="d.partner_id.l10n_cl_delivery_guide_price != 'none'">
+                                        <th style="width:12%;border-right:1px solid; border-bottom:1px solid;padding-top: 6px;">
+                                            PRECIO UNITARIO
+                                        </th>
+                                        <th style="width:12%;border-bottom:1px solid;padding-top: 6px;">TOTAL</th>
+                                    </t>
+                                </tr>
+                                <t t-foreach="d.move_ids_without_package" t-as="move">
+                                    <t t-foreach="move.move_line_ids.sorted(key=lambda line: line.location_id.id)"
+                                       t-as="line">
+                                        <tr>
+                                            <td style="border-right:1px solid;border-bottom:1px solid;text-align:center;padding-right:4px;">
+                                                <span t-if="d.state != 'done'" t-field="line.product_uom_qty"/>
+                                                <span t-if="d.state == 'done'" t-field="line.qty_done"/>
+                                                <!--<span t-field="line.product_uom_id" groups="uom.group_uom"/>-->
+                                            </td>
+                                            <td style="border-right:1px solid;border-bottom:1px solid;text-align:left;padding-right:4px;padding-left:4px;">
+                                                <span t-field="line.product_id.display_name"/>
+                                                <!--<span t-field="line.product_id.description_picking"/>-->
+                                            </td>
+                                            <t t-if="d.partner_id.l10n_cl_delivery_guide_price == 'product'">
+                                                <td style="border-right:1px solid;text-align:right;border-bottom:1px solid;text-align:right;padding-right:4px;padding-left:4px;">
+                                                    <span t-esc="d.roundclp(line.product_id.list_price)"/>
+                                                </td>
+                                                <td style="border-bottom:1px solid;text-align:right;padding-right:4px;">
+                                                    <t t-if="d.state != 'done'">
+                                                        <span t-esc="d.roundclp(line.product_uom_qty * line.product_id.list_price)"/>
+                                                    </t>
+                                                    <t t-if="d.state == 'done'">
+                                                        <span t-esc="d.roundclp(line.qty_done * line.product_id.list_price)"/>
+                                                    </t>
+                                                </td>
+                                            </t>
+                                            <t t-if="d.partner_id.l10n_cl_delivery_guide_price == 'sale_order'">
+                                                <td style="border-right:1px solid;text-align:right;border-bottom:1px solid;text-align:right;padding-right:4px;padding-left:4px;">
+                                                    <span
+                                                            t-esc="d.roundclp(d.sale_id.order_line.filtered(lambda a: a.product_id.id == line.product_id.id).price_unit)"/>
+                                                </td>
+                                                <td style="border-bottom:1px solid;text-align:right;padding-right:4px;">
+                                                    <t t-if="d.state != 'done'">
+                                                        <span
+                                                                t-esc="d.roundclp(line.product_uom_qty * d.sale_id.order_line.filtered(lambda a: a.product_id.id == line.product_id.id).price_unit)"/>
+                                                    </t>
+                                                    <t t-if="d.state == 'done'">
+                                                        <span
+                                                                t-esc="d.roundclp(line.qty_done * d.sale_id.order_line.filtered(lambda a: a.product_id.id == line.product_id.id).price_unit)"/>
+                                                    </t>
+                                                </td>
+                                            </t>
+                                        </tr>
+                                    </t>
+                                </t>
+                            </table>
+                        </div>
+
+                        <div style="width:100%; height: 160px; margin-top:4px;">
+                            <div style="width:100%; height: 50px; border: 1px solid; border-radius: 5px;">
+                                <table style="width: 100%; text-align: center" cellspacing="0">
+                                    <tr>
+                                        <th style="width: 100%; border-bottom: 1px solid; padding: 4px;">
+                                            <span style="font-size: 11px;">CONDICIONES DE PAGO</span>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span style="font-size: 11px" t-field="d.sale_id.payment_term_id.name"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <br/>
+                            <t t-if="d.partner_id.l10n_cl_delivery_guide_price != 'none'">
+                                <div style="width:40%;border:1px solid; border-radius: 5px; float: right">
+                                    <table style="width: 100%; font-size: 11px;" cellspacing="0">
+                                        <tr>
+                                            <td style="border-bottom: 1px solid; border-right: 1px solid; padding: 4px; with:40%">
+                                                <strong>TOTAL NETO</strong>
+                                            </td>
+                                            <td style="border-bottom: 1px solid; padding: 4px; text-align: right;">
+                                                <span t-esc="d.roundclp(d.net_amount)"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border-bottom: 1px solid; border-right: 1px solid; padding: 4px;">
+                                                <strong>IVA 19%</strong>
+                                            </td>
+                                            <td style="border-bottom: 1px solid; padding: 4px; text-align: right;">
+                                                <span t-esc="d.roundclp(d.tax_amount)"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border-right: 1px solid; padding: 4px;">
+                                                <strong>MONTO TOTAL</strong>
+                                            </td>
+                                            <td style="padding: 4px; text-align: right;">
+                                                <span t-esc="d.roundclp(d.amount_total)"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </t>
+                        </div>
+                        <br/>
+                        <t t-if="d.partner_id.l10n_cl_delivery_guide_price != 'none'">
+                            <div style="width:100%;border:1px solid; height: 50px; border-radius: 5px; margin-top:4px;">
+                                <table style="padding: 6px; width: 98%">
+                                    <tr>
+                                        <td style="width: 20px;">Son:</td>
+                                        <td>
+                                            <span t-esc="d.company_id.currency_id.amount_to_text(d.amount_total)"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </t>
+                        <div style="margin-top: 12px; width:100%; min-height:100px;">
+                            <div style="width:49%; float:left; ">
+                                <div style="width: 100%px; height: 150px; text-align:center;">
+                                    <div style="width: 100%;height: 150px;">
+                                        <img t-att-src="'data:image/png;base64,%s' % to_text(d.ted)"
+                                             style="width:320px"/>
+                                    </div>
+                                    <span style="font-size:10px">Timbre Electrónico SII</span>
+                                    <br/>
+                                    <span style="font-size:8px">Resolución 80 del 2014-08-22 Verifique Documento:
+                                        <a href="https://homer.sii.cl/"
+                                           style="margins-left:2px; color:black; text-decoration:none">
+                                            https://www.sii.cl
+                                        </a>
+                                    </span>
+                                </div>
+                            </div>
+                            <br/>
+                            <t t-if="l >= 1">
+                                <div style="width:49%;float:right;">
+                                    <span>CEDIBLE CON FACTURA</span>
+                                </div>
+                            </t>
+                            <t t-set="l" t-value="l+1"/>
+                        </div>
                     </t>
-                  </td>
-                  <td style="text-align:left;">
-                    <strong>TELEFONO</strong>
-                  </td>
-                  <td style="text-align:left;">
-                    :
-                    <t t-if="d.partner_id.phone">
-                      <span t-field="d.partner_id.phone"/>
-                    </t>
-                    <t t-if="d.partner_id.phone and d.partner_id.mobile">
-                      -
-                    </t>
-                    <t t-if="d.partner_id.mobile">
-                      <span t-field="d.partner_id.mobile"/>
-                    </t>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="text-align:left;">
-                    <strong>VENDEDOR</strong>
-                  </td>
-                  <td style="text-align:left;">
-                    :
-                    <span t-field="d.invoice_user_id"/>
-                  </td>
-                  <td style="text-align:left;">
-                    <strong>N/PEDIDO</strong>
-                  </td>
-                  <td style="text-align:left;">
-                    :
-                    <span t-esc="d.mapped('invoice_line_ids').mapped('sale_line_ids').mapped('order_id').name"/>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="text-align:left;">
-                    <strong>DIR. DESPACHO</strong>
-                  </td>
-                  <td style="text-align:left;">
-                    :
-                    <span t-field="d.partner_shipping_id.street"/>
-                  </td>
-                  <td style="text-align:left;">
-                    <strong>Orden de Compra</strong>
-                  </td>
-                  <td style="text-align:left;">
-                    :
-                    <t t-if="d.mapped('invoice_line_ids').mapped('sale_line_ids').mapped('order_id').client_order_ref">
-                      <span style="margin-left:2px;">OC</span>
-                      <span style="margin-left:2px;"
-                            t-field="d.mapped('invoice_line_ids').mapped('sale_line_ids').mapped('order_id').client_order_ref"/>
-                    </t>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="text-align:left;">
-                    <strong>GUIA DESP.</strong>
-                  </td>
-                  <td style="text-align:left;">
-                    :
-                    <span
-                        t-esc="d.mapped('invoice_line_ids').mapped('sale_line_ids').mapped('order_id').mapped('picking_ids').filtered(lambda a: a.l10n_latam_document_number).name"/>
-                  </td>
-                  <td colspan="2"></td>
-                </tr>
-              </table>
-            </div>
-          </t>
-          <t t-if="d.l10n_latam_document_type_id.code == '39'">
-            <table>
-              <tr>
-                <td style="font-size: 14px; font-weight: bold;">
-                  <strong>S.I.I. - SAN BERNARDO</strong>
-                </td>
-              </tr>
-              <tr>
-                <td style="font-size: 14px; font-weight: bold;">
-                  <strong>FECHA EMISION:
-                    <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y')"/>
-                  </strong>
-                </td>
-              </tr>
-              <tr>
-                <td style="font-size: 14px; font-weight: bold;">
-                  <strong>
-                    <span t-field="d.l10n_latam_document_type_id.name"/>:
-                    <span t-field="d.l10n_latam_document_number"/>
-                  </strong>
-                </td>
-              </tr>
-            </table>
-          </t>
-          <p style="font-size: 11px;">
-            <strong>Sirvase Recibir Conforme lo siguiente según Detalle:</strong>
-          </p>
-          <div style="width:100%;margin:0 auto;height:500px;border:1px solid; border-radius: 5px; margin-top:4px;">
-            <table style="width:100%;font-size:11px;" cellspacing="0">
-              <tr>
-                <t t-if="d.l10n_latam_document_type_id.code == '39'">
-                  <th style="width:10%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
-                    CODIGO
-                  </th>
-                  <th style="width:6%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
-                    CANT
-                  </th>
+                </div>
+                <t t-if="l == res_company.copies_qty">
+                    <div style="page-break-after:avoid;"></div>
                 </t>
                 <t t-else="">
-                  <th style="width:10%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
-                    CANTIDAD
-                  </th>
+                    <div style="page-break-after:always;"></div>
                 </t>
-                <th style="width:50%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
-                  DETALLE
-                </th>
-                <t t-if="d.l10n_latam_document_type_id.code != '39'">
-                  <th style="width:10%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
-                    DSCTO.
-                  </th>
-                </t>
-                <th style="width:10%;border-right:1px solid; border-bottom:1px solid;padding-top: 6px;">
-                  PRECIO
-                </th>
-                <th style="width:10%;border-bottom:1px solid;padding-top: 6px;">TOTAL</th>
-              </tr>
-              <t t-foreach="d.invoice_line_ids" t-as="line">
-                <tr>
-                  <t t-if="d.l10n_latam_document_type_id.code == '39'">
-                    <td style="border-right:1px solid;border-bottom:1px solid;text-align:center;padding-right:4px;">
-                      <span t-esc="line.product_id.al_sku"/>
-                    </td>
-                  </t>
-                  <td style="border-right:1px solid;border-bottom:1px solid;text-align:center;padding-right:4px;">
-                    <span t-esc="line.quantity"/>
-                  </td>
-                  <td style="border-right:1px solid;border-bottom:1px solid;text-align:left;padding-right:4px;padding-left:4px;">
-                    <span t-field="line.name"/>
-                  </td>
-                  <t t-if="d.l10n_latam_document_type_id.code != '39'">
-                    <td style="border-right:1px solid;border-bottom:1px solid;text-align:right;padding-right:4px;">
-                      <span t-esc="d.roundclp(line.quantity * line.discount * line.price_unit / 100)"/>
-                    </td>
-                  </t>
-                  <td style="border-right:1px solid;text-align:right;border-bottom:1px solid;text-align:right;padding-right:4px;padding-left:4px;">
-                    <t t-if="d.l10n_latam_document_type_id.code == '39'">
-                      <span t-esc="d.roundclp(line.price_unit_with_discount + line.taxes_amount)"/>
-                    </t>
-                    <t t-else="">
-                      <span t-esc="d.roundclp(line.price_unit)"/>
-                    </t>
-                  </td>
-                  <td style="border-bottom:1px solid;text-align:right;padding-right:4px;">
-                    <t t-if="d.l10n_latam_document_type_id.code == '39'">
-                      <span t-esc="d.roundclp(line.subtotal_with_taxes)"/>
-                    </t>
-                    <t t-else="">
-                      <span t-esc="d.roundclp(line.price_subtotal)"/>
-                    </t>
-                  </td>
-                </tr>
-              </t>
-            </table>
-          </div>
-          <div style="width:100%;border:1px solid; border-radius: 5px; margin-top:4px;">
-            <table style="padding: 6px; width: 98%">
-              <tr>
-                <td>Son:
-                  <span style="margin-left: 4px;" t-esc="d.company_id.currency_id.amount_to_text(d.amount_total)"/>
-                </td>
-              </tr>
-            </table>
-          </div>
-
-          <div style="width:100%; min-height: 90px; margin-top:4px;">
-            <t t-if="d.l10n_latam_document_type_id.code == '61' or d.l10n_latam_document_type_id.code == '56'">
-              <div style="width: 58%; min-height: 80px;border:1px solid; border-radius: 5px; float:left;">
-                <p style="font-size: 12px; font-weight: bold; margin: 8px">DOCUMENTOS REFERENCIADO</p>
-                <table style="width: 100%; font-size: 11px;" cellspacing="0">
-                  <tr>
-                    <th style="border-right: 1px solid; border-bottom: 1px solid; border-top: 1px solid;">TIPO
-                      OPERACION
-                    </th>
-                    <th style="border-right: 1px solid; border-bottom: 1px solid; border-top: 1px solid;">RAZON</th>
-                    <th style="border-right: 1px solid; border-bottom: 1px solid; border-top: 1px solid;">TIPO
-                      DOCUMENTO
-                    </th>
-                    <th style="border-right: 1px solid; border-bottom: 1px solid; border-top: 1px solid;">FOLIO</th>
-                    <th style="border-bottom: 1px solid; border-top: 1px solid;">FECHA</th>
-                  </tr>
-                  <t t-foreach="d.l10n_cl_reference_ids" t-as="line">
-                    <tr>
-                      <td style="border-right: 1px solid; border-bottom: 1px solid;">
-                        <span t-esc="line.reference_doc_code[3:]"/>
-                      </td>
-                      <td style="border-right: 1px solid; border-bottom: 1px solid;">
-                        <span t-field="line.reason"/>
-                      </td>
-                      <td style="border-right: 1px solid; border-bottom: 1px solid;">
-                        <span t-field="line.l10n_cl_reference_doc_type_selection"/>
-                      </td>
-                      <td style="border-right: 1px solid; border-bottom: 1px solid;">
-                        <span t-field="line.origin_doc_number"/>
-                      </td>
-                      <td style="border-bottom: 1px solid;">
-                        <span t-field="line.date"/>
-                      </td>
-                    </tr>
-                  </t>
-                </table>
-              </div>
             </t>
-            <div style="width:40%;border:1px solid; border-radius: 5px; float: right">
-              <table style="width: 100%; font-size: 11px;" cellspacing="0">
-                <tr>
-                  <td style="width: 40%;border-bottom: 1px solid; border-right: 1px solid; padding: 4px;">
-                    <strong>SUB TOTAL</strong>
-                  </td>
-                  <td style="width: 60%;border-bottom: 1px solid; padding: 4px; text-align: right;">
-                    <t t-if="d.l10n_latam_document_type_id.code == '39'">
-                      <span t-esc="d.roundclp(sum(d.mapped('invoice_line_ids').mapped('subtotal_with_taxes')))"/>
-                    </t>
-                    <t t-else="">
-                      <span t-esc="d.roundclp(d.subtotal_amount)"/>
-                    </t>
-                  </td>
-                </tr>
-                <t t-if="d.l10n_latam_document_type_id.code != '39'">
-                  <tr>
-                    <td style="border-bottom: 1px solid; border-right: 1px solid; padding: 4px;">
-                      <strong>TOTAL NETO</strong>
-                    </td>
-                    <td style="border-bottom: 1px solid; padding: 4px; text-align: right;">
-                      <span t-esc="d.roundclp(d.net_amount)"/>
-                    </td>
-                  </tr>
-                </t>
-                <t t-if="d.l10n_latam_document_type_id.code != '39'">
-                  <tr>
-                    <td style="border-bottom: 1px solid; border-right: 1px solid; padding: 4px;">
-                      <strong>TOTAL EXENTO</strong>
-                    </td>
-                    <td style="border-bottom: 1px solid; padding: 4px; text-align: right;">
-                      <span t-esc="d.roundclp(d.total_exempt)"/>
-                    </td>
-                  </tr>
-                </t>
-                <t t-if="d.l10n_latam_document_type_id.code != '39'">
-                  <t t-foreach="d.amount_by_group" t-as="tax">
-                    <tr>
-                      <td style="border-bottom: 1px solid; border-right: 1px solid; padding: 4px;">
-                        <strong>
-                          <span t-esc="tax[0]"/>
-                        </strong>
-                      </td>
-                      <td style="border-bottom: 1px solid; padding: 4px; text-align: right;">
-                        <span t-esc="d.roundclp(tax[1])"/>
-                      </td>
-                    </tr>
-                  </t>
-                </t>
-                <tr>
-                  <td style="border-right: 1px solid; padding: 4px;">
-                    <strong>TOTAL</strong>
-                  </td>
-                  <td style="padding: 4px; text-align: right;">
-                    <span t-esc="d.roundclp(d.amount_total)"/>
-                  </td>
-                </tr>
-              </table>
-            </div>
-          </div>
-
-          <div style="margin-top: 12px; width:100%; min-height:100px;">
-            <div style="width:49%; float:left; ">
-              <div style="width: 100%px; height: 150px; text-align:center;">
-                <div style="width: 100%;height: 150px;">
-                  <img t-att-src="'data:image/png;base64,%s' % to_text(d.ted)"
-                       style="width:320px"/>
-                </div>
-                <span style="font-size:10px">Timbre Electrónico SII</span>
-                <br/>
-                <span style="font-size:8px">Resolución 80 del 2014-08-22 Verifique Documento:
-                  <a href="https://homer.sii.cl/" style="margins-left:2px; color:black; text-decoration:none">
-                    https://www.sii.cl
-                  </a>
-                </span>
-              </div>
-            </div>
-            <br/>
-            <t t-if="d.l10n_latam_document_type_id.code == '33'">
-              <div
-                  style="width:50%; min-height:100px; float:right; padding-top:2px; border: 1px solid; border-radius: 5px;">
-                <table style="font-size:11px; width: 100%;" cellspacing="0">
-                  <tr>
-                    <th style="text-align: left; width: 20%; border-bottom: 1px solid; border-right: 1px solid; padding: 4px;">
-                      Nombre
-                    </th>
-                    <td style="width: 80%;border-bottom: 1px solid;"></td>
-                  </tr>
-                  <tr>
-                    <th style="text-align: left; width: 20%;;border-bottom: 1px solid; border-right: 1px solid;padding: 4px;">
-                      R.U.T.
-                    </th>
-                    <td style="width: 80%;border-bottom: 1px solid;"></td>
-                  </tr>
-                  <tr>
-                    <th style="text-align: left; width: 16%;;border-bottom: 1px solid; border-right: 1px solid;padding: 4px;">
-                      Fecha
-                    </th>
-                    <td style="width: 80%;border-bottom: 1px solid;"></td>
-                  </tr>
-                  <tr>
-                    <th style="text-align: left; width: 20%;;border-bottom: 1px solid; border-right: 1px solid;padding: 4px;">
-                      Recinto
-                    </th>
-                    <td style="width: 80%;border-bottom: 1px solid;"></td>
-                  </tr>
-                  <tr>
-                    <th style="text-align: left; width: 20%;;border-bottom: 1px solid; border-right: 1px solid;padding: 4px;">
-                      Firma
-                    </th>
-                    <td style="width: 80%;border-bottom: 1px solid;"></td>
-                  </tr>
-                </table>
-                <p style="font-size: 10px; padding: 6px;">
-                  El acuse de recibo que se declara en este act. de acuerdo a lo dispuesto en la letra
-                  b) del Art. 4°. y la letra c) del Art. 5° de la Ley 19983, acredita que la entrega de
-                  mercaderias o servicio(s) prestado(s) ha(n) sino recibido(s).
-                </p>
-              </div>
-            </t>
-          </div>
         </t>
-      </div>
-    </t>
-  </template>
+    </template>
 
-  <template id="custom_dispatch_guide">
-    <t t-call="web.html_container">
-      <div class="page">
-        <t t-foreach="docs" t-as="d">
-          <div style="width: 100%;">
-            <div style="width: 49%; height: 130px; display: inline-block;">
-              <table style="margin-left: 60px;">
-                <tr>
-                  <td colspan="3" style="text-align: center;">
-                    <span t-field="res_company.name" style="font-size: 14px; font-weight: bold;"/>
-                    <p style="font-size: 10px; " t-field="res_company.l10n_cl_activity_description"/>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="width: 10%;">
-                    <img t-att-src="'data:image/png;base64,%s' % to_text(res_company.logo)"
-                         style="max-width: 120px; max-height: 70px"/>
-                  </td>
-                  <td style="width: 80%; font-size: 10px; text-align: center;">
-                    <span t-field="res_company.street"/>
-                    <br/>
-                    Mesa Central:
-                    <span t-field="res_company.phone"/>
-                    <br/>
-                    E-mail:
-                    <span t-field="res_company.email"/>
-                    <br/>
-                    <span t-field="res_company.website"/>
-                  </td>
-                  <td style="width: 10%;">
-                    <img t-att-src="'data:image/png;base64,%s' % to_text(res_company.certificate_logo)"
-                         style="max-width: 120px; max-height: 70px"/>
-                  </td>
-                </tr>
-              </table>
-            </div>
-            <div style="width: 50%; display: inline-block;">
-              <div style="float: right; width: 60%;">
-                <table style="border:4px solid; border-color: #ff0000; float: right; width: 100%; height: 120px;">
-                  <tr>
-                    <td style="text-align:center;color:#ff0000; font-weight: bold;">
-                      R.U.T.:
-                      <span style="color:#ff0000;" t-field="res_company.vat"/>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td style="text-align:center;color:#ff0000; font-weight: bold;">
-                      <!--<span t-field="d.l10n_latam_document_type_id.name"/>-->
-                      <span>GUÍA DE DESPACHO</span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td style="text-align:center;color:#ff0000; font-weight: bold;">
-                      N°
-                      <span t-field="d.l10n_latam_document_number"/>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td></td>
-                  </tr>
-                </table>
-                <table style="width: 100%;">
-                  <tr>
-                    <td style="text-align: center; font-size: 11px;color:#ff0000;">
-                      <strong>S.I.I - UNIDAD SAN BERNARDO</strong>
-                    </td>
-                  </tr>
-                </table>
-              </div>
-            </div>
-          </div>
-          <br/>
-          <div style="width:100%;margin:0 auto;border:1px solid; border-radius: 5px; ">
-            <table style="width:98%;margin: 0 auto;font-size:11px; padding: 6px;" cellspacing="1">
-              <tr>
-                <td style="width: 16%;">
-                  <strong>FECHA EMISION</strong>
-                </td>
-                <td style="width: 34%;">
-                  :
-                  <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y')"/>
-                </td>
-                <td style="width: 16%;"></td>
-                <td style="width: 34%;"></td>
-              </tr>
-              <tr>
-                <td>
-                  <strong>SEÑOR(ES)</strong>
-                </td>
-                <td style="text-align:left;">
-                  :
-                  <t t-if="d.partner_id.parent_id">
-                    <span t-field="d.partner_id.parent_id.name"/>
-                  </t>
-                  <t t-else="">
-                    <span t-field="d.partner_id.name"/>
-                  </t>
-                </td>
-                <td style="text-align:left;">
-                  <strong>R.U.T.</strong>
-                </td>
-                <td style="text-align:left;">
-                  :
-                  <t t-if="d.partner_id.parent_id">
-                    <span t-field="d.partner_id.parent_id.vat"/>
-                  </t>
-                  <t t-else="">
-                    <span t-field="d.partner_id.vat"/>
-                  </t>
-                </td>
-              </tr>
-              <tr>
-                <td style="text-align:left;">
-                  <strong>DIRECCION</strong>
-                </td>
-                <td style="text-align:left;">
-                  :
-                  <span t-field="d.partner_id.street"/>
-                </td>
-                <td style="text-align:left;">
-                  <strong>GIRO:</strong>
-                </td>
-                <td style="text-align:left;">
-                  :
-                  <span t-field="d.partner_id.l10n_cl_activity_description"/>
-                </td>
-              </tr>
-              <tr>
-                <td style="text-align:left;">
-                  <strong>COMUNA</strong>
-                </td>
-                <td style="text-align:left;">
-                  :
-                  <!--<span t-field="d.partner_id.state_id.name"/>-->
-                  <span t-field="d.partner_id.city_id.name"/>
-                </td>
-                <td style="text-align:left;">
-                  <strong>CIUDAD</strong>
-                </td>
-                <td style="text-align:left;">
-                  :
-                  <span t-field="d.partner_id.city_id.name"/>
-                </td>
-              </tr>
-              <tr>
-                <td style="text-align:left;">
-                  <strong>DIRECCION DESP.</strong>
-                </td>
-                <td style="text-align:left;">
-                  :
-                  <span t-field="d.partner_id.street"/>
-                </td>
-                <td style="text-align:left;">
-                  <strong>IND. TRASLADO</strong>
-                </td>
-                <td style="text-align:left;">
-                  :
-                  <span t-esc="d.l10n_cl_delivery_guide_reason[3:] if d.l10n_cl_delivery_guide_reason else ''"/>
-                </td>
-              </tr>
-            </table>
-          </div>
-          <p style="font-size: 11px;">
-            <strong style="text-transform: uppercase;">Sirvase Recibir Conforme lo siguiente según Detalle:</strong>
-          </p>
-          <div style="width:100%;margin:0 auto;height:500px;border:1px solid; border-radius: 5px; margin-top:4px;">
-            <table style="width:100%;font-size:11px;" cellspacing="0">
-              <tr>
-                <th style="width:12%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
-                  CANTIDAD
-                </th>
-                <th style="width:64%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
-                  CONCEPTO
-                </th>
-                <t t-if="d.partner_id.l10n_cl_delivery_guide_price != 'none'">
-                  <th style="width:12%;border-right:1px solid; border-bottom:1px solid;padding-top: 6px;">
-                    PRECIO UNITARIO
-                  </th>
-                  <th style="width:12%;border-bottom:1px solid;padding-top: 6px;">TOTAL</th>
-                </t>
-              </tr>
-              <t t-foreach="d.move_ids_without_package" t-as="move">
-                <t t-foreach="move.move_line_ids.sorted(key=lambda line: line.location_id.id)" t-as="line">
-                  <tr>
-                    <td style="border-right:1px solid;border-bottom:1px solid;text-align:center;padding-right:4px;">
-                      <span t-if="d.state != 'done'" t-field="line.product_uom_qty"/>
-                      <span t-if="d.state == 'done'" t-field="line.qty_done"/>
-                      <!--<span t-field="line.product_uom_id" groups="uom.group_uom"/>-->
-                    </td>
-                    <td style="border-right:1px solid;border-bottom:1px solid;text-align:left;padding-right:4px;padding-left:4px;">
-                      <span t-field="line.product_id.display_name"/>
-                      <!--<span t-field="line.product_id.description_picking"/>-->
-                    </td>
-                    <t t-if="d.partner_id.l10n_cl_delivery_guide_price == 'product'">
-                      <td style="border-right:1px solid;text-align:right;border-bottom:1px solid;text-align:right;padding-right:4px;padding-left:4px;">
-                        <span t-esc="d.roundclp(line.product_id.list_price)"/>
-                      </td>
-                      <td style="border-bottom:1px solid;text-align:right;padding-right:4px;">
-                        <t t-if="d.state != 'done'">
-                          <span t-esc="d.roundclp(line.product_uom_qty * line.product_id.list_price)"/>
-                        </t>
-                        <t t-if="d.state == 'done'">
-                          <span t-esc="d.roundclp(line.qty_done * line.product_id.list_price)"/>
-                        </t>
-                      </td>
-                    </t>
-                    <t t-if="d.partner_id.l10n_cl_delivery_guide_price == 'sale_order'">
-                      <td style="border-right:1px solid;text-align:right;border-bottom:1px solid;text-align:right;padding-right:4px;padding-left:4px;">
-                        <span
-                            t-esc="d.roundclp(d.sale_id.order_line.filtered(lambda a: a.product_id.id == line.product_id.id).price_unit)"/>
-                      </td>
-                      <td style="border-bottom:1px solid;text-align:right;padding-right:4px;">
-                        <t t-if="d.state != 'done'">
-                          <span
-                              t-esc="d.roundclp(line.product_uom_qty * d.sale_id.order_line.filtered(lambda a: a.product_id.id == line.product_id.id).price_unit)"/>
-                        </t>
-                        <t t-if="d.state == 'done'">
-                          <span
-                              t-esc="d.roundclp(line.qty_done * d.sale_id.order_line.filtered(lambda a: a.product_id.id == line.product_id.id).price_unit)"/>
-                        </t>
-                      </td>
-                    </t>
-                  </tr>
-                </t>
-              </t>
-            </table>
-          </div>
+    <record id="paper_format_letter_custom" model="report.paperformat">
+        <field name="name">Carta Custom</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="margin_top">5</field>
+        <field name="margin_bottom">0</field>
+        <field name="margin_left">15</field>
+        <field name="margin_right">15</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">90</field>
+    </record>
 
-          <div style="width:100%; height: 160px; margin-top:4px;">
-            <div style="width:100%; height: 50px; border: 1px solid; border-radius: 5px;">
-              <table style="width: 100%; text-align: center" cellspacing="0">
-                <tr>
-                  <th style="width: 100%; border-bottom: 1px solid; padding: 4px;">
-                    <span style="font-size: 11px;">CONDICIONES DE PAGO</span>
-                  </th>
-                </tr>
-                <tr>
-                  <td>
-                    <span style="font-size: 11px" t-field="d.sale_id.payment_term_id.name"/>
-                  </td>
-                </tr>
-              </table>
-            </div>
-            <br/>
-            <t t-if="d.partner_id.l10n_cl_delivery_guide_price != 'none'">
-              <div style="width:40%;border:1px solid; border-radius: 5px; float: right">
-                <table style="width: 100%; font-size: 11px;" cellspacing="0">
-                  <tr>
-                    <td style="border-bottom: 1px solid; border-right: 1px solid; padding: 4px; with:40%">
-                      <strong>TOTAL NETO</strong>
-                    </td>
-                    <td style="border-bottom: 1px solid; padding: 4px; text-align: right;">
-                      <span t-esc="d.roundclp(d.net_amount)"/>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="border-bottom: 1px solid; border-right: 1px solid; padding: 4px;">
-                      <strong>IVA 19%</strong>
-                    </td>
-                    <td style="border-bottom: 1px solid; padding: 4px; text-align: right;">
-                      <span t-esc="d.roundclp(d.tax_amount)"/>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="border-right: 1px solid; padding: 4px;">
-                      <strong>MONTO TOTAL</strong>
-                    </td>
-                    <td style="padding: 4px; text-align: right;">
-                      <span t-esc="d.roundclp(d.amount_total)"/>
-                    </td>
-                  </tr>
-                </table>
-              </div>
-            </t>
-          </div>
-          <br/>
-          <t t-if="d.partner_id.l10n_cl_delivery_guide_price != 'none'">
-            <div style="width:100%;border:1px solid; height: 50px; border-radius: 5px; margin-top:4px;">
-              <table style="padding: 6px; width: 98%">
-                <tr>
-                  <td style="width: 20px;">Son:</td>
-                  <td>
-                    <span t-esc="d.company_id.currency_id.amount_to_text(d.amount_total)"/>
-                  </td>
-                </tr>
-              </table>
-            </div>
-          </t>
-          <div style="margin-top: 12px; width:100%; min-height:100px;">
-            <div style="width:49%; float:left; ">
-              <div style="width: 100%px; height: 150px; text-align:center;">
-                <div style="width: 100%;height: 150px;">
-                  <img t-att-src="'data:image/png;base64,%s' % to_text(d.ted)"
-                       style="width:320px"/>
-                </div>
-                <span style="font-size:10px">Timbre Electrónico SII</span>
-                <br/>
-                <span style="font-size:8px">Resolución 80 del 2014-08-22 Verifique Documento:
-                  <a href="https://homer.sii.cl/" style="margins-left:2px; color:black; text-decoration:none">
-                    https://www.sii.cl
-                  </a>
-                </span>
-              </div>
-            </div>
-            <br/>
-          </div>
-        </t>
-      </div>
-    </t>
-  </template>
-
-  <record id="paper_format_letter_custom" model="report.paperformat">
-    <field name="name">Carta Custom</field>
-    <field name="default" eval="False"/>
-    <field name="format">A4</field>
-    <field name="orientation">Portrait</field>
-    <field name="page_height">0</field>
-    <field name="page_width">0</field>
-    <field name="margin_top">5</field>
-    <field name="margin_bottom">0</field>
-    <field name="margin_left">15</field>
-    <field name="margin_right">15</field>
-    <field name="header_line" eval="False"/>
-    <field name="header_spacing">0</field>
-    <field name="dpi">90</field>
-  </record>
-
-  <report id="action_custom_invoice" string="Factura Custom" model="account.move" report_type="qweb-pdf"
-          name="al_base.custom_invoice" menu="True" paperformat="paper_format_letter_custom" groups="al_base.custom_templates"
-          print_report_name="object._get_custom_report_name()"/>
-  <report id="action_custom_dispatch_guide" string="Guia de Despacho Custom" model="stock.picking"
-          report_type="qweb-pdf"
-          groups="al_base.custom_templates"
-          name="al_base.custom_dispatch_guide" menu="True" paperformat="paper_format_letter_custom"
-          print_report_name="object._get_custom_report_name()"/>
+    <report id="action_custom_invoice" string="Factura Custom" model="account.move" report_type="qweb-pdf"
+            name="al_base.custom_invoice" menu="True" paperformat="paper_format_letter_custom"
+            groups="al_base.custom_templates"
+            print_report_name="object._get_custom_report_name()"/>
+    <report id="action_custom_dispatch_guide" string="Guia de Despacho Custom" model="stock.picking"
+            report_type="qweb-pdf"
+            groups="al_base.custom_templates"
+            name="al_base.custom_dispatch_guide" menu="True" paperformat="paper_format_letter_custom"
+            print_report_name="object._get_custom_report_name()"/>
 
 </odoo>
