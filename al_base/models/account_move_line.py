@@ -29,4 +29,3 @@ class AccountMoveLine(models.Model):
         for item in self:
             item.subtotal_with_taxes = item.price_subtotal + item.taxes_amount
 
-
