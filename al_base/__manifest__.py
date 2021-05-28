@@ -29,7 +29,6 @@
         'views/product_template.xml',
         'views/res_partner.xml',
         'views/sale_order.xml',
-        'reports/product_label_barcode.xml',
         'reports/purchase_order.xml',
         'views/res_company.xml',
         'views/stock_picking.xml',
@@ -42,7 +41,8 @@
         'data/custom_collection_group_data.xml',
         'views/custom_collection_group.xml',
         'views/mrp_production.xml',
-        'data/action_server.xml'
+        #'data/action_server.xml',
+        'reports/product_lot_barcode.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
