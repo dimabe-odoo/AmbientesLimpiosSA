@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+  <template id="custom_label_lot_product_barcode">
+    <t t-call="web.basic_layout">
+      <div class="page">
+        <t t-set="uom_categ_unit" t-value="env.ref('uom.product_uom_categ_unit')"/>
+        <t t-foreach="docs" t-as="picking">
+          <t t-foreach="picking.move_lines" t-as="move">
+            <t t-foreach="move.move_line_ids" t-as="move_line">
+              <t t-if="move_line.product_uom_id.category_id == uom_categ_unit">
+                <t t-set="qty" t-value="int(move_line.qty_done)"/>
+              </t>
+              <t t-else="">
+                <t t-set="qty" t-value="1"/>
+              </t>
+              <t t-foreach="range(qty)" t-as="item">
+                <t t-translation="off">
+                  <div style="display: inline-table; width: 100%;">
+                    <table t-if="picking.move_lines">
+                      <tr>
+                        <th style="text-align: center">
+                          <span t-esc="move.product_id.display_name"/>
+                        </th>
+                      </tr>
+                      <t t-if="move_line.product_id.tracking != 'none'">
+                        <tr>
+                          <td class="text-center align-middle" style="height: 6rem;">
+                            <t t-if="move_line.product_id.barcode">
+                              <img
+                                  t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', move_line.product_id.barcode, 600, 150)"
+                                  style="width:100%;height:4rem" alt="Barcode"/>
+                              <span t-esc="move_line.product_id.barcode"/>
+                            </t>
+                            <t t-else="">
+                              <span class="text-muted">No barcode available</span>
+                            </t>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="text-center align-middle">
+                            <t t-if="move_line.lot_name or move_line.lot_id">
+                              <t t-if="move_line.lot_name">
+                                <img
+                                    t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', move_line.lot_name, 600, 150)"
+                                    style="width:100%;height:4rem" alt="Barcode"/>
+                              </t>
+                              <t t-else="">
+                                <img
+                                    t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', move_line.lot_id.name, 600, 150)"
+                                    style="width:100%;height:4rem" alt="Barcode"/>
+                              </t>
+
+                              <span t-esc="move_line.lot_name or move_line.lot_id.name"/>
+                            </t>
+                            <t t-else="">
+                              <span class="text-muted">No barcode available</span>
+                            </t>
+                          </td>
+                        </tr>
+                        <t t-if="move_line.product_id.tracking == 'lot'">
+                          <tr>
+                            <td style="text-align: right">
+                              <span style="margin-right: 4px;">VENC:</span>
+                              <t t-set="month"
+                                 t-value="request.env['stock.production.lot'].search([('product_id.id','=',move_line.product_id.id)])[0].expiration_date.strftime('%m')"/>
+                              <span t-if="month == '01'">ENE.</span>
+                              <span t-if="month == '02'">FEB.</span>
+                              <span t-if="month == '03'">MAR.</span>
+                              <span t-if="month == '04'">ABR.</span>
+                              <span t-if="month == '05'">MAY.</span>
+                              <span t-if="month == '06'">JUN.</span>
+                              <span t-if="month == '07'">JUL.</span>
+                              <span t-if="month == '08'">AGO.</span>
+                              <span t-if="month == '09'">SEP.</span>
+                              <span t-if="month == '10'">OCT.</span>
+                              <span t-if="month == '11'">NOV.</span>
+                              <span t-if="month == '12'">DIC.</span>
+                              <span
+                                  t-esc="request.env['stock.production.lot'].search([('product_id.id','=',move_line.product_id.id)])[0].expiration_date.strftime('%Y')"/>
+                            </td>
+                          </tr>
+                        </t>
+                      </t>
+                      <t t-if="move_line.product_id.tracking == 'none'">
+                        <tr>
+                          <td class="text-center align-middle" style="height: 6rem;">
+                            <t t-if="move_line.product_id.barcode">
+                              <img
+                                  t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', move_line.product_id.barcode, 600, 150)"
+                                  style="width:100%;height:4rem" alt="Barcode"/>
+                              <span t-esc="move_line.product_id.barcode"/>
+                            </t>
+                            <t t-else="">
+                              <span class="text-muted">No barcode available</span>
+                            </t>
+                          </td>
+                        </tr>
+                      </t>
+                    </table>
+                  </div>
+                </t>
+                <div style="page-break-after:always;"></div>
+              </t>
+            </t>
+          </t>
+        </t>
+      </div>
+    </t>
+  </template>
+
+  <template id="custom_label_lot_product_barcode_unit_lot">
+    <t t-call="web.basic_layout">
+      <div class="page">
+        <t t-foreach="docs" t-as="lot">
+          <div style="display: inline-table; width: 100%;">
+            <table t-if="lot.product_id">
+              <tr>
+                <th style="text-align: center">
+                  <span t-esc="lot.product_id.display_name"/>
+                </th>
+              </tr>
+              <t t-if="lot.product_id.tracking != 'none'">
+                <tr>
+                  <td class="text-center align-middle" style="height: 6rem;">
+                    <t t-if="lot.product_id.barcode">
+                      <img
+                          t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', lot.product_id.barcode, 600, 150)"
+                          style="width:100%;height:4rem" alt="Barcode"/>
+                      <span t-esc="lot.product_id.barcode"/>
+                    </t>
+                    <t t-else="">
+                      <span class="text-muted">No barcode available</span>
+                    </t>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="text-center align-middle">
+                    <img
+                        t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', lot.name, 600, 150)"
+                        style="width:100%;height:4rem" alt="Barcode"/>
+                    <span t-esc="lot.name"/>
+                  </td>
+                </tr>
+                <t t-if="lot.product_id.tracking == 'lot'">
+                  <tr>
+                    <td style="text-align: right">
+                      <span style="margin-right: 4px;">VENC:</span>
+                      <t t-set="month"
+                         t-value="lot.expiration_date.strftime('%m')"/>
+                      <span t-if="month == '01'">ENE.</span>
+                      <span t-if="month == '02'">FEB.</span>
+                      <span t-if="month == '03'">MAR.</span>
+                      <span t-if="month == '04'">ABR.</span>
+                      <span t-if="month == '05'">MAY.</span>
+                      <span t-if="month == '06'">JUN.</span>
+                      <span t-if="month == '07'">JUL.</span>
+                      <span t-if="month == '08'">AGO.</span>
+                      <span t-if="month == '09'">SEP.</span>
+                      <span t-if="month == '10'">OCT.</span>
+                      <span t-if="month == '11'">NOV.</span>
+                      <span t-if="month == '12'">DIC.</span>
+                      <span
+                          t-esc="lot.expiration_date.strftime('%Y')"/>
+                    </td>
+                  </tr>
+                </t>
+              </t>
+            </table>
+          </div>
+        </t>
+      </div>
+    </t>
+  </template>
+
+  <template id="custom_label_lot_product_barcode_mrp">
+    <t t-call="web.basic_layout">
+      <div class="page">
+        <t t-foreach="docs" t-as="mrp">
+          <div style="display: inline-table; width: 100%;">
+            <table t-if="mrp.product_id">
+              <tr>
+                <th style="text-align: center">
+                  <span t-esc="mrp.product_id.display_name"/>
+                </th>
+              </tr>
+              <t t-if="mrp.product_id.tracking != 'none'">
+                <tr>
+                  <td class="text-center align-middle" style="height: 6rem;">
+                    <t t-if="mrp.product_id.barcode">
+                      <img
+                          t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', mrp.product_id.barcode, 600, 150)"
+                          style="width:100%;height:4rem" alt="Barcode"/>
+                      <span t-esc="mrp.product_id.barcode"/>
+                    </t>
+                    <t t-else="">
+                      <span class="text-muted">No barcode available</span>
+                    </t>
+                  </td>
+                </tr>
+                <t t-if="mrp.lot_producing_id">
+                  <tr>
+                    <td class="text-center align-middle">
+                      <img
+                          t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', mrp.lot_producing_id.name, 600, 150)"
+                          style="width:100%;height:4rem" alt="Barcode"/>
+                      <span t-esc="mrp.lot_producing_id.name"/>
+                    </td>
+                  </tr>
+                </t>
+                <t t-if="mrp.product_id.tracking == 'lot'">
+                  <tr>
+                    <td style="text-align: right">
+                      <span style="margin-right: 4px;">VENC:</span>
+                      <t t-set="month"
+                         t-value="mrp.lot_producing_id.expiration_date.strftime('%m')"/>
+                      <span t-if="month == '01'">ENE.</span>
+                      <span t-if="month == '02'">FEB.</span>
+                      <span t-if="month == '03'">MAR.</span>
+                      <span t-if="month == '04'">ABR.</span>
+                      <span t-if="month == '05'">MAY.</span>
+                      <span t-if="month == '06'">JUN.</span>
+                      <span t-if="month == '07'">JUL.</span>
+                      <span t-if="month == '08'">AGO.</span>
+                      <span t-if="month == '09'">SEP.</span>
+                      <span t-if="month == '10'">OCT.</span>
+                      <span t-if="month == '11'">NOV.</span>
+                      <span t-if="month == '12'">DIC.</span>
+                      <span
+                          t-esc="mrp.lot_producing_id.expiration_date.strftime('%Y')"/>
+                    </td>
+                  </tr>
+                </t>
+              </t>
+            </table>
+          </div>
+        </t>
+      </div>
+    </t>
+  </template>
+
+  <template id="custom_label_product_barcode">
+    <t t-call="web.basic_layout">
+      <div class="page">
+        <t t-foreach="docs" t-as="product">
+          <div style="display: inline-table; width: 100%;">
+            <table style="width: 100%;">
+              <tr>
+                <th style="text-align: center">
+                  <span t-esc="product.display_name"/>
+                </th>
+              </tr>
+              <tr>
+                <td class="text-center align-middle" style="height: 6rem;">
+                  <t t-if="product.barcode">
+                    <img
+                        t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', product.barcode, 600, 150)"
+                        style="width:100%;height:4rem" alt="Barcode"/>
+                    <span t-esc="product.barcode"/>
+                  </t>
+                  <t t-else="">
+                    <span class="text-muted">No barcode available</span>
+                  </t>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </t>
+      </div>
+    </t>
+  </template>
+
+  <record id="paper_format_100x150_custom" model="report.paperformat">
+    <field name="name">Etiqueta 100x150</field>
+    <field name="default" eval="False"/>
+    <field name="format">custom</field>
+    <field name="orientation">Portrait</field>
+    <field name="page_height">150</field>
+    <field name="page_width">100</field>
+    <field name="margin_top">5</field>
+    <field name="margin_bottom">5</field>
+    <field name="margin_left">5</field>
+    <field name="margin_right">5</field>
+    <field name="header_line" eval="False"/>
+    <field name="header_spacing">0</field>
+    <field name="dpi">90</field>
+  </record>
+
+  <record id="paper_format_150x100_custom" model="report.paperformat">
+    <field name="name">Etiqueta 150x100</field>
+    <field name="default" eval="False"/>
+    <field name="format">custom</field>
+    <field name="orientation">Landscape</field>
+    <field name="page_height">150</field>
+    <field name="page_width">100</field>
+    <field name="margin_top">5</field>
+    <field name="margin_bottom">5</field>
+    <field name="margin_left">5</field>
+    <field name="margin_right">5</field>
+    <field name="header_line" eval="False"/>
+    <field name="header_spacing">0</field>
+    <field name="dpi">90</field>
+  </record>
+
+  <report id="action_custom_label_lot_product_barcode" string="Código de barras del paquete Custom"
+          model="stock.picking" report_type="qweb-pdf" groups="al_base.custom_templates"
+          name="al_base.custom_label_lot_product_barcode" menu="True" paperformat="paper_format_100x150_custom"
+  />
+
+  <report id="action_custom_label_lot_product_barcode_unit_lot" string="Número de Lote/Serie (PDF) Custom"
+          model="stock.production.lot" report_type="qweb-pdf" groups="al_base.custom_templates"
+          name="al_base.custom_label_lot_product_barcode_unit_lot" menu="True" paperformat="paper_format_100x150_custom"
+  />
+
+  <report id="action_custom_label_lot_product_barcode_mrp" string="Etiqueta de Producto Terminado (PDF) Custom"
+          model="mrp.production" report_type="qweb-pdf" groups="al_base.custom_templates"
+          name="al_base.custom_label_lot_product_barcode_mrp" menu="True" paperformat="paper_format_150x100_custom"
+  />
+
+  <report id="action_custom_label_product_barcode" string="Código de Barras del Producto (PDF) Custom"
+          model="product.template" report_type="qweb-pdf" groups="al_base.custom_templates"
+          name="al_base.custom_label_product_barcode" menu="True" paperformat="paper_format_100x150_custom"
+  />
+
+
+</odoo>

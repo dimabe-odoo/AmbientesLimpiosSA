@@ -900,6 +900,7 @@
             name="al_base.custom_invoice" menu="True" paperformat="paper_format_letter_custom"
             groups="al_base.custom_templates"
             print_report_name="object._get_custom_report_name()"/>
+
     <report id="action_custom_dispatch_guide" string="Guia de Despacho Custom" model="stock.picking"
             report_type="qweb-pdf"
             groups="al_base.custom_templates"
