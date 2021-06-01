@@ -63,7 +63,6 @@
         <xpath expr="//page[@name='detailed_operations_hidden']" position="attributes">
           <attribute name="attrs">{'invisible': ['|', ('show_operations', '=', False), ('show_reserved', '=', True),'&amp;','|',('is_subcontract','!=',None),('is_subcontract','=',True)]}</attribute>
         </xpath>
-        <xpath expr="//page[@name='move_']"
         <xpath expr="//header" position="inside">
           <field name="is_subcontract" invisible="1"/>
           <field name="invisible_btn_ted" invisible="1"/>
