@@ -32,6 +32,7 @@
         'data/data_pdf.xml',
         'views/res_partner.xml',
         'views/sale_order.xml',
+        'views/stock_picking.xml',
         'views/ir_config_parameter.xml'
     ],
     # only loaded in demonstration mode

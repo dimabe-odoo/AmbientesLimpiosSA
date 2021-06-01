@@ -127,7 +127,8 @@ class SaleOrderComercionet(models.Model):
             'validity_date': self.comercionet_dispatched_date,
             'user_id': self.client_id.user_id.id if self.client_id.user_id else None,
             'warehouse_id': self.env['stock.warehouse'].search([('code', '=', 'BoD01')]).id,
-            'comercionet_id': self.id
+            'comercionet_id': self.id,
+            'is_comercionet': True
         })
         for line in self.comercionet_line_id:
             self.env['sale.order.line'].create({

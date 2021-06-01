@@ -13,9 +13,10 @@
                     <attribute name="widget">integer</attribute>
                 </xpath>
                 <xpath expr="//field[@name='client_order_ref']" position="after">
-                    <field name="comercionet_id" attrs="{'invisible':[('comercionet_id','=',None)]}"/>
-                    <field name="comercionet_pdf" attrs="{'invisible':[('comercionet_id','=',None)]}"/>
-                    <field name="file_pdf" attrs="{'invisible':[('comercionet_id','!=',None)]}"/>
+                    <field name="is_comercionet" invisible="1"/>
+                    <field name="comercionet_id" invisible="1"/>
+                    <field name="comercionet_pdf" attrs="{'invisible':[('is_comercionet','=',False)]}"/>
+                    <field name="file_pdf" attrs="{'invisible':[('is_comercionet','=',True)]}"/>
                 </xpath>
             </field>
         </record>
