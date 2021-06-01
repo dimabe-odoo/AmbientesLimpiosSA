@@ -10,3 +10,5 @@ class StockPicking(models.Model):
         for item in self:
             if item.sale_id:
                 item.pdf_file = item.sale_id.comercionet_pdf if item.sale_id.is_comercionet else item.sale_id.file_pdf
+            else:
+                item.pdf_file = None
