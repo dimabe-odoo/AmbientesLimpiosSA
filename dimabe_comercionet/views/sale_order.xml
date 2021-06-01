@@ -12,6 +12,11 @@
                 <xpath expr="//field[@name='order_line']/form//field[@name='discount']" position="attributes">
                     <attribute name="widget">integer</attribute>
                 </xpath>
+                <xpath expr="//field[@name='client_order_ref']" position="after">
+                    <field name="comercionet_id" attrs="{'invisible':[('comercionet_id','=',None)]}"/>
+                    <field name="comercionet_pdf" attrs="{'invisible':[('comercionet_id','=',None)]}"/>
+                    <field name="file_pdf" attrs="{'invisible':[('comercionet_id','!=',None)]}"/>
+                </xpath>
             </field>
         </record>
     </data>

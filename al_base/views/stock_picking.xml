@@ -27,6 +27,20 @@
       </field>
     </record>
 
+    <record id="view_stock_move_line_form" model="ir.ui.view">
+      <field name="name">Stock Move Line Form</field>
+      <field name="model">stock.move.line</field>
+      <field name="inherit_id" ref="stock.view_move_line_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='lot_name']" position="attributes">
+          <attribute name="readonly">1</attribute>
+        </xpath>
+        <xpath expr="//field[@name='lot_id']" position="attributes">
+          <attribute name="readonly">1</attribute>
+        </xpath>
+      </field>
+    </record>
+
     <record id="view_stock_picking_search" model="ir.ui.view">
       <field name="name">Stock Picking Search Inherit</field>
       <field name="model">stock.picking</field>
@@ -47,8 +61,9 @@
       <field name="priority" eval="1"/>
       <field name="arch" type="xml">
         <xpath expr="//page[@name='detailed_operations_hidden']" position="attributes">
-          <attribute name="attrs">{'invisible': ['|', ('show_operations', '=', False), ('show_reserved', '=', True),'&amp;',('is_subcontract','=',True)]}</attribute>
+          <attribute name="attrs">{'invisible': ['|', ('show_operations', '=', False), ('show_reserved', '=', True),'&amp;','|',('is_subcontract','!=',None),('is_subcontract','=',True)]}</attribute>
         </xpath>
+        <xpath expr="//page[@name='move_']"
         <xpath expr="//header" position="inside">
           <field name="is_subcontract" invisible="1"/>
           <field name="invisible_btn_ted" invisible="1"/>
