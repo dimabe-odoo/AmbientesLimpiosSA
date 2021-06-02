@@ -13,7 +13,7 @@ class PurchaseOrder(models.Model):
 
     amount_approve_date = fields.Datetime('Fecha de aprobación de monto')
 
-    invisible_custom_btn_confirm = fields.Boolean(compute="_compute_invisible_custom_btn_confirm", defaul=True)
+    invisible_custom_btn_confirm = fields.Boolean(compute="_compute_invisible_custom_btn_confirm", default=True)
 
     def order_to_amount_approve(self):
         if self.state == 'draft':

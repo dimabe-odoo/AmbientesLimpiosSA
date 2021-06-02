@@ -31,15 +31,16 @@ class SaleOrder(models.Model):
             clients = self.env['res.partner'].search([('user_id', '=', item.user_id.id)])
             if clients:
                 res = {
-                    'domain':{
-                        'partner_id' : [('user_id','=',item.user_id.id)],
-                        'partner_shipping_id':[('user_id','=',item.user_id.id)]
+                    'domain': {
+                        'partner_id': [('user_id', '=', item.user_id.id)],
+                        'partner_shipping_id': [('user_id', '=', item.user_id.id)]
                     }
                 }
             else:
                 res = {
                     'domain': {
-                        'partner_id' : ['|',('company_id','=',False),('company_id','=',self.env.user.company_id.id)]
+                        'partner_id': ['|', ('company_id', '=', False),
+                                       ('company_id', '=', self.env.user.company_id.id)]
                     }
                 }
             return res
@@ -56,7 +57,7 @@ class SaleOrder(models.Model):
         self.message_post(author_id=2, subject=subject, body=body, partner_ids=partner_list)
 
     def order_to_discount_approve(self):
-        if self.state == 'draft' and self.get_range_discount():
+        if self.state in ['draft', 'sent'] and self.get_range_discount():
             self.state = 'todiscountapprove'
             self.request_date = datetime.today()
             user_list = self.get_partners_by_range(self.get_range_discount())
