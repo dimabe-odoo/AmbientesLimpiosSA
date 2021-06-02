@@ -98,7 +98,7 @@ class SaleOrder(models.Model):
     @api.model
     def _compute_invisible_btn_confirm(self):
         for item in self:
-            if item.state == 'todiscountapprove' or item.state == 'draft':
+            if item.state == 'todiscountapprove' or item.state in ['draft','sent']:
                 if item.get_range_discount():
                     user_can_access = False
                     if item.env.user in item.get_range_discount().user_ids:
