@@ -3,4 +3,10 @@
         <record id="custom_collection_group_data" model="custom.collection.group">
             <field name="name">Grupo Cobranza</field>
         </record>
+        <record id="custom_seller_group_data" model="res.groups">
+            <field name="name">Vendedores</field>
+        </record>
+        <record id="custom_admin_sale_group_data" model="res.groups">
+            <field name="name">Administrador</field>
+        </record>
 </odoo>
