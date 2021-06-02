@@ -72,13 +72,13 @@
                                             <strong>SEÑORES:</strong>
                                         </td>
                                         <td style="text-align:left;">
-                                            <span t-field="d.partner_id.name"/>
+                                            <span style="text-transform: uppercase;" t-field="d.partner_id.name"/>
                                         </td>
                                         <td style="text-align:left;">
                                             <strong>R.U.T.</strong>
                                         </td>
                                         <td style="text-align:left;">
-                                            <span t-field="d.partner_id.vat"/>
+                                            <span style="text-transform: uppercase;" t-field="d.partner_id.vat"/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -86,7 +86,7 @@
                                             <strong>DIRECCION:</strong>
                                         </td>
                                         <td style="text-align:left;">
-                                            <span t-field="d.partner_id.street"/>
+                                            <span style="text-transform: uppercase;" t-field="d.partner_id.street"/>
                                         </td>
                                         <td style="text-align:left;">
                                             <strong>FECHA:</strong>
@@ -106,38 +106,38 @@
                                             <strong>O/COMPRA</strong>
                                         </td>
                                         <td style="text-align:left;">
-                                            <span t-esc="d.client_order_ref"/>
+                                            <span style="text-transform: uppercase;" t-esc="d.client_order_ref"/>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td style="text-align:left;">
-                                            <strong>TRANSPORTE:</strong>
-                                        </td>
-                                        <td style="text-align:left;">
-                                            <span></span>
-                                        </td>
                                         <td style="text-align:left;">
                                             <strong>FONO:</strong>
                                         </td>
                                         <td style="text-align:left;">
                                             <span t-field="d.partner_id.phone"/>
                                         </td>
-                                    </tr>
-                                    <tr>
                                         <td style="text-align:left;">
                                             <strong>COND. DE VENTA</strong>
                                         </td>
                                         <td style="text-align:left;">
-                                            <span t-esc="d.payment_term_id.l10n_cl_sii_code"/>
-                                            /<span t-field="d.payment_term_id.name"/>
+                                            <span style="text-transform: uppercase;" t-field="d.payment_term_id.name"/>
                                         </td>
+                                    </tr>
+                                    <tr>
                                         <td style="text-align:left;">
                                             <strong>ATENCION:</strong>
                                         </td>
                                         <td style="text-align:left;">
                                             <t t-if="d.partner_id.child_ids and len(d.partner_id.child_ids) > 0">
-                                                <span t-field="d.partner_id.child_ids[0].name"/>
+                                                <t t-set="have_contact" t-value="False"/>
+                                                <t t-foreach="d.partner_id.child_ids.sorted(key=lambda a: a.create_date)" t-as="child">
+                                                    <t t-if="child.type == 'contact' and not have_contact">
+                                                        <span style="text-transform: uppercase;" t-field="child.name" />
+                                                        <t t-set="have_contact" t-value="True"/>
+                                                    </t>
+                                                </t>
                                             </t>
+
                                         </td>
                                     </tr>
                             </table>
@@ -148,10 +148,10 @@
                                     <th style="width:10%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
                                         CANTIDAD
                                     </th>
-                                    <th style="width:20%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
+                                    <th style="width:16%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
                                         CODIGO
                                     </th>
-                                    <th style="width:46%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
+                                    <th style="width:50%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
                                         DESCRIPCIÓN
                                     </th>
                                     <th style="width:12%;border-right:1px solid; border-bottom:1px solid;padding-top: 6px;">
@@ -171,11 +171,11 @@
                                             <span t-field="line.name"/>
                                         </td>
                                         <td style="border-right:1px solid;border-bottom:1px solid;text-align:right;padding-right:4px;">
-                                            <span t-field="line.price_unit"/>
+                                            <span t-esc="d.roundclp(line.price_unit)"/>
                                         </td>
                                         <td style="border-bottom:1px solid;text-align:right;padding-right:4px;">
                                             <!--<span t-field="line.price_subtotal"/>-->
-                                            <span t-esc="line.price_unit * line.product_uom_qty"/>
+                                            <span t-esc="d.roundclp(line.price_unit * line.product_uom_qty)"/>
                                         </td>
                                     </tr>
                                 </t>
@@ -242,10 +242,10 @@
                                 </table>
                             </div>
                         </div>
-                        <div style="margin-top:30px;">
+                        <div style="margin-top:100px;">
                             <table style="width: 40%">
-                                <tr><td><hr/></td></tr>
-                                <tr><td><span t-field="d.user_id"/></td></tr>
+                                <tr><td><hr style="border: 1px solid"/></td></tr>
+                                <tr><th><span t-field="d.user_id"/></th></tr>
                             </table>
                         </div>
                     </t>
@@ -253,7 +253,7 @@
         </t>
     </template>
 
-    <report id="action_custom_sale_order_report" string="Nota de Venta" model="sale.order" report_type="qweb-pdf"
-            name="al_base.custom_sale_order_report" menu="True" paperformat="paper_format_letter_custom"
+    <report id="action_custom_sale_order_report" string="Presupuesto / Pedido Custom" model="sale.order" report_type="qweb-pdf" groups="al_base.custom_templates"
+            name="al_base.custom_sale_order_report" menu="True" paperformat="paper_format_letter_custom" print_report_name="object._get_custom_report_name()"
     />
 </odoo>

@@ -55,8 +55,7 @@
                                     </tr>
                                     <tr>
                                         <td style="text-align:center;color:#ff0000; font-weight: bold;">
-                                            N°
-                                            <span t-field="d.id"/>
+                                            <span t-field="d.name"/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -87,13 +86,13 @@
                                             <strong>DIRECCION:</strong>
                                         </td>
                                         <td style="text-align:left;">
-                                            <span t-field="d.partner_id.street"/>
+                                            <span style="text-transform: uppercase;" t-field="d.partner_id.street"/>
                                         </td>
                                         <td style="text-align:left;">
                                             <strong>COTIZACIÓN:</strong>
                                         </td>
                                         <td style="text-align:left;">
-                                            <span t-esc="d.partner_ref"/>
+                                            <span style="text-transform: uppercase;" t-esc="d.partner_ref"/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -130,7 +129,13 @@
                                         </td>
                                         <td style="text-align:left;">
                                             <t t-if="d.partner_id.child_ids and len(d.partner_id.child_ids) > 0">
-                                                <span t-field="d.partner_id.child_ids[0].name"/>
+                                                <t t-set="have_contact" t-value="False"/>
+                                                <t t-foreach="d.partner_id.child_ids.sorted(key=lambda a: a.create_date)" t-as="child">
+                                                    <t t-if="child.type == 'contact' and not have_contact">
+                                                        <span style="text-transform: uppercase;" t-field="child.name" />
+                                                        <t t-set="have_contact" t-value="True"/>
+                                                    </t>
+                                                </t>
                                             </t>
                                         </td>
                                     </tr>
@@ -165,10 +170,10 @@
                                             <span t-field="line.name"/>
                                         </td>
                                         <td style="border-right:1px solid;border-bottom:1px solid;text-align:right;padding-right:4px;">
-                                            <span t-field="line.price_unit"/>
+                                            <span t-esc="d.roundclp(line.price_unit)"/>
                                         </td>
                                         <td style="border-bottom:1px solid;text-align:right;padding-right:4px;">
-                                            <span t-field="line.price_subtotal"/>
+                                            <span t-esc="d.roundclp(line.price_subtotal)"/>
                                         </td>
                                     </tr>
                                 </t>
@@ -186,8 +191,7 @@
                                         <th style="text-align: left;">COND. DE VENTA</th>
                                         <td>:</td>
                                         <td style="text-transform: uppercase;">
-                                            <span t-esc="d.payment_term_id.l10n_cl_sii_code"/>
-                                            /<span t-field="d.payment_term_id.name"/>
+                                            <span t-field="d.payment_term_id.name"/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -208,7 +212,7 @@
                                             <span style="margin-left:4px;">$</span>
                                         </td>
                                         <td style="text-align: right;width:70%;">
-                                            <span t-field="d.amount_untaxed"></span>
+                                            <span t-esc="d.roundclp(d.amount_untaxed)"></span>
                                         </td>
                                     </tr>
                                     <tr>
@@ -230,7 +234,7 @@
                                             <span style="margin-left:4px;">$</span>
                                         </td>
                                         <td style="text-align: right;width:70%;">
-                                            <span t-field="d.amount_untaxed"></span>
+                                            <span t-esc="d.roundclp(d.amount_untaxed)"></span>
                                         </td>
                                     </tr>
                                     <tr>
@@ -241,7 +245,7 @@
                                             <span style="margin-left:4px;">$</span>
                                         </td>
                                         <td style="text-align: right;width:70%;">
-                                            <span t-field="d.amount_tax"></span>
+                                            <span t-esc="d.roundclp(d.amount_tax)"></span>
                                         </td>
                                     </tr>
                                     <tr>
@@ -252,7 +256,7 @@
                                             <span style="margin-left:4px;">$</span>
                                         </td>
                                         <td style="text-align: right;width:70%;">
-                                            <span t-field="d.amount_total"></span>
+                                            <span t-esc="d.roundclp(d.amount_total)"></span>
                                         </td>
                                     </tr>
                                 </table>
@@ -279,7 +283,8 @@
         <field name="dpi">90</field>
     </record>
 
-    <report id="action_custom_purchase_order" string="Órden de Compra" model="purchase.order" report_type="qweb-pdf"
-            name="al_base.custom_purchase_order" menu="True" paperformat="paper_format_letter_custom"
+    <report id="action_custom_purchase_order" string="Órden de Compra Custom" model="purchase.order" report_type="qweb-pdf"
+            name="al_base.custom_purchase_order" menu="True" paperformat="paper_format_letter_custom"  groups="al_base.custom_templates"
+            print_report_name="object._get_custom_report_name()"
     />
 </odoo>

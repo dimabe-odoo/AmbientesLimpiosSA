@@ -57,7 +57,7 @@ class SaleOrder(models.Model):
         self.message_post(author_id=2, subject=subject, body=body, partner_ids=partner_list)
 
     def order_to_discount_approve(self):
-        if self.state == 'draft' or self.state == 'sent' and self.get_range_discount():
+        if (self.state == 'draft' or self.state == 'sent') and self.get_range_discount():
             self.state = 'todiscountapprove'
             self.request_date = datetime.today()
             user_list = self.get_partners_by_range(self.get_range_discount())
@@ -136,6 +136,9 @@ class SaleOrder(models.Model):
 
     def roundclp(self, value):
         return round_clp(value)
+
+    def _get_custom_report_name(self):
+        return '%s %s' % ('Nota de Venta - ', self.name)
 
 
 class SaleOrderLine(models.Model):

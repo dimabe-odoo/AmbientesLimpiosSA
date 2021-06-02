@@ -1,6 +1,7 @@
 from odoo import fields, models, api
 from datetime import datetime
 from ..utils.get_range_to_approve import get_range_amount
+from ..utils.roundformat_clp import round_clp
 
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
@@ -16,7 +17,7 @@ class PurchaseOrder(models.Model):
     invisible_custom_btn_confirm = fields.Boolean(compute="_compute_invisible_custom_btn_confirm", default=True)
 
     def order_to_amount_approve(self):
-        if self.state == 'draft':
+        if self.state == 'draft' or self.state == 'sent':
             self.state = 'toamountapprove'
             self.request_date = datetime.today()
             user_list = self.get_partners_by_range(self.get_range_amount())
@@ -31,7 +32,7 @@ class PurchaseOrder(models.Model):
 
 
     def button_confirm(self):
-        if self.state == 'draft' and self.get_range_amount():
+        if (self.state == 'draft' or self.state == 'sent') and self.get_range_amount():
             self.order_to_amount_approve()
         elif self.state == 'toamountapprove':
             if not self.invisible_custom_btn_confirm:
@@ -83,3 +84,9 @@ class PurchaseOrder(models.Model):
     def _get_picking_type(self, company_id):
         self.picking_type_id = None
         return None
+
+    def roundclp(self, value):
+        return round_clp(value)
+
+    def _get_custom_report_name(self):
+        return '%s %s' % ('Órden de Compra - ', self.name)
