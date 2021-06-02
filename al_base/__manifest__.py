@@ -42,7 +42,8 @@
         'views/custom_collection_group.xml',
         'views/mrp_production.xml',
         #'data/action_server.xml',
-        'reports/product_lot_barcode.xml'
+        'reports/product_lot_barcode.xml',
+        'reports/sale_order_report.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

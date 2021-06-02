@@ -31,15 +31,16 @@ class SaleOrder(models.Model):
             clients = self.env['res.partner'].search([('user_id', '=', item.user_id.id)])
             if clients:
                 res = {
-                    'domain':{
-                        'partner_id' : [('user_id','=',item.user_id.id)],
-                        'partner_shipping_id':[('user_id','=',item.user_id.id)]
+                    'domain': {
+                        'partner_id': [('user_id', '=', item.user_id.id)],
+                        'partner_shipping_id': [('user_id', '=', item.user_id.id)]
                     }
                 }
             else:
                 res = {
                     'domain': {
-                        'partner_id' : ['|',('company_id','=',False),('company_id','=',self.env.user.company_id.id)]
+                        'partner_id': ['|', ('company_id', '=', False),
+                                       ('company_id', '=', self.env.user.company_id.id)]
                     }
                 }
             return res
