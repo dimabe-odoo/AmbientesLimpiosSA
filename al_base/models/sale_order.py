@@ -57,7 +57,7 @@ class SaleOrder(models.Model):
         self.message_post(author_id=2, subject=subject, body=body, partner_ids=partner_list)
 
     def order_to_discount_approve(self):
-        if self.state == 'draft' and self.get_range_discount():
+        if self.state == 'draft' or self.state == 'sent' and self.get_range_discount():
             self.state = 'todiscountapprove'
             self.request_date = datetime.today()
             user_list = self.get_partners_by_range(self.get_range_discount())
@@ -98,7 +98,7 @@ class SaleOrder(models.Model):
     @api.model
     def _compute_invisible_btn_confirm(self):
         for item in self:
-            if item.state == 'todiscountapprove' or item.state == 'draft':
+            if item.state == 'todiscountapprove' or item.state == 'draft' or item.state == 'sent':
                 if item.get_range_discount():
                     user_can_access = False
                     if item.env.user in item.get_range_discount().user_ids:
