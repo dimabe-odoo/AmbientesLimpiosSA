@@ -14,6 +14,7 @@
         "views/res_partner_view.xml",
         "views/res_state_view.xml",
         "views/res_company_view.xml",
+        'views/res_city.xml'
     ],
     "active": False,
     "installable": True,

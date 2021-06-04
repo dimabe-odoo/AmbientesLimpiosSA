@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <record id="res_city_act_window" model="ir.actions.act_window">
+      <field name="name">Comuna</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">res.city</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="res_city_tree_view" model="ir.ui.view">
+      <field name="name">res.city.tree</field>
+      <field name="model">res.city</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+        </tree>
+      </field>
+    </record>
+
+    <menuitem name="Comunas" id="res_city_menu" parent="contacts.res_partner_menu_config"
+              action="res_city_act_window"/>
+
+  </data>
+</odoo>

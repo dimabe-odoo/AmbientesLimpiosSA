@@ -13,6 +13,9 @@
               <t t-else="">
                 <t t-set="qty" t-value="1"/>
               </t>
+              <t t-if="qty == 0">
+                <span class="text-muted">No barcode available - No quantity done</span>
+              </t>
               <t t-foreach="range(qty)" t-as="item">
                 <t t-translation="off">
                   <div style="display: inline-table; width: 100%;">
@@ -62,21 +65,23 @@
                             <td style="text-align: right">
                               <span style="margin-right: 4px;">VENC:</span>
                               <t t-set="month"
-                                 t-value="request.env['stock.production.lot'].search([('product_id.id','=',move_line.product_id.id)])[0].expiration_date.strftime('%m')"/>
-                              <span t-if="month == '01'">ENE.</span>
-                              <span t-if="month == '02'">FEB.</span>
-                              <span t-if="month == '03'">MAR.</span>
-                              <span t-if="month == '04'">ABR.</span>
-                              <span t-if="month == '05'">MAY.</span>
-                              <span t-if="month == '06'">JUN.</span>
-                              <span t-if="month == '07'">JUL.</span>
-                              <span t-if="month == '08'">AGO.</span>
-                              <span t-if="month == '09'">SEP.</span>
-                              <span t-if="month == '10'">OCT.</span>
-                              <span t-if="month == '11'">NOV.</span>
-                              <span t-if="month == '12'">DIC.</span>
-                              <span
-                                  t-esc="request.env['stock.production.lot'].search([('product_id.id','=',move_line.product_id.id)])[0].expiration_date.strftime('%Y')"/>
+                                 t-value="request.env['stock.production.lot'].search([('product_id.id','=',move_line.product_id.id)])[0].expiration_date"/>
+                              <t t-if="month">
+                                <span t-if="month.strftime('%m') == '01'">ENE.</span>
+                                <span t-if="month.strftime('%m') == '02'">FEB.</span>
+                                <span t-if="month.strftime('%m') == '03'">MAR.</span>
+                                <span t-if="month.strftime('%m') == '04'">ABR.</span>
+                                <span t-if="month.strftime('%m') == '05'">MAY.</span>
+                                <span t-if="month.strftime('%m') == '06'">JUN.</span>
+                                <span t-if="month.strftime('%m') == '07'">JUL.</span>
+                                <span t-if="month.strftime('%m') == '08'">AGO.</span>
+                                <span t-if="month.strftime('%m') == '09'">SEP.</span>
+                                <span t-if="month.strftime('%m') == '10'">OCT.</span>
+                                <span t-if="month.strftime('%m') == '11'">NOV.</span>
+                                <span t-if="month.strftime('%m') == '12'">DIC.</span>
+                                <span
+                                    t-esc="request.env['stock.production.lot'].search([('product_id.id','=',move_line.product_id.id)])[0].expiration_date.strftime('%Y')"/>
+                              </t>
                             </td>
                           </tr>
                         </t>
@@ -146,21 +151,23 @@
                     <td style="text-align: right">
                       <span style="margin-right: 4px;">VENC:</span>
                       <t t-set="month"
-                         t-value="lot.expiration_date.strftime('%m')"/>
-                      <span t-if="month == '01'">ENE.</span>
-                      <span t-if="month == '02'">FEB.</span>
-                      <span t-if="month == '03'">MAR.</span>
-                      <span t-if="month == '04'">ABR.</span>
-                      <span t-if="month == '05'">MAY.</span>
-                      <span t-if="month == '06'">JUN.</span>
-                      <span t-if="month == '07'">JUL.</span>
-                      <span t-if="month == '08'">AGO.</span>
-                      <span t-if="month == '09'">SEP.</span>
-                      <span t-if="month == '10'">OCT.</span>
-                      <span t-if="month == '11'">NOV.</span>
-                      <span t-if="month == '12'">DIC.</span>
-                      <span
-                          t-esc="lot.expiration_date.strftime('%Y')"/>
+                         t-value="lot.expiration_date"/>
+                      <t t-if="month">
+                        <span t-if="month.strftime('%m') == '01'">ENE.</span>
+                        <span t-if="month.strftime('%m') == '02'">FEB.</span>
+                        <span t-if="month.strftime('%m') == '03'">MAR.</span>
+                        <span t-if="month.strftime('%m') == '04'">ABR.</span>
+                        <span t-if="month.strftime('%m') == '05'">MAY.</span>
+                        <span t-if="month.strftime('%m') == '06'">JUN.</span>
+                        <span t-if="month.strftime('%m') == '07'">JUL.</span>
+                        <span t-if="month.strftime('%m') == '08'">AGO.</span>
+                        <span t-if="month.strftime('%m') == '09'">SEP.</span>
+                        <span t-if="month.strftime('%m') == '10'">OCT.</span>
+                        <span t-if="month.strftime('%m') == '11'">NOV.</span>
+                        <span t-if="month.strftime('%m') == '12'">DIC.</span>
+                        <span
+                            t-esc="lot.expiration_date.strftime('%Y')"/>
+                      </t>
                     </td>
                   </tr>
                 </t>

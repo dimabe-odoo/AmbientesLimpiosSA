@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-    <template id="custom_purchase_order">
+    <template id="custom_sale_order_report">
         <t t-call="web.html_container">
                 <div class="page">
                     <t t-foreach="docs" t-as="d">
@@ -47,7 +47,7 @@
                                     </tr>
                                     <tr>
                                         <td style="text-align:center;color:#ff0000; font-weight: bold;">
-                                            ORDEN DE COMPRA
+                                            NOTA DE VENTA
                                         </td>
                                     </tr>
                                     <tr>
@@ -68,17 +68,17 @@
                         <div style="width:100%;margin:0 auto;border:1px solid; border-radius: 5px; ">
                             <table style="width:98%;margin: 0 auto;font-size:11px; padding: 6px;" cellspacing="1">
                                     <tr>
-                                        <td>
+                                        <td style="text-align:left;">
                                             <strong>SEÑORES:</strong>
                                         </td>
                                         <td style="text-align:left;">
-                                            <span t-field="d.partner_id.name"/>
+                                            <span style="text-transform: uppercase;" t-field="d.partner_id.name"/>
                                         </td>
                                         <td style="text-align:left;">
-                                            <strong>FECHA:</strong>
+                                            <strong>R.U.T.</strong>
                                         </td>
                                         <td style="text-align:left;">
-                                            <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y')"/>
+                                            <span style="text-transform: uppercase;" t-field="d.partner_id.vat"/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -89,10 +89,10 @@
                                             <span style="text-transform: uppercase;" t-field="d.partner_id.street"/>
                                         </td>
                                         <td style="text-align:left;">
-                                            <strong>COTIZACIÓN:</strong>
+                                            <strong>FECHA:</strong>
                                         </td>
                                         <td style="text-align:left;">
-                                            <span style="text-transform: uppercase;" t-esc="d.partner_ref"/>
+                                            <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y')"/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -103,29 +103,29 @@
                                             <span style="text-transform: uppercase;" t-field="d.partner_id.city_id.name"></span>
                                         </td>
                                         <td style="text-align:left;">
-                                            <strong>FECHA COT. :</strong>
+                                            <strong>O/COMPRA</strong>
                                         </td>
                                         <td style="text-align:left;">
-                                            <span t-esc="d.date_planned"/>
+                                            <span style="text-transform: uppercase;" t-esc="d.client_order_ref"/>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td style="text-align:left;">
-                                            <strong>RUT:</strong>
-                                        </td>
-                                        <td style="text-align:left;">
-                                            <span t-field="d.partner_id.vat"/>
-                                        </td>
                                         <td style="text-align:left;">
                                             <strong>FONO:</strong>
                                         </td>
                                         <td style="text-align:left;">
                                             <span t-field="d.partner_id.phone"/>
                                         </td>
+                                        <td style="text-align:left;">
+                                            <strong>COND. DE VENTA</strong>
+                                        </td>
+                                        <td style="text-align:left;">
+                                            <span style="text-transform: uppercase;" t-field="d.payment_term_id.name"/>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td style="text-align:left;">
-                                            <strong>AT. :</strong>
+                                            <strong>ATENCION:</strong>
                                         </td>
                                         <td style="text-align:left;">
                                             <t t-if="d.partner_id.child_ids and len(d.partner_id.child_ids) > 0">
@@ -137,6 +137,7 @@
                                                     </t>
                                                 </t>
                                             </t>
+
                                         </td>
                                     </tr>
                             </table>
@@ -144,13 +145,13 @@
                         <div style="width:100%;margin:0 auto;height:600px;border:1px solid; border-radius: 5px; margin-top:4px;">
                             <table style="width:100%;font-size:11px;" cellspacing="0">
                                 <tr>
-                                    <th style="width:8%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
-                                        ITEM
-                                    </th>
                                     <th style="width:10%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
                                         CANTIDAD
                                     </th>
-                                    <th style="width:58%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
+                                    <th style="width:16%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
+                                        CODIGO
+                                    </th>
+                                    <th style="width:50%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
                                         DESCRIPCIÓN
                                     </th>
                                     <th style="width:12%;border-right:1px solid; border-bottom:1px solid;padding-top: 6px;">
@@ -160,11 +161,11 @@
                                 </tr>
                                 <t t-foreach="d.order_line" t-as="line">
                                     <tr>
-                                        <td style="border-right:1px solid;border-bottom:1px solid;text-align:center;">
-                                            <span t-esc="line_index + 1"/>
-                                        </td>
                                         <td style="border-right:1px solid;border-bottom:1px solid;text-align:right;padding-right:4px;">
-                                            <span t-field="line.product_qty"/>
+                                            <span t-field="line.product_uom_qty"/>
+                                        </td>
+                                        <td style="border-right:1px solid;border-bottom:1px solid;text-align:left;padding-right:4px;padding-left:4px;">
+                                            <span t-field="line.product_id.default_code"/>
                                         </td>
                                         <td style="border-right:1px solid;border-bottom:1px solid;text-align:left;padding-right:4px;padding-left:4px;">
                                             <span t-field="line.name"/>
@@ -173,36 +174,15 @@
                                             <span t-esc="d.roundclp(line.price_unit)"/>
                                         </td>
                                         <td style="border-bottom:1px solid;text-align:right;padding-right:4px;">
-                                            <span t-esc="d.roundclp(line.price_subtotal)"/>
+                                            <!--<span t-field="line.price_subtotal"/>-->
+                                            <span t-esc="d.roundclp(line.price_unit * line.product_uom_qty)"/>
                                         </td>
                                     </tr>
                                 </t>
                             </table>
                         </div>
-                        <div style="margin-top: 4px; width:100%; min-height:100px; border:1px solid; border-radius: 5px;">
-                            <div style="width:50%; min-height:100px; float:left;padding-top:2px;">
-                                <table style="font-size:11px; padding: 6px;" cellspacing="0">
-                                    <tr>
-                                        <th style="text-align: left;">FECHA DE ENTREGA</th>
-                                        <td style="width: 5px">:</td>
-                                        <td><span t-field="d.date_delivered"/></td>
-                                    </tr>
-                                    <tr>
-                                        <th style="text-align: left;">COND. DE VENTA</th>
-                                        <td>:</td>
-                                        <td style="text-transform: uppercase;">
-                                            <span t-field="d.payment_term_id.name"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th style="text-align: left;">OBSERVACIÓN</th>
-                                        <td>:</td>
-                                        <td><span t-field="d.notes"/></td>
-                                    </tr>
-                                </table>
-                            </div>
-
-                            <div style="width:48%; float:right;">
+                        <div style="margin-top: 4px; width:100%; min-height:100px;">
+                            <div style="width:48%; float:right; border:1px solid; border-radius: 5px;">
                                 <table style="font-size:11px; padding: 6px;" cellspacing="0">
                                     <tr>
                                         <th style="border-right: 1px solid;text-align: left; width: 50%">
@@ -212,7 +192,7 @@
                                             <span style="margin-left:4px;">$</span>
                                         </td>
                                         <td style="text-align: right;width:70%;">
-                                            <span t-esc="d.roundclp(d.amount_untaxed)"></span>
+                                            <span t-esc="d.roundclp(d.amount_untaxed + d.amount_discount)"></span>
                                         </td>
                                     </tr>
                                     <tr>
@@ -223,7 +203,7 @@
                                             <span style="margin-left:4px;">$</span>
                                         </td>
                                         <td style="text-align: right;width:70%;">
-                                            <span>0</span>
+                                            <span t-esc="d.roundclp(d.amount_discount)"/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -250,7 +230,7 @@
                                     </tr>
                                     <tr>
                                         <th style="border-right: 1px solid;text-align: left">
-                                            TOTAL ORDEN DE COMPRA
+                                            TOTAL NOTA DE VENTA
                                         </th>
                                         <td style="text-align: left; width:70%;">
                                             <span style="margin-left:4px;">$</span>
@@ -262,29 +242,18 @@
                                 </table>
                             </div>
                         </div>
+                        <div style="margin-top:100px;">
+                            <table style="width: 40%">
+                                <tr><td><hr style="border: 1px solid"/></td></tr>
+                                <tr><th><span t-field="d.user_id"/></th></tr>
+                            </table>
+                        </div>
                     </t>
                 </div>
         </t>
     </template>
 
-    <record id="paper_format_letter_custom" model="report.paperformat">
-        <field name="name">Carta Custom</field>
-        <field name="default" eval="False"/>
-        <field name="format">A4</field>
-        <field name="orientation">Portrait</field>
-        <field name="page_height">0</field>
-        <field name="page_width">0</field>
-        <field name="margin_top">5</field>
-        <field name="margin_bottom">0</field>
-        <field name="margin_left">15</field>
-        <field name="margin_right">15</field>
-        <field name="header_line" eval="False"/>
-        <field name="header_spacing">0</field>
-        <field name="dpi">90</field>
-    </record>
-
-    <report id="action_custom_purchase_order" string="Órden de Compra Custom" model="purchase.order" report_type="qweb-pdf"
-            name="al_base.custom_purchase_order" menu="True" paperformat="paper_format_letter_custom"  groups="al_base.custom_templates"
-            print_report_name="object._get_custom_report_name()"
+    <report id="action_custom_sale_order_report" string="Presupuesto / Pedido Custom" model="sale.order" report_type="qweb-pdf" groups="al_base.custom_templates"
+            name="al_base.custom_sale_order_report" menu="True" paperformat="paper_format_letter_custom" print_report_name="object._get_custom_report_name()"
     />
 </odoo>
