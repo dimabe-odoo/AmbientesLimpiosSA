@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'product', 'stock', 'sale','account','mrp','mrp_workorder'],
+    'depends': ['base', 'product', 'stock', 'sale','account','mrp','mrp_workorder','l10n_cl_edi'],
 
     # always loaded
     'data': [

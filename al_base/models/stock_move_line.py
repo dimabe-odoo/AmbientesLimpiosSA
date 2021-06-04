@@ -16,11 +16,12 @@ class StockMoveLine(models.Model):
     def onchange_lot_id(self):
         self.supplier_lot = self.lot_id.supplier_lot if self.lot_id.supplier_lot else ''
 
-
-    # def create(self,values):
-    #     for value in values:
-    #         if 'product_id' in value.keys():
-    #             product = self.env['product.product'].search([('id', '=', value['product_id'])])
-    #             value['is_loteable'] = product.tracking == 'lot'
-    #         return super(StockMoveLine, self).create(value)
-
+    def verify_stock_move_line(self):
+        if self.picking_id:
+            if self.picking_id.sale_id:
+                line = self.env['sale.order'].sudo().search(
+                    [('order_id', '=', self.picking_id.order_id.id), ('product_id', '=', self.product_id.id)])
+                if line.qty_delivered == 0:
+                    if self.product_uom_qty < self.qty_done:
+                        raise models.UserError(
+                            f'No puede validar mas {self.product_id.uom_id.name} de {self.product_id.display_name} de los solicitado en la venta')
