@@ -9,7 +9,7 @@ class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
     state = fields.Selection(
-        selection_add=[('todiscountapprove', 'Por Aprobación de Descuento'), ('toconfirm', 'Por Aprobar')])
+        selection_add=[('todiscountapprove', 'Por Aprobación de Descuento'), ('toconfirm', 'Por Aprobar Cobranza')])
 
     l10n_latam_document_type_id = fields.Many2one('l10n_latam.document.type', string="Tipo de Documento",
                                                   default=lambda self: self.env['l10n_latam.document.type'].search(
@@ -21,7 +21,7 @@ class SaleOrder(models.Model):
 
     confirm_date = fields.Datetime('Fecha de aprobación desde Cobranza')
 
-    invisible_btn_confirm = fields.Boolean(compute="_compute_invisible_btn_confirm", default=True)
+    invisible_btn_confirm = fields.Boolean(compute="_compute_invisible_btn_confirm", default=False)
 
     amount_discount = fields.Float(compute="_compute_amount_discount")
 
@@ -57,13 +57,16 @@ class SaleOrder(models.Model):
         self.message_post(author_id=2, subject=subject, body=body, partner_ids=partner_list)
 
     def order_to_discount_approve(self):
-        if (self.state == 'draft' or self.state == 'sent') and self.get_range_discount():
-            self.state = 'todiscountapprove'
-            self.request_date = datetime.today()
-            user_list = self.get_partners_by_range(self.get_range_discount())
-            self.send_message(user_list, 'Descuento')
-        elif self.state == 'todiscountapprove' or not self.get_range_discount():
-            self.state_to_toconfirm()
+        if self.l10n_latam_document_type_id.code == "33":
+            if (self.state == 'draft' or self.state == 'sent') and self.get_range_discount():
+                self.state = 'todiscountapprove'
+                self.request_date = datetime.today()
+                user_list = self.get_partners_by_range(self.get_range_discount())
+                self.send_message(user_list, 'Descuento')
+            elif self.state == 'todiscountapprove' or not self.get_range_discount():
+                self.state_to_toconfirm()
+        else:
+            self.action_confirm()
 
     def state_to_toconfirm(self):
         if not self.invisible_btn_confirm:

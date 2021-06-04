@@ -49,29 +49,26 @@ class StockPicking(models.Model):
 
     def get_ted(self):
         doc_id = self.env['ir.attachment'].search(
-            [('res_model', '=', 'stock.picking'), ('res_id', '=', self.id), ('name', 'like', 'SII')])
+            [('res_model', '=', 'stock.picking'), ('res_id', '=', self.id), ('name', 'like', 'SII')],
+            order='create_date desc')
         if doc_id:
-            if len(doc_id) == 1:
-                doc_xml = base64.b64decode(doc_id.datas)
-                data_dict = xmltodict.parse(doc_xml)
-                json_data = json.dumps(data_dict['EnvioDTE']['SetDTE']['DTE']['Documento']['TED'])
-                cols = 12
-                while True:
-                    try:
-                        if cols == 31:
-                            break
-                        codes = encode(json_data, cols)
-                        image = render_image(codes, scale=5, ratio=2)
-                        buffered = BytesIO()
-                        image.save(buffered, format="JPEG")
-                        img_str = base64.b64encode(buffered.getvalue())
-                        self.write({'ted': img_str})
+            doc_xml = base64.b64decode(doc_id[0].datas)
+            data_dict = xmltodict.parse(doc_xml)
+            json_data = json.dumps(data_dict['EnvioDTE']['SetDTE']['DTE']['Documento']['TED'])
+            cols = 12
+            while True:
+                try:
+                    if cols == 31:
                         break
-                    except:
-                        cols += 1
-            else:
-                raise models.ValidationError(
-                    'Existen dos archivos DTE SII, favor dejar solo un archivo para obtener el código correspondiente')
+                    codes = encode(json_data, cols)
+                    image = render_image(codes, scale=5, ratio=2)
+                    buffered = BytesIO()
+                    image.save(buffered, format="JPEG")
+                    img_str = base64.b64encode(buffered.getvalue())
+                    self.write({'ted': img_str})
+                    break
+                except:
+                    cols += 1
 
         else:
             raise models.ValidationError(
