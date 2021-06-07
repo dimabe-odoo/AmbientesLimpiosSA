@@ -16,12 +16,40 @@ class StockMoveLine(models.Model):
     def onchange_lot_id(self):
         self.supplier_lot = self.lot_id.supplier_lot if self.lot_id.supplier_lot else ''
 
+    def create(self, values):
+        res = super(StockMoveLine, self).create(values)
+        if len(res) > 1:
+            for r in res:
+                r.verify_stock_move_line()
+        else:
+            res.verify_stock_move_line()
+        return res
+
+    def write(self, values):
+        self.verify_stock_move_line()
+        return super(StockMoveLine, self).write(values)
+
+    def _action_done(self):
+        self.verify_stock_move_line()
+        return super(StockMoveLine, self)._action_done()
+
     def verify_stock_move_line(self):
         if self.picking_id:
             if self.picking_id.sale_id:
-                line = self.env['sale.order'].sudo().search(
-                    [('order_id', '=', self.picking_id.order_id.id), ('product_id', '=', self.product_id.id)])
+                line = self.env['sale.order.line'].sudo().search(
+                    [('order_id', '=', self.picking_id.sale_id.id), ('product_id', '=', self.product_id.id)])
                 if line.qty_delivered == 0:
-                    if self.product_uom_qty < self.qty_done:
+                    if line.product_uom_qty < self.qty_done:
                         raise models.UserError(
                             f'No puede validar mas {self.product_id.uom_id.name} de {self.product_id.display_name} de los solicitado en la venta')
+                elif line.qty_delivered != 0:
+                    qty_remaining = line.product_uom_qty - line.qty_delivered
+                    if qty_remaining < self.qty_done:
+                        raise models.UserError(
+                            f'No puede validar mas {self.product_id.uom_id.name} de {self.product_id.display_name} de la cantidad restante a entregar de la venta')
+            elif self.picking_id.purchase_id:
+                line = self.env['purchase.order.line'].sudo().search(
+                    [('order_id', '=', self.picking_id.purchase_id.id), ('product_id', '=', self.product_id.id)])
+                if line.product_uom_qty < self.qty_done:
+                    raise models.UserError(
+                        f'No puede validar mas {self.product_id.uom_id.name} de {self.product_id.display_name} de los solicitado en la compra')
