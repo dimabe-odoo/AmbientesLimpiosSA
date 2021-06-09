@@ -74,6 +74,12 @@ class StockPicking(models.Model):
             raise models.ValidationError(
                 'No se puede generar código de barra 2D ya que aun no se ha generado la Guía de Despacho')
 
+    @api.onchange('picking_type_id')
+    def onchange_picking_type_id(self):
+        self.show_operations = self.picking_type_id.show_operations
+        self.immediate_transfer = True
+        self.location_id = self.picking_type_id.warehouse_id.lot_stock_id
+
     @api.model
     def _compute_net_amount(self):
         for item in self:
