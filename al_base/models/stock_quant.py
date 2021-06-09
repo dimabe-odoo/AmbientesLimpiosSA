@@ -8,4 +8,6 @@ class StockQuant(models.Model):
     def check_negative_qty(self):
         if 'Subcontract' in self.location_id.name:
             return
+        if self.quantity == 0:
+            return
         return super(StockQuant, self).check_negative_qty()

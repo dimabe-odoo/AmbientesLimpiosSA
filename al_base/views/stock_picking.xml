@@ -13,6 +13,9 @@
         <xpath expr="//field[@name='lot_name']" position="attributes">
           <attribute name="readonly">1</attribute>
         </xpath>
+        <xpath expr="//field[@name='lot_id']" position="attributes">
+          <attribute name="options">{'no_create': True, 'no_create_edit':True}</attribute>
+        </xpath>
       </field>
     </record>
 

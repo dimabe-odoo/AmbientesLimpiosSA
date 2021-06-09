@@ -17,5 +17,7 @@ class StockPickings(models.Model):
                 model = self.env.context['active_model']
                 if model != 'route.map.line':
                     item.display_name = item.name
+                else:
+                    item.display_name = f'Cliente :  {item.sale_id.partner_id.display_name} Factura : {",".join(item.sale_id.invoice_ids.mapped("name"))} Pedido {item.sale_id.name}'
             else:
-                item.display_name = f'Cliente :  {item.sale_id.partner_id.display_name} Factura : {",".join(item.sale_id.invoice_ids.mapped("name"))} Pedido {item.sale_id.name}'
+                item.display_name = item.name

@@ -6,3 +6,5 @@ class ResCompany(models.Model):
     certificate_logo = fields.Binary(string='Logo certificado')
 
     copies_qty = fields.Integer(string="Cantidad de copias cedibles")
+
+    tolerance_percentage = fields.Float(string='Porcentaje de Tolerancia',default=10)

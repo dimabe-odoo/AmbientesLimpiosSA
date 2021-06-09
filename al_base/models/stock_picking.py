@@ -95,10 +95,6 @@ class StockPicking(models.Model):
 
         item.net_amount = int(net_amount)
 
-    def test(self):
-        for item in self:
-            print(item)
-
     @api.model
     def _compute_tax_amount(self):
         for item in self:

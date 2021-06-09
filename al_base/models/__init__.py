@@ -21,3 +21,4 @@ from . import custom_collection_group
 from . import stock_move
 from . import stock_quant
 from . import stock_orderpoint
+from . import quality_alert
