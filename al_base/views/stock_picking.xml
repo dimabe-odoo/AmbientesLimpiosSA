@@ -71,7 +71,6 @@
           <field name="invisible_btn_ted" invisible="1"/>
           <button type="object" string="Generar código de barra 2D" name="get_ted" class="oe_highlight"
                   attrs="{'invisible':[('invisible_btn_ted','=',True)]}"/>
-          <button type="object" string="Prueba" name="test"/>
         </xpath>
       </field>
     </record>
