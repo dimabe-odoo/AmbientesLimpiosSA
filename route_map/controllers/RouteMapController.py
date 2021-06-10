@@ -32,13 +32,14 @@ class RouteMapController(http.Controller):
                         'ProductName': product.product_id.name,
                         'Qty': product.qty_to_delivery
                     })
+                print(line.sudo().sale_id.id)
                 lines.append({
                     'Id': line.id,
-                    'Destiny': line.sale_id.partner_id.name,
-                    'Address': line.address_to_delivery if line.address_to_delivery else '',
-                    'LatitudeDestiny': line.partner_id.partner_latitude,
-                    'LongitudeDestiny': line.partner_id.partner_longitude,
-                    'State': line.state,
+                    'Destiny': line.sudo().sale_id.partner_id.name,
+                    'Address': line.sudo().address_to_delivery if line.address_to_delivery else '',
+                    'LatitudeDestiny': line.sudo().partner_id.partner_latitude,
+                    'LongitudeDestiny': line.sudo().partner_id.partner_longitude,
+                    'State': line.sudo().state,
                     'Products': products
                 })
             res = {

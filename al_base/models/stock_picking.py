@@ -70,6 +70,12 @@ class StockPicking(models.Model):
                     cols += 1
 
 
+    @api.onchange('picking_type_id')
+    def onchange_picking_type_id(self):
+        self.show_operations = self.picking_type_id.show_operations
+        self.immediate_transfer = True
+        self.location_id = self.picking_type_id.warehouse_id.lot_stock_id
+
     @api.model
     def _compute_net_amount(self):
         for item in self:
@@ -90,7 +96,6 @@ class StockPicking(models.Model):
                                 lambda a: a.product_id.id == line.product_id.id).price_unit
 
         item.net_amount = int(net_amount)
-
 
     @api.model
     def _compute_tax_amount(self):

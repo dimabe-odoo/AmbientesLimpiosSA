@@ -9,6 +9,7 @@
           <field name="certificate_logo"/>
           <field name="copies_qty"/>
           <field name="notification_remaining_caf"/>
+          <field name="tolerance_percentage"/>
         </xpath>
       </field>
     </record>
