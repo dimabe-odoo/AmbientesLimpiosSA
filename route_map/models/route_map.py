@@ -15,7 +15,8 @@ class RouteMap(Model):
 
     picking_id = fields.Many2one('stock.picking', 'Despacho',
                                  domain=[('picking_type_id.sequence_code', '=', 'OUT'), ('state', '=', 'done'),
-                                         ('map_id', '=', None), ('sale_id', '!=', None),('sale_id.invoice_ids','!=',None)])
+                                         ('map_id', '=', None), ('sale_id', '!=', None),
+                                         ('sale_id.invoice_ids', '!=', None)])
 
     dispatch_ids = fields.One2many('route.map.line', 'map_id', string="Despacho")
 
@@ -39,9 +40,7 @@ class RouteMap(Model):
 
     pallets_sum = fields.Integer('Total Pallets', compute="_pallets_sum")
 
-    invoices_name = fields.Char('Facturas',compute='compute_invoices_name')
-
-
+    invoices_name = fields.Char('Facturas', compute='compute_invoices_name')
 
     def action_dispatch(self):
         for item in self:
