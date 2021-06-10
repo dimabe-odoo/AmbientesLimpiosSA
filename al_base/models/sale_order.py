@@ -56,6 +56,8 @@ class SaleOrder(models.Model):
         subject = f'Nueva órden de venta - Aprobar por {approve_type}'
         self.message_post(author_id=2, subject=subject, body=body, partner_ids=partner_list)
 
+
+
     def order_to_discount_approve(self):
         if self.l10n_latam_document_type_id.code == "33":
             if (self.state == 'draft' or self.state == 'sent') and self.get_range_discount():
@@ -147,15 +149,36 @@ class SaleOrder(models.Model):
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
-    @api.model
-    def create(self, values):
-        if 'order_id' in values.keys():
-            product_ids = self.env['sale.order.line'].search([('order_id', '=', values['order_id'])]).mapped(
-                'product_id')
-            if len(product_ids) > 0:
-                if 'product_id' in values.keys() and 'name' in values.keys():
-                    if values['product_id'] in product_ids.ids:
-                        raise models.ValidationError(
-                            'No puede agregar el producto {} más de una vez'.format(values['name']))
+    @api.model_create_multi
+    def create(self, vals_list):
+        list_product_duplicate = ''
+        duplicate_count = 0
+        for values in vals_list:
+            if 'order_id' in values.keys():
+                if not self.unique_product_validation(values['order_id'], values, True):
+                    duplicate_count += 1
+                    list_product_duplicate = list_product_duplicate + '\n' + values['name']
 
-        return super(SaleOrderLine, self).create(values)
+        if list_product_duplicate != '':
+            raise models.ValidationError('No puede agregar {} más de una vez:\n  {}\n'.format('los siguientes productos' if duplicate_count > 1 else 'el siguiente producto',list_product_duplicate))
+
+        return super().create(vals_list)
+
+
+    def write(self, values):
+        self.unique_product_validation(self.order_id.id, values, False)
+        return super(SaleOrderLine, self).write(values)
+
+
+    def unique_product_validation(self, order, product, create):
+        product_ids = self.env['sale.order.line'].search([('order_id', '=', order)]).mapped(
+            'product_id')
+        if len(product_ids) > 0:
+            if 'product_id' in product.keys() and 'name' in product.keys():
+                if product['product_id'] in product_ids.ids:
+                    if create:
+                        return False
+                    else:
+                        raise models.ValidationError('No puede agregar el producto {} más de una vez'.format(product['name']))
+        else:
+            return True

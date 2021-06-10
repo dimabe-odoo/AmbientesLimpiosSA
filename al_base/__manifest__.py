@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'product', 'stock', 'sale','account','mrp','mrp_workorder'],
+    'depends': ['base', 'product', 'stock', 'sale','account','mrp','mrp_workorder','l10n_cl_edi'],
 
     # always loaded
     'data': [
@@ -43,7 +43,9 @@
         'views/mrp_production.xml',
         #'data/action_server.xml',
         'reports/product_lot_barcode.xml',
-        'reports/sale_order_report.xml'
+        'reports/sale_order_report.xml',
+        'views/l10n_latam_document_type_view.xml',
+        'views/custom_remaining_caf_group.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

@@ -9,12 +9,9 @@
       <field name="priority" eval="8"/>
       <field name="arch" type="xml">
         <xpath expr="//header" position="inside">
-          <field name="invisible_btn_ted" invisible="1"/>
-          <button type="object" string="Generar código de barra 2D" name="get_ted" class="oe_highlight"
-                  attrs="{'invisible':[('invisible_btn_ted','=',True)]}"/>
         </xpath>
         <xpath expr="//field[@name='l10n_latam_document_number']" position="attributes">
-          <attribute name="attrs">{'invisible':[('state','!=','draft'),('is_jump_number','!=',False)]}</attribute>
+          <attribute name="attrs">{'invisible': [('state', '!=', 'draft'), ('is_jump_number', '!=', False)]}</attribute>
           <attribute name="groups">base.group_no_one</attribute>
         </xpath>
         <xpath expr="//field[@name='payment_reference']" position="after">
@@ -25,6 +22,17 @@
         <xpath expr="//field[@name='l10n_latam_document_number']" position="after">
           <field name="is_jump_number"/>
           <field name="document_number" attrs="{'invisible':[('is_jump_number','=',False)]}"/>
+        </xpath>
+      </field>
+    </record>
+
+    <record id="account_move_tree_inherit" model="ir.ui.view">
+      <field name="name">Account Move Inherit</field>
+      <field name="model">account.move</field>
+      <field name="inherit_id" ref="account.view_invoice_tree"/>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='payment_state']" position="after">
+          <field name="l10n_cl_dte_status"/>
         </xpath>
       </field>
     </record>

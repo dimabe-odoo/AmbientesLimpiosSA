@@ -10,7 +10,13 @@ class CustomCollectionGroup(models.Model):
 
     def write(self, values):
         res = super(CustomCollectionGroup, self).write(values)
-        group_id = self.env['res.groups'].search([('id','=', self.env.ref('al_base.group_order_confirmation').id)])
+
+        if self.env.ref('al_base.custom_collection_group_data').id == self.id:
+            group_id = self.env['res.groups'].search([('id', '=', self.env.ref('al_base.group_order_confirmation').id)])
+
+        elif self.env.ref('al_base.custom_noti_remaining_caf_group_data').id == self.id:
+            group_id = self.env['res.groups'].search([('id', '=', self.env.ref('al_base.custom_remaining_caf_notification').id)])
+
 
         if 'user_ids' in values.keys():
             if 2 not in values['user_ids'][0][2]:

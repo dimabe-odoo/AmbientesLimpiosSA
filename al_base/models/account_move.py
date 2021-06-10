@@ -4,6 +4,7 @@ from pdf417 import encode, render_image
 import base64
 from io import BytesIO
 from ..utils.roundformat_clp import round_clp
+from ..utils.get_remaining_caf import get_remaining_caf
 
 
 class AccountMove(models.Model):
@@ -21,17 +22,10 @@ class AccountMove(models.Model):
 
     document_number = fields.Char('Número de Documento')
 
-    invisible_btn_ted = fields.Boolean(compute="_compute_show_btn_ted", default=True)
 
     def _get_custom_report_name(self):
         return '%s %s' % (self.l10n_latam_document_type_id.name, self.l10n_latam_document_number)
 
-    def _compute_show_btn_ted(self):
-        for item in self:
-            if item.ted or (item.state == 'draft' or item.state == 'cancel'):
-                item.invisible_btn_ted = True
-            else:
-                item.invisible_btn_ted = False
 
     def action_invoice_sent(self):
         res = super(AccountMove, self).action_invoice_sent
@@ -66,40 +60,34 @@ class AccountMove(models.Model):
 
     @api.depends('name')
     def _compute_l10n_latam_document_number(self):
-        if not self.is_jump_number:
-            super(AccountMove, self)._compute_l10n_latam_document_number()
-        else:
-            self.l10n_latam_document_number = self.document_number
-            self.name = f'{self.l10n_latam_document_type_id.doc_code_prefix} {self.document_number}'
+        for item in self:
+            if not item.is_jump_number:
+                super(AccountMove, item)._compute_l10n_latam_document_number()
+            else:
+                item.l10n_latam_document_number = item.document_number
+                item.name = f'{item.l10n_latam_document_type_id.doc_code_prefix} {item.document_number}'
 
-    def get_ted(self):
-        doc_id = self.env['ir.attachment'].search(
-            [('res_model', '=', 'account.move'), ('res_id', '=', self.id), ('name', 'like', 'SII')],
-            order='create_date desc')
-        if doc_id:
-                doc_xml = base64.b64decode(doc_id[0].datas)
-                data_dict = xmltodict.parse(doc_xml)
-                if self.l10n_latam_document_type_id.code == '39':
-                    json_data = json.dumps(data_dict['EnvioBOLETA']['SetDTE']['DTE']['Documento']['TED'])
-                else:
-                    json_data = json.dumps(data_dict['EnvioDTE']['SetDTE']['DTE']['Documento']['TED'])
-                cols = 12
-                while True:
-                    try:
-                        if cols == 31:
-                            break
-                        codes = encode(json_data, cols)
-                        image = render_image(codes, scale=5, ratio=2)
-                        buffered = BytesIO()
-                        image.save(buffered, format="JPEG")
-                        img_str = base64.b64encode(buffered.getvalue())
-                        self.write({'ted': img_str})
-                        break
-                    except:
-                        cols += 1
+    def get_ted(self, doc_id):
+
+        doc_xml = base64.b64decode(doc_id.datas)
+        data_dict = xmltodict.parse(doc_xml)
+        if self.l10n_latam_document_type_id.code == '39':
+            json_data = json.dumps(data_dict['EnvioBOLETA']['SetDTE']['DTE']['Documento']['TED'])
         else:
-            raise models.ValidationError(
-                'No se puede generar código de barra 2D ya que aun no se ha generado la Factura')
+            json_data = json.dumps(data_dict['EnvioDTE']['SetDTE']['DTE']['Documento']['TED'])
+        cols = 12
+        while True:
+            try:
+                if cols == 31:
+                    break
+                codes = encode(json_data, cols)
+                image = render_image(codes, scale=5, ratio=2)
+                buffered = BytesIO()
+                image.save(buffered, format="JPEG")
+                img_str = base64.b64encode(buffered.getvalue())
+                return img_str
+            except:
+                cols += 1
 
     @api.model
     def create(self, values):
@@ -114,3 +102,16 @@ class AccountMove(models.Model):
 
     def roundclp(self, value):
         return round_clp(value)
+
+    def write(self, values):
+        if 'l10n_cl_dte_status' in values.keys():
+            if values['l10n_cl_dte_status'] in ['accepted', 'objected']:
+                get_remaining_caf(self.l10n_latam_document_type_id.id)
+        if not self.ted:
+            doc_id = self.env['ir.attachment'].search(
+                [('res_model', '=', 'account.move'), ('res_id', '=', self.id), ('name', 'like', 'SII')],
+                order='create_date desc')
+            if doc_id:
+                values['ted'] = self.get_ted(doc_id[0])
+
+        return super(AccountMove, self).write(values)

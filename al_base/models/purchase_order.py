@@ -1,3 +1,4 @@
+
 from odoo import fields, models, api
 from datetime import datetime
 from ..utils.get_range_to_approve import get_range_amount
@@ -63,7 +64,12 @@ class PurchaseOrder(models.Model):
     @api.model
     def get_range_amount(self):
         approve_purchase_ids = self.env['custom.range.approve.purchase'].search([])
-        return get_range_amount(approve_purchase_ids, self.amount_total)
+        currency_rate = self.env['res.currency.rate'].search([('currency_id','=',self.currency_id.id),('name','=',datetime.now().strftime('%Y-%m-%d'))])
+        if currency_rate:
+            amount_total_format = self.amount_total / currency_rate.rate
+            return get_range_amount(approve_purchase_ids, amount_total_format)
+        else:
+            raise models.ValidationError(f'No hay registro de la moneda {self.currency_id.name} en el día {datetime.now()}')
 
     @api.model
     def _compute_invisible_custom_btn_confirm(self):

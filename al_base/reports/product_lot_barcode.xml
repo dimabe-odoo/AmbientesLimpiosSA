@@ -28,14 +28,14 @@
                       <t t-if="move_line.product_id.tracking != 'none'">
                         <tr>
                           <td class="text-center align-middle" style="height: 6rem;">
-                            <t t-if="move_line.product_id.barcode">
+                            <t t-if="move_line.product_id.al_dun">
                               <img
-                                  t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', move_line.product_id.barcode, 600, 150)"
+                                  t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', move_line.product_id.al_dun, 600, 150)"
                                   style="width:100%;height:4rem" alt="Barcode"/>
-                              <span t-esc="move_line.product_id.barcode"/>
+                              <span t-esc="move_line.product_id.al_dun"/>
                             </t>
                             <t t-else="">
-                              <span class="text-muted">No barcode available</span>
+                              <span class="text-muted">No DUN available</span>
                             </t>
                           </td>
                         </tr>
@@ -89,14 +89,14 @@
                       <t t-if="move_line.product_id.tracking == 'none'">
                         <tr>
                           <td class="text-center align-middle" style="height: 6rem;">
-                            <t t-if="move_line.product_id.barcode">
+                            <t t-if="move_line.product_id.al_dun">
                               <img
-                                  t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', move_line.product_id.barcode, 600, 150)"
+                                  t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', move_line.product_id.al_dun, 600, 150)"
                                   style="width:100%;height:4rem" alt="Barcode"/>
-                              <span t-esc="move_line.product_id.barcode"/>
+                              <span t-esc="move_line.product_id.al_dun"/>
                             </t>
                             <t t-else="">
-                              <span class="text-muted">No barcode available</span>
+                              <span class="text-muted">No DUN available</span>
                             </t>
                           </td>
                         </tr>
@@ -127,14 +127,14 @@
               <t t-if="lot.product_id.tracking != 'none'">
                 <tr>
                   <td class="text-center align-middle" style="height: 6rem;">
-                    <t t-if="lot.product_id.barcode">
+                    <t t-if="lot.product_id.al_dun">
                       <img
-                          t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', lot.product_id.barcode, 600, 150)"
+                          t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', lot.product_id.al_dun, 600, 150)"
                           style="width:100%;height:4rem" alt="Barcode"/>
-                      <span t-esc="lot.product_id.barcode"/>
+                      <span t-esc="lot.product_id.al_dun"/>
                     </t>
                     <t t-else="">
-                      <span class="text-muted">No barcode available</span>
+                      <span class="text-muted">No DUN available</span>
                     </t>
                   </td>
                 </tr>
@@ -193,14 +193,14 @@
               <t t-if="mrp.product_id.tracking != 'none'">
                 <tr>
                   <td class="text-center align-middle" style="height: 6rem;">
-                    <t t-if="mrp.product_id.barcode">
+                    <t t-if="mrp.product_id.al_dun">
                       <img
-                          t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', mrp.product_id.barcode, 600, 150)"
+                          t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', mrp.product_id.al_dun, 600, 150)"
                           style="width:100%;height:4rem" alt="Barcode"/>
-                      <span t-esc="mrp.product_id.barcode"/>
+                      <span t-esc="mrp.product_id.al_dun"/>
                     </t>
                     <t t-else="">
-                      <span class="text-muted">No barcode available</span>
+                      <span class="text-muted">No DUN available</span>
                     </t>
                   </td>
                 </tr>
@@ -258,14 +258,14 @@
               </tr>
               <tr>
                 <td class="text-center align-middle" style="height: 6rem;">
-                  <t t-if="product.barcode">
+                  <t t-if="product.al_dun">
                     <img
-                        t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', product.barcode, 600, 150)"
+                        t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', product.al_dun, 600, 150)"
                         style="width:100%;height:4rem" alt="Barcode"/>
-                    <span t-esc="product.barcode"/>
+                    <span t-esc="product.al_dun"/>
                   </t>
                   <t t-else="">
-                    <span class="text-muted">No barcode available</span>
+                    <span class="text-muted">No DUN available</span>
                   </t>
                 </td>
               </tr>

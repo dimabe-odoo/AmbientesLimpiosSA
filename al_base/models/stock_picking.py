@@ -7,6 +7,7 @@ import base64
 from io import BytesIO
 from py_linq import Enumerable
 from ..utils.roundformat_clp import round_clp
+from ..utils.get_remaining_caf import get_remaining_caf
 
 
 class StockPicking(models.Model):
@@ -22,7 +23,7 @@ class StockPicking(models.Model):
 
     amount_total = fields.Float('TOTAL', compute="_compute_amount_total")
 
-    invisible_btn_ted = fields.Boolean(compute="_compute_show_btn_ted", default=True)
+    #invisible_btn_ted = fields.Boolean(compute="_compute_show_btn_ted", default=True)
 
     is_subcontract = fields.Boolean(compute='compute_is_subcontract')
 
@@ -36,23 +37,21 @@ class StockPicking(models.Model):
             'Guía de Despacho Electrónica',
             self.l10n_latam_document_number if self.l10n_latam_document_number else self.id)
 
-    @api.model
-    def _compute_show_btn_ted(self):
-        for item in self:
-            if item.picking_type_id.sequence_code == 'OUT':
-                if item.ted or (item.state == 'draft' or item.state == 'cancel'):
-                    item.invisible_btn_ted = True
-                else:
-                    item.invisible_btn_ted = False
-            else:
-                item.invisible_btn_ted = True
+    #@api.model
+    #def _compute_show_btn_ted(self):
+    #    for item in self:
+    #        if item.picking_type_id.sequence_code == 'OUT':
+    #            if item.ted or (item.state == 'draft' or item.state == 'cancel'):
+    #                item.invisible_btn_ted = True
+    #            else:
+    #                item.invisible_btn_ted = False
+    #        else:
+    #            item.invisible_btn_ted = True
 
-    def get_ted(self):
-        doc_id = self.env['ir.attachment'].search(
-            [('res_model', '=', 'stock.picking'), ('res_id', '=', self.id), ('name', 'like', 'SII')],
-            order='create_date desc')
+    def get_ted(self, doc_id):
+
         if doc_id:
-            doc_xml = base64.b64decode(doc_id[0].datas)
+            doc_xml = base64.b64decode(doc_id.datas)
             data_dict = xmltodict.parse(doc_xml)
             json_data = json.dumps(data_dict['EnvioDTE']['SetDTE']['DTE']['Documento']['TED'])
             cols = 12
@@ -65,14 +64,11 @@ class StockPicking(models.Model):
                     buffered = BytesIO()
                     image.save(buffered, format="JPEG")
                     img_str = base64.b64encode(buffered.getvalue())
-                    self.write({'ted': img_str})
-                    break
+
+                    return img_str
                 except:
                     cols += 1
 
-        else:
-            raise models.ValidationError(
-                'No se puede generar código de barra 2D ya que aun no se ha generado la Guía de Despacho')
 
     @api.model
     def _compute_net_amount(self):
@@ -95,9 +91,6 @@ class StockPicking(models.Model):
 
         item.net_amount = int(net_amount)
 
-    def test(self):
-        for item in self:
-            print(item)
 
     @api.model
     def _compute_tax_amount(self):
@@ -164,3 +157,16 @@ class StockPicking(models.Model):
 
     def roundclp(self, value):
         return round_clp(value)
+
+    def write(self, values):
+        if 'l10n_cl_dte_status' in values.keys():
+            if values['l10n_cl_dte_status'] == 'rejected':
+                get_remaining_caf(self.l10n_latam_document_type_id.id)
+        if not self.ted and self.picking_type_id.sequence_code == 'OUT':
+            doc_id = self.env['ir.attachment'].search(
+                [('res_model', '=', 'stock.picking'), ('res_id', '=', self.id), ('name', 'like', 'SII')],
+                order='create_date desc')
+            if doc_id:
+                values['ted'] = self.get_ted(doc_id[0])
+
+        return super(StockPicking, self).write(values)
