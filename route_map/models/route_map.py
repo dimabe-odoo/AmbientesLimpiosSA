@@ -15,8 +15,7 @@ class RouteMap(Model):
 
     picking_id = fields.Many2one('stock.picking', 'Despacho',
                                  domain=[('picking_type_id.sequence_code', '=', 'OUT'), ('state', '=', 'done'),
-                                         ('map_id', '=', None), ('sale_id', '!=', None),
-                                         ('sale_id.invoice_ids', '!=', None)])
+                                         ('map_id', '=', None), ('sale_id', '!=', None),('sale_id.invoice_publish_ids','!=',False)])
 
     dispatch_ids = fields.One2many('route.map.line', 'map_id', string="Despacho")
 

@@ -3,6 +3,7 @@ import json, xmltodict
 from pdf417 import encode, render_image
 import base64
 from io import BytesIO
+from py_linq import Enumerable
 from ..utils.roundformat_clp import round_clp
 
 
@@ -115,3 +116,16 @@ class AccountMove(models.Model):
 
     def roundclp(self, value):
         return round_clp(value)
+
+    def custom_report_fix(self,list_report_list):
+        report_linq = Enumerable(list_report_list)
+        names = report_linq.select(lambda x: x['name'])
+        report = self.env['ir.actions.report'].search(([('name','in',names)]))
+        for rep in report:
+            if rep.report_name != report_linq.first_or_default(lambda x: x['template_old'] == rep.report_name)['template_new']:
+                rep.write({
+                    'report_name': report_linq.first_or_default(lambda x: x['template_old'] == rep.report_name)['template_new'],
+                    'report_file': report_linq.first_or_default(lambda x: x['template_old'] == rep.report_name)['template_new']
+                })
+            else:
+                continue

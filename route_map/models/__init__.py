@@ -9,3 +9,4 @@ from . import product_line
 from . import account_move
 from . import custom_user
 from . import res_users
+from . import sale_order

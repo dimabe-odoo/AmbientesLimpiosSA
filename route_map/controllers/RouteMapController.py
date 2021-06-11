@@ -1,5 +1,7 @@
-from odoo import http
+from odoo import http, SUPERUSER_ID
 from odoo.http import request
+from odoo.tools import date_utils
+import json
 
 
 class RouteMapController(http.Controller):
@@ -25,18 +27,18 @@ class RouteMapController(http.Controller):
         map_object = request.env['route.map'].sudo().search([('id', '=', map_id), ('state', '!=', 'done')])
         lines = []
         if map_object:
-            for line in map_object.dispatch_ids:
+            line_dispatch = request.env['route.map.line'].sudo().search([('map_id','=',map_object.id)])
+            for line in line_dispatch:
                 products = []
                 for product in line.product_line_ids:
                     products.append({
                         'ProductName': product.product_id.name,
                         'Qty': product.qty_to_delivery
                     })
-                print(line.sudo().sale_id.id)
                 lines.append({
                     'Id': line.id,
-                    'Destiny': line.sudo().sale_id.partner_id.name,
-                    'Address': line.sudo().address_to_delivery if line.address_to_delivery else '',
+                    'Destiny': line.partner_id.name,
+                    'Address': line.partner_id.street,
                     'LatitudeDestiny': line.sudo().partner_id.partner_latitude,
                     'LongitudeDestiny': line.sudo().partner_id.partner_longitude,
                     'State': line.sudo().state,
@@ -69,10 +71,9 @@ class RouteMapController(http.Controller):
                         'name': f"{line.map_id.display_name} Imagen Pedido {line.sale_id.name}",
                         'store_fname': file,
                         'mimetype': 'image/jpeg',
-                        'index_content': 'image'
                     })
             if to_save_geo:
-                line.partner_id.write({
+                line.partner_id.sudo().write({
                     'partner_latitude': latitude,
                     'partner_longitude': longitude
                 })
@@ -91,9 +92,9 @@ class RouteMapController(http.Controller):
         return {'ok': True, "message": "Pedido entregado"}
 
     @http.route('/api/states', type='json', auth='token', method='GET', cors='*')
-    def get_state(self, field_id):
+    def get_state(self):
         states = request.env['ir.model.fields.selection'].sudo().search(
-            [('field_id', '=', field_id), ('value', '!=', 'to_delivered')])
+            [('field_id.model_id.name', '=', 'route.map.line'), ('value', '!=', 'to_delivered')])
         res = []
         for state in states:
             res.append({
