@@ -66,7 +66,7 @@
                             <tr>
                                 <td style="text-align: right;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;padding-right: 6px;">Costo</td>
                                 <td style="text-align: left;border-right:2px solid #0080bf;border-bottom: 1px solid #0080bf;padding-left: 6px;">
-                                    <t t-if="res_company.analitic_account == '1'">
+                                    <t t-if="res_company.analitic_account == '1' and d.account_analytic_id.name">
                                         <span t-esc="d.account_analytic_id.name.capitalize()"/>
                                     </t>
                                     <t t-if="res_company.analitic_account == '2'">

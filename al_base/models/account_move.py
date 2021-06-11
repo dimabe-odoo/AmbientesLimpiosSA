@@ -105,14 +105,15 @@ class AccountMove(models.Model):
         return round_clp(value)
 
     def write(self, values):
-        if 'l10n_cl_dte_status' in values.keys():
-            if values['l10n_cl_dte_status'] in ['accepted', 'objected']:
-                get_remaining_caf(self.l10n_latam_document_type_id.id)
-        if not self.ted:
-            doc_id = self.env['ir.attachment'].search(
-                [('res_model', '=', 'account.move'), ('res_id', '=', self.id), ('name', 'like', 'SII')],
-                order='create_date desc')
-            if doc_id:
-                values['ted'] = self.get_ted(doc_id[0])
+        for item in self:
+            if 'l10n_cl_dte_status' in values.keys():
+                if values['l10n_cl_dte_status'] in ['accepted', 'objected']:
+                    get_remaining_caf(item.l10n_latam_document_type_id.id)
+            if not self.ted:
+                doc_id = self.env['ir.attachment'].search(
+                    [('res_model', '=', 'account.move'), ('res_id', '=', self.id), ('name', 'like', 'SII')],
+                    order='create_date desc')
+                if doc_id:
+                    values['ted'] = item.get_ted(doc_id[0])
 
-        return super(AccountMove, self).write(values)
+            return super(AccountMove, self).write(values)
