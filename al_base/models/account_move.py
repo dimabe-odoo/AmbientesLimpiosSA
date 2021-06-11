@@ -109,7 +109,7 @@ class AccountMove(models.Model):
             if 'l10n_cl_dte_status' in values.keys():
                 if values['l10n_cl_dte_status'] in ['accepted', 'objected']:
                     get_remaining_caf(item.l10n_latam_document_type_id.id)
-            if not self.ted:
+            if not item.ted:
                 doc_id = self.env['ir.attachment'].search(
                     [('res_model', '=', 'account.move'), ('res_id', '=', self.id), ('name', 'like', 'SII')],
                     order='create_date desc')
