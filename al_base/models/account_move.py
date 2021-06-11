@@ -111,9 +111,9 @@ class AccountMove(models.Model):
                     get_remaining_caf(item.l10n_latam_document_type_id.id)
             if not item.ted:
                 doc_id = self.env['ir.attachment'].search(
-                    [('res_model', '=', 'account.move'), ('res_id', '=', self.id), ('name', 'like', 'SII')],
+                    [('res_model', '=', 'account.move'), ('res_id', '=', item.id), ('name', 'like', 'SII')],
                     order='create_date desc')
                 if doc_id:
                     values['ted'] = item.get_ted(doc_id[0])
 
-            return super(AccountMove, self).write(values)
+            return super(AccountMove, item).write(values)
