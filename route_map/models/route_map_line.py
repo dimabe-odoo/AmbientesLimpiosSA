@@ -74,7 +74,7 @@ class RouteMapLine(models.Model):
 
     def compute_display_name(self):
         for item in self:
-            item.display_name = f'Pedido {item.sale_id.name} Cliente {item.partner_id.display_name} Factura {",".join(item.invoice_ids.mapped("name"))}'
+            item.display_name = f'Pedido {item.sudo().sale_id.name} Cliente {item.sudo().partner_id.sudo().display_name} Factura {",".join(item.sudo().invoice_ids.mapped("name"))}'
 
     def button_cancel(self):
         for item in self:
