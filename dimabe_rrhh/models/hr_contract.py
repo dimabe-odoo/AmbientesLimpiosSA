@@ -75,6 +75,8 @@ class HrContract(models.Model):
 
     apv_payment_term = fields.Selection([('1', 'Directa'), ('2', 'Indirecta')], string='Forma de Pago', default="1")
 
+    permanent_discounts_ids = fields.One2many('custom.permanent_discounts', 'contract_id', string='Descuentos Fijos/Permanentes')
+
     @api.onchange('is_fonasa')
     def onchange_is_fonasa(self):
         for item in self:
