@@ -27,5 +27,5 @@ class AccountMoveLine(models.Model):
     @api.model
     def _compute_subtotal_with_taxes(self):
         for item in self:
-            item.subtotal_with_taxes = item.price_subtotal + item.taxes_amount
+            item.subtotal_with_taxes = item.price_subtotal + (item.taxes_amount * item.quantity)
 

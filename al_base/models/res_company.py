@@ -7,4 +7,5 @@ class ResCompany(models.Model):
 
     copies_qty = fields.Integer(string="Cantidad de copias cedibles")
 
+    notification_remaining_caf = fields.Integer(string="Notificación de Folios Restantes", default=0)
     tolerance_percentage = fields.Float(string='Porcentaje de Tolerancia',default=10)

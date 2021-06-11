@@ -8,11 +8,6 @@
             <field name="inherit_id" ref="l10n_latam_invoice_document.view_move_form"/>
             <field name="priority" eval="8"/>
             <field name="arch" type="xml">
-                <xpath expr="//header" position="inside">
-                    <field name="invisible_btn_ted" invisible="1"/>
-                    <button type="object" string="Generar código de barra 2D" name="get_ted" class="oe_highlight"
-                            attrs="{'invisible':[('invisible_btn_ted','=',True)]}"/>
-                </xpath>
                 <xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='discount']" position="attributes">
                     <attribute name="digits">"[0, 0]"</attribute>
                 </xpath>

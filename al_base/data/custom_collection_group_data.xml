@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
+        <record id="custom_noti_remaining_caf_group_data" model="custom.collection.group">
+            <field name="name">Grupo Notificación CAF Disponibles</field>
+        </record>
         <record id="custom_collection_group_data" model="custom.collection.group">
             <field name="name">Grupo Cobranza</field>
         </record>

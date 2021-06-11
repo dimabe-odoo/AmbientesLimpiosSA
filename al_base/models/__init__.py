@@ -22,3 +22,4 @@ from . import stock_move
 from . import stock_quant
 from . import stock_orderpoint
 from . import quality_alert
+from . import l10n_latam_document_type

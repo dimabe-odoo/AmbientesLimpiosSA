@@ -14,6 +14,8 @@ class HrEmployee(models.Model):
 
     mothers_name = fields.Char("Segundo Apellido", help='Employees mothers name')
 
+    marital = fields.Selection(selection_add=[('civilunion', 'Unión Civil')])
+
     @api.model
     def _get_computed_name(self, last_name, first_name, last_name2=None, middle_name=None):
         names = []
