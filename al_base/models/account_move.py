@@ -6,7 +6,6 @@ from io import BytesIO
 from py_linq import Enumerable
 from ..utils.roundformat_clp import round_clp
 from ..utils.get_remaining_caf import get_remaining_caf
-from ..utils.get_analytic_account import _get_by_partner
 
 class AccountMove(models.Model):
     _inherit = 'account.move'
@@ -108,16 +107,23 @@ class AccountMove(models.Model):
 
     def custom_report_fix(self,list_report_list):
         report_linq = Enumerable(list_report_list)
-        names = report_linq.select(lambda x: x['name'])
-        report = self.env['ir.actions.report'].search(([('name','in',names)]))
+        report_ids = report_linq.select(lambda x: x['id'])
+        report = self.env['ir.actions.report'].search([('id','in',report_ids.to_list())])
+
         for rep in report:
-            report_to_update = report_linq.first_or_default(lambda x: x['template_old'] == rep.report_name)
+            report_to_update = report_linq.first_or_default(lambda x: x['id'] == rep.id)
             if report_to_update:
-                report_new = report_to_update['template_new']
-                if rep.report_name != report_new:
+                new_name = report_to_update['new_name']
+                new_template_name = report_to_update['template_new']
+                paperformat_id = report_to_update['paperformat_id']
+                print_report_name = report_to_update['print_report_name']
+                if rep.report_name != new_template_name or rep.report_file != new_template_name or rep.print_report_name != print_report_name or rep.name != new_name or rep.paperformat_id != paperformat_id:
                     rep.write({
-                        'report_name': report_new,
-                        'report_file': report_new
+                        'report_name': new_template_name,
+                        'report_file': new_template_name,
+                        'print_report_name': print_report_name,
+                        'name': new_name,
+                        'paperformat_id': paperformat_id
                     })
                 else:
                     continue
@@ -137,14 +143,5 @@ class AccountMove(models.Model):
                 if doc_id:
                     values['ted'] = item.get_ted(doc_id[0])
 
-            res = super(AccountMove, item).write(values)
-            if 'partner_id' in values.keys():
-                for line in self.invoice_line_ids:
-                    analytic_account = _get_by_partner(
-                        self.env['res.partner'].search([('id', '=', values['partner_id'])])).id
-                    line.write({
-                        'analytic_account_id': analytic_account
-                    })
-
-            return res
+            return super(AccountMove, item).write(values)
 

@@ -29,34 +29,4 @@ class AccountMoveLine(models.Model):
         for item in self:
             item.subtotal_with_taxes = item.price_subtotal + (item.taxes_amount * item.quantity)
 
-    @api.model_create_multi
-    def create(self, vals_list):
-
-        for values in vals_list:
-            if not 'analytic_account_id' in values.keys() or values['analytic_account_id'] == False:
-                account_move = self.env['account.move'].search([('id', '=', values['move_id'])])
-                if account_move:
-                    if account_move.partner_id:
-                        parent_id = account_move.partner_id.id
-                        if account_move.partner_id.parent_id:
-                            parent_id = account_move.partner_id.parent_id.id
-                        analytic_account = self.env['account.analytic.account'].search([('partner_id.id', '=', parent_id)])
-                        if analytic_account:
-                            values['analytic_account_id'] = analytic_account.id
-
-        return super().create(vals_list)
-
-    '''
-            if 'partner_id' in values.keys():
-            partner_id = self.env['res.partner'].search([('id','=',values['partner_id'])])
-            parent_id = partner_id.id
-            if partner_id.parent_id:
-                parent_id = partner_id.parent_id.id
-
-            analytic_account = self.env['account.analytic.account'].search([('partner_id.id','=',parent_id)])
-            if analytic_account:
-                values['analytic_account_id'] = analytic_account.id
-        return super(SaleOrder, self).create(values)
-    '''
-
 
