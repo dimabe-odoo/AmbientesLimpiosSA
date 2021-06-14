@@ -56,8 +56,12 @@ class RouteMapController(http.Controller):
             return {'ok': False, 'message': "No existe ningun pedido con este id"}
 
     @http.route('/api/done', type='json', auth='token', method='GET', cors='*')
-    def make_done_line(self, line_id, latitude, longitude, state, to_save_geo=False, observations='', files=None):
+    def make_done_line(self, line_id, latitude, longitude, state, to_save_geo=False, observations='', files=None,user_id=None):
         line = request.env['route.map.line'].sudo().search([('id', '=', line_id)])
+        if user_id and not request.env.user and not request.env.uid :
+            user = request.env['res.users'].sudo().search([('id','=',user_id)])
+            request.env.user = user
+            request.env.uid = user_id
         if line:
             if files and len(files) > 0:
                 for file in files:
@@ -68,7 +72,7 @@ class RouteMapController(http.Controller):
                         'db_datas': file,
                         'datas': file,
                         'file_size': (len(file) * 6 - file.count('=') * 8) / 8,
-                        'name': f"{line.map_id.display_name} Imagen Pedido {line.sale_id.name}",
+                        'name': f"{line.map_id.display_name} Imagen Pedido {line.sale_id.name} 12",
                         'store_fname': file,
                         'mimetype': 'image/jpeg',
                     })
@@ -84,7 +88,7 @@ class RouteMapController(http.Controller):
             })
             line.sudo().set_state(state)
             for invoice in line.invoice_ids:
-                invoice.write({
+                invoice.sudo().write({
                     'file_ids': [(4, f.id) for f in line.image_ids]
                 })
             if line.map_id.state == 'done':

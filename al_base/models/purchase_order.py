@@ -3,6 +3,7 @@ from odoo import fields, models, api
 from datetime import datetime
 from ..utils.get_range_to_approve import get_range_amount
 from ..utils.roundformat_clp import round_clp
+from ..utils.get_analytic_account import _get_by_partner
 
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
@@ -96,3 +97,32 @@ class PurchaseOrder(models.Model):
 
     def _get_custom_report_name(self):
         return '%s %s' % ('Órden de Compra - ', self.name)
+
+    def write(self, values):
+        res = super(PurchaseOrder, self).write(values)
+        if 'partner_id' in values.keys():
+            for line in self.order_line:
+                analytic_account = _get_by_partner(
+                    self.env['res.partner'].search([('id', '=', values['partner_id'])])).id
+                line.write({
+                    'account_analytic_id': analytic_account
+                })
+
+        return res
+
+class PurchaseOrderLine(models.Model):
+
+    _inherit = "purchase.order.line"
+
+    @api.model_create_multi
+    def create(self, vals_list):
+
+        for values in vals_list:
+            if not 'account_analytic_id' in values.keys() or values['account_analytic_id'] == False :
+                purchase_order = self.env['purchase.order'].search([('id', '=', values['order_id'])])
+                if purchase_order:
+                    if purchase_order.partner_id:
+                        analytic_account = _get_by_partner(purchase_order.partner_id).id
+                        values['account_analytic_id'] = analytic_account
+
+        return super().create(vals_list)

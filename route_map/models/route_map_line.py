@@ -112,17 +112,17 @@ class RouteMapLine(models.Model):
         for item in self:
             if item.state == state:
                 raise models.ValidationError('No se puede entregar un pedido ya cancelado')
-            item.write({
+            item.sudo().write({
                 'state': state,
                 'is_delivered': True,
                 'date_done': datetime.datetime.now()
             })
             if item.map_id.dispatch_ids.filtered(lambda a: a.state == 'done'):
-                item.map_id.write({
+                item.map_id.sudo().write({
                     'state': 'partially_delivered',
                 })
             if self.verify_all_line(item.map_id.dispatch_ids):
-                item.map_id.write({
+                item.map_id.sudo().write({
                     'state': 'done',
                     'date_done': datetime.datetime.now()
                 })

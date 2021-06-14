@@ -25,12 +25,11 @@ class CustomUser(models.Model):
         user = self.env['res.users'].sudo().create({
             'login': values['email'],
             'name': values['name'],
-            'sel_groups_1_9_10': 9,
+            'sel_groups_1_9_10': 1,
             'password': values['password'],
             'email': values['email']
         })
         values['partner_id'] = user.partner_id.id
-        values['password'] = password_encoding.create_password(values['password'])
         values['user_id'] = user.id
         if 'truck_id' in values.keys():
             truck = self.env['fleet.vehicle'].sudo().search([('id', '=', values['truck_id'])])

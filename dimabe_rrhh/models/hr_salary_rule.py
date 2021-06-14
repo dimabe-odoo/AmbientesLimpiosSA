@@ -9,6 +9,11 @@ class HrSalaryRule(models.Model):
 
     discount_in_fee = fields.Boolean('Descuento en Cuota')
 
+    is_permanent_discount = fields.Boolean('Descuento Fijo/Permanente')
+
+    category_code = fields.Char('Código Categoría', related="category_id.code")
+
+
     @api.onchange('is_bonus')
     def onchange_method(self):
         #if not self.code:

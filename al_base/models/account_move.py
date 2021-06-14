@@ -6,7 +6,7 @@ from io import BytesIO
 from py_linq import Enumerable
 from ..utils.roundformat_clp import round_clp
 from ..utils.get_remaining_caf import get_remaining_caf
-
+from ..utils.get_analytic_account import _get_by_partner
 
 class AccountMove(models.Model):
     _inherit = 'account.move'
@@ -105,18 +105,25 @@ class AccountMove(models.Model):
     def roundclp(self, value):
         return round_clp(value)
 
+
     def custom_report_fix(self,list_report_list):
         report_linq = Enumerable(list_report_list)
         names = report_linq.select(lambda x: x['name'])
         report = self.env['ir.actions.report'].search(([('name','in',names)]))
         for rep in report:
-            if rep.report_name != report_linq.first_or_default(lambda x: x['template_old'] == rep.report_name)['template_new']:
-                rep.write({
-                    'report_name': report_linq.first_or_default(lambda x: x['template_old'] == rep.report_name)['template_new'],
-                    'report_file': report_linq.first_or_default(lambda x: x['template_old'] == rep.report_name)['template_new']
-                })
+            report_to_update = report_linq.first_or_default(lambda x: x['template_old'] == rep.report_name)
+            if report_to_update:
+                report_new = report_to_update['template_new']
+                if rep.report_name != report_new:
+                    rep.write({
+                        'report_name': report_new,
+                        'report_file': report_new
+                    })
+                else:
+                    continue
             else:
                 continue
+
 
     def write(self, values):
         for item in self:
@@ -130,5 +137,14 @@ class AccountMove(models.Model):
                 if doc_id:
                     values['ted'] = item.get_ted(doc_id[0])
 
-            return super(AccountMove, item).write(values)
+            res = super(AccountMove, item).write(values)
+            if 'partner_id' in values.keys():
+                for line in self.invoice_line_ids:
+                    analytic_account = _get_by_partner(
+                        self.env['res.partner'].search([('id', '=', values['partner_id'])])).id
+                    line.write({
+                        'analytic_account_id': analytic_account
+                    })
+
+            return res
 

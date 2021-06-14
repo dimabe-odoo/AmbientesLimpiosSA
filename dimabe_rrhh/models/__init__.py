@@ -28,3 +28,5 @@ from . import custom_loan
 from . import custom_fee
 from . import confirm_loan
 from . import custom_personal_movements
+from . import custom_permanent_discounts
+from . import hr_payslip_input

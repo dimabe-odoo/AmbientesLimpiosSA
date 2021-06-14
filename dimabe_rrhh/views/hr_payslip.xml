@@ -51,6 +51,10 @@
                     <button name="add" type="object" string="Agregar"/>
                 </group>
             </xpath>
+
+            <xpath expr="//field[@name='input_line_ids']/tree//field[@name='code']" position="before">
+                <field name="additional_info"/>
+            </xpath>
         </field>
     </record>
     <record id="hr_inherit_tree_inherit" model="ir.ui.view">

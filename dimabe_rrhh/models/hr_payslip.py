@@ -20,7 +20,9 @@ class HrPaySlip(models.Model):
 
     loan_id = fields.Many2one('custom.loan')
 
-    personal_movement_ids = fields.One2many('custom.personal.movements','payslip_id')
+    personal_movement_ids = fields.One2many('custom.personal.movements', 'payslip_id')
+
+    fee_id = fields.Many2one('cutom.fee', string='Cuota Pagada')
 
     @api.model
     def _compute_basic_salary(self):
@@ -71,14 +73,17 @@ class HrPaySlip(models.Model):
             item.salary_id = None
 
     def compute_sheet(self):
+        self.get_permanent_discounts()
         loan_id = self.env['custom.loan'].search(
-            [('employee_id', '=', self.employee_id.id), ('state', '=', 'in_process'),('rule_id.code','not in',self.input_line_ids.mapped('code'))])
+            [('employee_id', '=', self.employee_id.id), ('state', '=', 'in_process'),
+             ('rule_id.code', 'not in', self.input_line_ids.mapped('code'))])
         loan_id = loan_id.filtered(lambda a: self.date_from <= a.next_fee_date <= self.date_to)
         if not self.input_line_ids.filtered(lambda a: a.code == loan_id.rule_id.code and a.amount > 0) and loan_id:
             type_id = self.env['hr.payslip.input.type'].search([('code', '=', loan_id.rule_id.code)])
+            actual_fee = len(loan_id.fee_ids.filtered(lambda a: a.paid == True)) + 1
             if type_id:
                 self.env['hr.payslip.input'].create({
-                    'name': loan_id.rule_id.name,
+                    'additional_info': f'Cuota {actual_fee}/{loan_id.fee_qty}',
                     'code': loan_id.rule_id.code,
                     'contract_id': self.contract_id.id,
                     'payslip_id': self.id,
@@ -91,7 +96,7 @@ class HrPaySlip(models.Model):
                     'code': loan_id.rule_id.code
                 })
                 self.env['hr.payslip.input'].create({
-                    'name': loan_id.rule_id.name,
+                    'additional_info': f'Cuota {actual_fee}/{loan_id.fee_qty}',
                     'code': loan_id.rule_id.code,
                     'contract_id': self.contract_id.id,
                     'payslip_id': self.id,
@@ -117,29 +122,61 @@ class HrPaySlip(models.Model):
 
                 if item.loan_id.verify_is_complete():
                     item.loan_id.write({
-                        'state':'done'
+                        'state': 'done'
                     })
             return super(HrPaySlip, self).action_payslip_done()
 
-    # @api.model
-    # def _get_worked_day_lines(self):
-    #    res = super(HrPaySlip, self)._get_worked_day_lines()
-    #    temp = 0 
-    #    days = 0
-    #    attendances = {}
-    #    leaves = []
-    #    if len(res) > 0:
-    #        for line in res:
-    #            if line.get('code') == 'WORK100':
-    #                attendances = line
-    #           else:
-    #                leaves.append(line)
-    #        for leave in leaves:
-    #            temp += leave.get('number_of_days') or 0
-    #    attendances['number_of_days'] = days
-    #    attendances['work_entry_type_id'] = 1
-    #    attendances['amount'] = self.contract_id.wage
-    #    res = []
-    #    res.append(attendances)
-    #    res.extend(leaves)
-    #    return res
+    def get_permanent_discounts(self):
+        if self.contract_id and len(self.contract_id.permanent_discounts_ids) > 0:
+            for item in self.contract_id.permanent_discounts_ids:
+                exist_input = self.exist_input(item.salary_rule_id.code)
+                if not exist_input:
+
+                    type_id = self.env['hr.payslip.input.type'].search([('code', '=', item.salary_rule_id.code)])
+                    if type_id:
+                        self.env['hr.payslip.input'].create({
+                            'additional_info': 'Descuento Fijo',
+                            'code': item.salary_rule_id.code,
+                            'contract_id': self.contract_id.id,
+                            'payslip_id': self.id,
+                            'input_type_id': type_id.id,
+                            'amount': item.amount
+                        })
+                    else:
+                        input_type = self.env['hr.payslip.input.type'].create({
+                            'name': item.salary_rule_id.name,
+                            'code': item.salary_rule_id.code
+                        })
+
+                        self.env['hr.payslip.input'].create({
+                            'additional_info': 'Descuento Fijo',
+                            'code': item.salary_rule_id.code,
+                            'contract_id': self.contract_id.id,
+                            'payslip_id': self.id,
+                            'input_type_id': input_type.id,
+                            'amount': item.amount
+                        })
+                else:
+                    exist_input.write({
+                        'amount': item.amount
+                    })
+
+    def exist_input(self, salary_rule_code):
+        input_type_id = self.env['hr.payslip.input.type'].search([('code','=', salary_rule_code)])
+
+        if input_type_id:
+            payslip_input = self.env['hr.payslip.input'].search(
+                [('payslip_id', '=', self._origin.id), ('input_type_id', '=', input_type_id.id)])
+
+            return payslip_input
+        else:
+            False
+
+
+class HrPaySlipLine(models.Model):
+
+    _inherit = 'hr.payslip.line'
+
+    def _get_additional_info(self):
+        payslip_input = self.env['hr.payslip.input'].search([('code', '=', self.code), ('payslip_id','=', self.slip_id.id)])
+        return f' - {payslip_input.additional_info}' if payslip_input.additional_info else ''
