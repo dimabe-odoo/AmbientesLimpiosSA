@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from ..utils.get_range_to_approve import get_range_discount
 from ..utils.calculate_business_day_dates import calculate_business_day_dates
 from ..utils.roundformat_clp import round_clp
-
+from ..utils.get_analytic_account import _get_by_partner
 
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
@@ -144,6 +144,24 @@ class SaleOrder(models.Model):
 
     def _get_custom_report_name(self):
         return '%s %s' % ('Nota de Venta - ', self.name)
+
+    def write(self, values):
+        if 'partner_id' in values.keys():
+            analytic_account = _get_by_partner(
+                self.env['res.partner'].search([('id', '=', values['partner_id'])])).id
+            values['analytic_account_id'] = analytic_account
+        return super(SaleOrder, self).write(values)
+
+
+    @api.model
+    def create(self, values):
+        if 'partner_id' in values.keys():
+            analytic_account = _get_by_partner(self.env['res.partner'].search([('id','=',values['partner_id'])])).id
+
+            values['analytic_account_id'] = analytic_account
+
+        return super(SaleOrder, self).create(values)
+
 
 
 class SaleOrderLine(models.Model):
