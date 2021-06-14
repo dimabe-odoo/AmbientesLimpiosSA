@@ -137,6 +137,7 @@ class AccountMove(models.Model):
                 if doc_id:
                     values['ted'] = item.get_ted(doc_id[0])
 
+            res = super(AccountMove, item).write(values)
             if 'partner_id' in values.keys():
                 for line in self.invoice_line_ids:
                     analytic_account = _get_by_partner(
@@ -145,5 +146,5 @@ class AccountMove(models.Model):
                         'analytic_account_id': analytic_account
                     })
 
-            return super(AccountMove, item).write(values)
+            return res
 
