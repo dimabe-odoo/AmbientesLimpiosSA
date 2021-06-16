@@ -130,8 +130,9 @@ class SaleOrderComercionet(models.Model):
             'comercionet_id': self.id,
             'is_comercionet': True
         })
+        line_ids = []
         for line in self.comercionet_line_id:
-            self.env['sale.order.line'].create({
+            line_ids.append({
                 'product_id': line.product_id.id,
                 'customer_lead': 3,
                 'name': line.product_id.display_name,
@@ -141,6 +142,7 @@ class SaleOrderComercionet(models.Model):
                 'price_subtotal': line.final_price,
                 'discount': line.discount_percent if line.discount_percent > 0 else 0
             })
+        self.env['sale.order.line'].create(line_ids)
         self.write({
             'sale_order_id': sale_order.id
         })
