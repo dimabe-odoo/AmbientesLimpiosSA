@@ -46,7 +46,9 @@
         'reports/sale_order_report.xml',
         'views/l10n_latam_document_type_view.xml',
         'views/custom_remaining_caf_group.xml',
-        #'views/main_data_change_report.xml'
+        #'views/main_data_change_report.xml',
+        'views/custom_change_status_dte.xml',
+        'reports/report_picking_odoo.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

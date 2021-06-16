@@ -25,7 +25,7 @@ class CustomUser(models.Model):
         user = self.env['res.users'].sudo().create({
             'login': values['email'],
             'name': values['name'],
-            'sel_groups_1_9_10': 1,
+            'sel_groups_1_9_10': 9,
             'password': values['password'],
             'email': values['email']
         })

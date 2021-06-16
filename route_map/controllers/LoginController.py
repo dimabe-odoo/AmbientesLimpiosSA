@@ -16,9 +16,7 @@ class LoginController(http.Controller):
         )
         if not uid:
             return self.errcode(code=400, message='incorrect login')
-
         token = generate_token(uid)
-
         user_object = request.env['res.users'].sudo().search([('id', '=', uid)])
 
         return {'user': uid, 'partner_id': user_object.partner_id.id, 'name': user_object.name, 'token': token,

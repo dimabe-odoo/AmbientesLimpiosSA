@@ -8,6 +8,7 @@ class AccountMove(models.Model):
 
     show_files = fields.Boolean('Mostrar Archivos',compute='compute_show_files')
 
+
     def compute_show_files(self):
         self.show_files = self.file_ids and len(self.file_ids) > 0
 

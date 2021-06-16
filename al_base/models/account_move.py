@@ -7,6 +7,8 @@ from py_linq import Enumerable
 from ..utils.roundformat_clp import round_clp
 from ..utils.get_remaining_caf import get_remaining_caf
 from ..utils.get_analytic_account import _get_by_partner
+from ..utils.generate_notification import send_notification
+
 
 class AccountMove(models.Model):
     _inherit = 'account.move'
@@ -23,10 +25,8 @@ class AccountMove(models.Model):
 
     document_number = fields.Char('Número de Documento')
 
-
     def _get_custom_report_name(self):
         return '%s %s' % (self.l10n_latam_document_type_id.name, self.l10n_latam_document_number)
-
 
     def action_invoice_sent(self):
         res = super(AccountMove, self).action_invoice_sent
@@ -101,15 +101,13 @@ class AccountMove(models.Model):
 
         return super(AccountMove, self).create(values)
 
-
     def roundclp(self, value):
         return round_clp(value)
 
-
-    def custom_report_fix(self,list_report_list):
+    def custom_report_fix(self, list_report_list):
         report_linq = Enumerable(list_report_list)
         names = report_linq.select(lambda x: x['name'])
-        report = self.env['ir.actions.report'].search(([('name','in',names)]))
+        report = self.env['ir.actions.report'].search(([('name', 'in', names)]))
         for rep in report:
             report_to_update = report_linq.first_or_default(lambda x: x['template_old'] == rep.report_name)
             if report_to_update:
@@ -124,7 +122,6 @@ class AccountMove(models.Model):
             else:
                 continue
 
-
     def write(self, values):
         for item in self:
             if 'l10n_cl_dte_status' in values.keys():
@@ -136,7 +133,11 @@ class AccountMove(models.Model):
                     order='create_date desc')
                 if doc_id:
                     values['ted'] = item.get_ted(doc_id[0])
-
+            if 'l10n_cl_dte_acceptation_status' in values.keys():
+                message = self.get_message(values['l10n_cl_dte_acceptation_status'])
+                user_group = self.env.ref('al_base.custom_noti_aceptation_dte')
+                send_notification("Cambio de Estado", message, 2, user_group=user_group.user_ids, model='account.move',
+                                  model_id=self.env.ref('route_map.model_account_move').id)
             res = super(AccountMove, item).write(values)
             if 'partner_id' in values.keys():
                 for line in self.invoice_line_ids:
@@ -148,3 +149,12 @@ class AccountMove(models.Model):
 
             return res
 
+    def get_message(self, type):
+        if type == 'received':
+            return f"<p>Estimados.<br/><br/> Le informamos que el DTE {self.name} ha sido recibido por el cliente"
+        elif type == 'ack_sent':
+            return f"<p>Estimados.<br/><br/> Le informamos que el cliente acusa recibo del DTE {self.name}"
+        elif type == 'claimed':
+            return f"<p>Estimados.<br/><br/> Le informamos que el cliente informa reclamo del DTE {self.name}"
+        elif type == 'accepted':
+            return f"<p>Estimados.<br/><br/> Le informamos que el DTE {self.name} fue Aceptado por el cliente"

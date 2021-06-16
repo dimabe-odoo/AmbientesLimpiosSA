@@ -2,14 +2,14 @@
 <odoo>
         <record id="custom_noti_remaining_caf_group_data" model="custom.collection.group">
             <field name="name">Grupo Notificación CAF Disponibles</field>
+            <field name="group_id" ref="al_base.custom_remaining_caf_notification"/>
         </record>
         <record id="custom_collection_group_data" model="custom.collection.group">
             <field name="name">Grupo Cobranza</field>
+            <field name="group_id" ref="al_base.group_order_confirmation"/>
         </record>
-        <record id="custom_seller_group_data" model="res.groups">
-            <field name="name">Vendedores</field>
-        </record>
-        <record id="custom_admin_sale_group_data" model="res.groups">
-            <field name="name">Administrador</field>
+        <record id="custom_noti_aceptation_dte" model="custom.collection.group">
+            <field name="name">Grupo Notificacion Aceptacion DTE</field>
+            <field name="group_id" ref="al_base.custom_change_status_notification"/>
         </record>
 </odoo>

@@ -52,6 +52,8 @@ class RouteMapLine(models.Model):
 
     invoices_name = fields.Char('Factura', compute='compute_invoice_name')
 
+    line_value = fields.Float('Valor')
+
     def _compute_pallets_quantity(self):
         for item in self:
             pallet_ids = []

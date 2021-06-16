@@ -24,6 +24,7 @@
                                 <field name="driver_id"/>
                                 <field name="truck_id" domain="[('driver_id','!=',None)]"/>
                                 <field name="sell"/>
+                                <field name="route_value"/>
                                 <field name="add_more"/>
                             </group>
                         </group>
@@ -46,6 +47,7 @@
                                         <field name="dispatch_date" readonly="1"
                                                attrs="{'column_invisible': [('parent.state','=','draft')]}"/>
                                         <field name="date_done" readonly="1"/>
+                                        <field name="line_value"/>
                                         <field name="state" readonly="1"/>
                                     </tree>
                                 </field>
