@@ -185,8 +185,7 @@ class SaleOrderLine(models.Model):
                     if create:
                         return False
                     else:
-                        raise models.ValidationError(
-                            'No puede agregar el producto {} más de una vez'.format(product['name']))
+                        raise models.ValidationError('No puede agregar el producto {} más de una vez'.format(product['name']))
 
         else:
             return True
