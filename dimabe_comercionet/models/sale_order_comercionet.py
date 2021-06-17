@@ -8,6 +8,7 @@ from datetime import datetime
 from py_linq import Enumerable
 import pytz
 import requests
+from ..utils.util import get_price_list
 
 
 class SaleOrderComercionet(models.Model):
@@ -130,17 +131,22 @@ class SaleOrderComercionet(models.Model):
             'comercionet_id': self.id,
             'is_comercionet': True
         })
+
+        line_ids = []
         for line in self.comercionet_line_id:
-            self.env['sale.order.line'].create({
+            line_ids.append({
                 'product_id': line.product_id.id,
                 'customer_lead': 3,
                 'name': line.product_id.display_name,
                 'order_id': sale_order.id,
                 'price_unit': line.price,
+                'price_list_comercionet': line.price_list,
                 'product_uom_qty': line.quantity,
                 'price_subtotal': line.final_price,
                 'discount': line.discount_percent if line.discount_percent > 0 else 0
             })
+        self.env['sale.order.line'].create(line_ids)
+
         self.write({
             'sale_order_id': sale_order.id
         })
@@ -159,6 +165,12 @@ class SaleOrderComercionet(models.Model):
             self.write({
                 'comercionet_create_date': sale_order['create_date'],
                 'comercionet_dispatched_date': sale_order['dispatch_date'],
+            })
+
+    def update_price_list(self):
+        for line in self.comercionet_line_id:
+            line.write({
+                'price_list': get_price_list(line.product_id,self.client_id)
             })
 
     def download_oc_pdf(self):
@@ -194,6 +206,7 @@ class SaleOrderComercionet(models.Model):
                                 {'pdf_file': d['pdf_file']}
                             )
 
+
     def assign_client(self):
         client = self.env['res.partner'].search([('comercionet_box', 'like', f'%{self.client_code_comercionet}%')],
                                                 limit=1)
@@ -205,6 +218,7 @@ class SaleOrderComercionet(models.Model):
             self.write({
                 'client_id': client.id
             })
+
 
     def get_orders(self):
         orders = comercionet_scrapper.get_sale_orders()
@@ -240,19 +254,44 @@ class SaleOrderComercionet(models.Model):
                             'product_code': product_code,
                             'final_price': line['final_price'],
                             'price': line['price'],
+                            'price_list': get_price_list(product, client),
                             'quantity': line['quantity'],
                             'discount_percent': line['discount_percent'],
                             'comercionet_id': comercionet.id,
                             'product_id': product.id if product else None
                         })
+'''
+    def get_price_list(self, product, client):
+        price_list = 0
+        client_id = client
+        if client.parent_id:
+            client_id = client.parent_id
 
-    class SaleOrderComercionetLine(models.Model):
-        _name = 'sale.order.comercionet.line'
-        number = fields.Integer('Linea de Pedido')
-        product_code = fields.Char('Código Producto (DUN)')
-        final_price = fields.Integer('Precio Final')
-        price = fields.Integer('Precio Unitario')
-        quantity = fields.Integer('Cantidad')
-        discount_percent = fields.Float('Descuento')
-        comercionet_id = fields.Many2one('sale.order.comercionet')
-        product_id = fields.Many2one('product.product', string='Producto')
+        if client_id.property_product_pricelist:
+            for line in client_id.property_product_pricelist.item_ids:
+                if line.product_tmpl_id.id == product.id:
+                    price_list = line.product_tmpl_id.fixed_price
+                    break
+
+        return price_list'''
+
+
+class SaleOrderComercionetLine(models.Model):
+    _name = 'sale.order.comercionet.line'
+    number = fields.Integer('Linea de Pedido')
+    product_code = fields.Char('Código Producto (DUN)')
+    final_price = fields.Integer('Precio Final')
+    price = fields.Integer('Precio Comercionet')
+    price_list = fields.Integer('Precio Lista', default=0)
+    quantity = fields.Integer('Cantidad')
+    discount_percent = fields.Float('Descuento')
+    comercionet_id = fields.Many2one('sale.order.comercionet')
+    product_id = fields.Many2one('product.product', string='Producto')
+    price_difference = fields.Integer('Diferencia', compute="_compute_price_difference")
+
+    def _compute_price_difference(self):
+        for item in self:
+            if item.price:
+                item.price_difference = abs(item.price - item.price_list)
+            else:
+                item.price_difference = 0

@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <data>
+
+    <report
+        id="action_custom_payment_voucher_template"
+        model="account.move"
+        string="Ingreso de Pago"
+        name="al_base.custom_payment_voucher"
+        report_type="qweb-pdf"
+        paperformat="paper_format_letter_custom"/>
+
+    <template id="custom_payment_voucher">
+      <t t-call="web.html_container">
+        <t t-set="l" t-value="0"/>
+        <div class="page">
+          <t t-foreach="docs" t-as="d">
+            <div style="width: 100%; height: 250px;">
+              <div style="height: 90; width: 140;">
+                <img t-att-src="'data:image/png;base64,%s' % to_text(res_company.logo)"
+                     style="max-width: 140px; max-height: 90px"/>
+
+              </div>
+              <br/>
+              <div style="width: 58%; display: inline-block;">
+                <div style="float: left; height: 130px; width: 100%;">
+                  <table>
+                    <tr>
+                      <td><strong>Nombre</strong></td>
+                      <td>:</td>
+                      <td><span t-field="res_company.name"/></td>
+                    </tr>
+                    <tr>
+                      <td><strong>R.U.T.</strong></td>
+                      <td>:</td>
+                      <td><span t-field="res_company.vat"/></td>
+                    </tr>
+                    <tr>
+                      <td><strong>Giro</strong></td>
+                      <td>:</td>
+                      <td><span t-field="res_company.l10n_cl_activity_description"/></td>
+                    </tr>
+                    <tr>
+                      <td><strong>Dirección</strong></td>
+                      <td>:</td>
+                      <td>
+                        <t t-if="res_company.street">
+                          <span t-field="res_company.street"/>
+                        </t>
+                        <t t-else="">
+                          <t t-if="res_company.partner_id.street">
+                            <span t-field="res_company.partner_id.street"/>
+                          </t>
+                        </t>
+
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+              <div style="width: 40%; float: right;">
+                <div style="height: 130px; width: 100%;">
+                  <table style="float: right;">
+                    <tr>
+                      <td><strong>Folio</strong></td>
+                      <td>:</td>
+                      <td><span t-esc="int(d.l10n_latam_document_number)"/></td>
+                    </tr>
+                    <tr>
+                      <td><strong>Mes</strong></td>
+                      <td>:</td>
+                      <td>
+                        <t t-set="month"
+                           t-value="context_timestamp(datetime.datetime.now())"/>
+                        <t t-if="month">
+                          <span t-if="month.strftime('%m') == '01'">Enero</span>
+                          <span t-if="month.strftime('%m') == '02'">Febrero</span>
+                          <span t-if="month.strftime('%m') == '03'">Marzo</span>
+                          <span t-if="month.strftime('%m') == '04'">Abril</span>
+                          <span t-if="month.strftime('%m') == '05'">Mayo</span>
+                          <span t-if="month.strftime('%m') == '06'">Junio</span>
+                          <span t-if="month.strftime('%m') == '07'">Julio</span>
+                          <span t-if="month.strftime('%m') == '08'">Agosto</span>
+                          <span t-if="month.strftime('%m') == '09'">Septiembre</span>
+                          <span t-if="month.strftime('%m') == '10'">Octubre</span>
+                          <span t-if="month.strftime('%m') == '11'">Noviembre</span>
+                          <span t-if="month.strftime('%m') == '12'">Diciembre</span>
+                        </t>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><strong>Emisión</strong></td>
+                      <td>:</td>
+                      <td><span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y')"/></td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <br/>
+            <div
+                style="text-align: center; border: 1px solid; border-radius: 5px; padding: 8px; background-color:darkgray;">
+              <span><strong>COMPROBANTE CONTABLE</strong></span>
+            </div>
+            <br/>
+            <div style="text-align: center; padding: 8px;">
+              <span><strong>PAGO DE VENTAS</strong></span>
+              <br/>
+              <span><strong><i>Contabilización de Ingresos - Módulo Contabilidad</i></strong></span>
+            </div>
+            <br/>
+            <div style="width:100%;margin:0 auto;border:1px solid; border-radius: 5px; margin-top:4px;">
+              <table style="width:100%;font-size:11px;" cellspacing="0">
+                <tr style="background-color:darkgray;">
+                  <th colspan="2">Detalle</th>
+                  <th>Auxiliar</th>
+                  <th>Documento</th>
+                  <th>Referencia</th>
+                  <th colspan="2"></th>
+                </tr>
+                <tr>
+                  <th style="width:12%;border-right:1px solid;border-bottom:1px solid; border-top:1px solid; padding-top: 6px;">
+                    Cuenta
+                  </th>
+                  <th style="width:22%;border-right:1px solid;border-bottom:1px solid;  border-top:1px solid;  padding-top: 6px;">
+                    Glosa Detalle
+                  </th>
+                  <th style="width:16%;border-right:1px solid; border-bottom:1px solid; border-top:1px solid; padding-top: 6px;">
+                    Rut - Suc
+                  </th>
+                  <th style="width:12%;border-right:1px solid;border-bottom:1px solid;  border-top:1px solid; padding-top: 6px;">
+                    TP Número
+                  </th>
+                  <th style="width:12%;border-right:1px solid;border-bottom:1px solid;  border-top:1px solid; padding-top: 6px;">
+                    TP Número
+                  </th>
+                  <th style="width:12%;border-right:1px solid;border-bottom:1px solid;  border-top:1px solid; padding-top: 6px;">
+                    Debe
+                  </th>
+                  <th style="width:12%;border-bottom:1px solid;  border-top:1px solid; padding-top: 6px;">
+                    Haber
+                  </th>
+                </tr>
+                <t t-foreach="d.line_ids" t-as="line">
+                  <tr>
+                    <td style="border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
+                      <span t-field="line.account_id"/>
+                    </td>
+                    <td style="border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
+                      <span t-field="line.name"/>
+                    </td>
+                    <td style="border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
+                      <span t-field="d.partner_id.name"/>
+                      <span t-field="d.partner_id.vat"/>
+                    </td>
+                    <td style="border-right:1px solid;border-bottom:1px solid; padding-top: 6px;"></td>
+                    <td style="border-right:1px solid;border-bottom:1px solid; padding-top: 6px;"></td>
+                    <td style="border-right:1px solid;border-bottom:1px solid; padding-top: 6px; text-align: right;">
+                      <span style="padding-right: 12px;" t-field="line.debit"/>
+                    </td>
+                    <td style="border-bottom:1px solid; padding-top: 6px; text-align: right;">
+                      <span style="padding-right: 12px;" t-field="line.credit"/>
+                    </td>
+                  </tr>
+                </t>
+              </table>
+            </div>
+            <div style="width:100%;margin:0 auto; margin-top:4px;">
+              <table style="width:100%;font-size:11px;" cellspacing="0">
+                <tr>
+                  <td style="width: 50%;" colspan="3"></td>
+                  <td style="text-align: right;"><strong>TOTALES COMPROBANTE</strong></td>
+                  <td style="width: 5%;"></td>
+                  <td style="width: 12%; text-align: right;">
+                      <span style="padding-right: 12px;" t-esc="sum(d.mapped('line_ids').mapped('debit'))"/>
+                  </td>
+                  <td style="width: 12%; text-align: right;">
+                     <span style="padding-right: 12px;" t-esc="sum(d.mapped('line_ids').mapped('credit'))"/>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <br/>
+            <div style="width: 100%; height: 20px;">
+              <div style="width: 40%; float: left; text-align: left;  font-size: 11px">
+                <span>Usuario:</span>
+                <span t-field="request.env.user.name"/>
+              </div>
+              <div style="width: 60%; float: right; text-align: right; font-size: 11px">
+                <span>Actualizado:</span>
+                <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y %H:%M:%S')"/>
+              </div>
+            </div>
+            <div style="width:100%; border: 1px solid; border-radius: 5px;">
+              <table style="width: 100%; text-align: center" cellspacing="0">
+                <tr>
+                  <th style="width: 25%; border-bottom: 1px solid; border-right: 1px solid; padding: 4px;">
+                    <span style="font-size: 11px;">V°B° Contador</span>
+                  </th>
+                  <th style="width: 25%; border-bottom: 1px solid;border-right: 1px solid; padding: 4px;">
+                    <span style="font-size: 11px;">V°B° Admin./ Finanzas</span>
+                  </th>
+                  <th style="width: 25%; border-bottom: 1px solid;border-right: 1px solid; padding: 4px;">
+                    <span style="font-size: 11px;">V°B° Gerencia</span>
+                  </th>
+                  <th style="width: 25%; border-bottom: 1px solid; padding: 4px;">
+                    <span style="font-size: 11px;">Recibí Conforme</span>
+                  </th>
+                </tr>
+                <tr>
+                  <td style="border-right: 1px solid; height: 80px;"></td>
+                  <td style="border-right: 1px solid; height: 80px;"></td>
+                  <td style="border-right: 1px solid; height: 80px;"></td>
+                  <td style="text-align: left;"><span style="padding-left: 8px;">Firma:</span><span
+                      style="padding-left: 8px;">_____________________</span></td>
+                </tr>
+                <tr>
+                  <td style="border-right: 1px solid; height: 80px;"></td>
+                  <td style="border-right: 1px solid; height: 80px;"></td>
+                  <td style="border-right: 1px solid; height: 80px;"></td>
+                  <td style="text-align: left;"><span style="padding-left: 8px;">Rut:</span></td>
+                </tr>
+              </table>
+            </div>
+
+          </t>
+        </div>
+
+      </t>
+    </template>
+
+
+  </data>
+</odoo>
