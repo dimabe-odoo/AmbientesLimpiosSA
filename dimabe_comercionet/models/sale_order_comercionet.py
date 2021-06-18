@@ -312,19 +312,25 @@ class SaleOrderComercionetLine(models.Model):
                 raise models.ValidationError(
                     'Para editar el producto, La orden de Venta Comercionet debe tener un Cliente asignado para obtener el precio de lista del producto')
 
+        edit_price = False
+
         new_price = self.price
         new_final_price = self.final_price
         if 'price' in values.keys():
             new_price = values['price']
+            if values['price'] != self.price:
+                edit_price = True
         if 'final_price' in values.keys():
             new_final_price = values['final_price']
+            if values['final_price'] != self.final_price:
+                edit_price = True
 
+        if edit_price:
+            if new_price * self.quantity < new_final_price:
+                raise models.ValidationError(f'Precio Comercionet {new_price} x {self.quantity}  no puede ser menor al precio final {new_final_price}')
 
-        if new_price * self.quantity < new_final_price:
-            raise models.ValidationError(f'Precio Comercionet {new_price} x {self.quantity}  no puede ser menor al precio final {new_final_price}')
-
-        discount_percent = 100 - ((new_final_price / new_price * self.quantity)) * 100
-        values['discount_percent'] = discount_percent
+            discount_percent = 100 - ((new_final_price / new_price * self.quantity)) * 100
+            values['discount_percent'] = discount_percent
 
         return super(SaleOrderComercionetLine, self).write(values)
 
