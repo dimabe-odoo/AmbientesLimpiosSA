@@ -328,9 +328,9 @@ class SaleOrderComercionetLine(models.Model):
         if edit_price:
             if new_price * self.quantity < new_final_price:
                 raise models.ValidationError(f'Precio Comercionet {new_price} x {self.quantity}  no puede ser menor al precio final {new_final_price}')
-
-            discount_percent = 100 - ((new_final_price / new_price * self.quantity)) * 100
-            values['discount_percent'] = discount_percent
+            else:
+                discount_percent = 100 - ((new_final_price / (new_price * self.quantity)) * 100)
+                values['discount_percent'] = discount_percent
 
         return super(SaleOrderComercionetLine, self).write(values)
 
