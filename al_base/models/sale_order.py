@@ -4,6 +4,7 @@ from ..utils.get_range_to_approve import get_range_discount
 from ..utils.calculate_business_day_dates import calculate_business_day_dates
 from ..utils.roundformat_clp import round_clp
 
+
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
@@ -54,8 +55,6 @@ class SaleOrder(models.Model):
         body = f'<p>Estimados.<br/><br/>Se ha generado una nueva órden de venta <a href="{base_url}/web#id={self.id}&action=343&model=sale.order&view_type=form&cids=&menu_id=229">{self.name}</a>. La cual requiere aprobación por {approve_type}<br/></p>Atte,<br/>{self.company_id.name}'
         subject = f'Nueva órden de venta - Aprobar por {approve_type}'
         self.message_post(author_id=2, subject=subject, body=body, partner_ids=partner_list)
-
-
 
     def order_to_discount_approve(self):
         if self.l10n_latam_document_type_id.code == "33":
@@ -145,7 +144,6 @@ class SaleOrder(models.Model):
         return '%s %s' % ('Nota de Venta - ', self.name)
 
 
-
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
@@ -154,6 +152,7 @@ class SaleOrderLine(models.Model):
         list_product_duplicate = ''
         duplicate_count = 0
         product_to_registered = []
+
         for values in vals_list:
             not_registered_duplicate = False
             if 'order_id' in values.keys():
@@ -166,7 +165,8 @@ class SaleOrderLine(models.Model):
                         list_product_duplicate = list_product_duplicate + '\n' + values['name']
 
         if list_product_duplicate != '':
-            raise models.ValidationError('No puede agregar {} más de una vez:\n  {}\n'.format('los siguientes productos' if duplicate_count > 1 else 'el siguiente producto',list_product_duplicate))
+            raise models.ValidationError('No puede agregar {} más de una vez:\n  {}\n'.format(
+                'los siguientes productos' if duplicate_count > 1 else 'el siguiente producto', list_product_duplicate))
 
         return super().create(vals_list)
 
