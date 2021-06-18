@@ -3,3 +3,4 @@ access_al_route_map,route_map.route_map,model_route_map,,1,1,1,1
 access_al_route_map_line,route_map.route_map_line,model_route_map_line,,1,1,1,1
 access_al_product_line,route_map.product_line,model_product_line,,1,1,1,1
 access_custom_user,route_map.custom_user,model_custom_user,,1,1,1,1
+access_change_state_route_line,route_map.change_state_route_line,model_change_state_route_line,,1,1,1,1

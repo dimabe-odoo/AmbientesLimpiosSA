@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
   <data noupdate="1">
-    <record id="main_data_change_report_accou0" forcecreate='True' model="ir.cron">
+    <record id="main_data_change_report_account" forcecreate='True' model="ir.cron">
       <field name="name">Cambios Principales de Reportes Facturas</field>
       <field eval="True" name="active"/>
       <field name="user_id" ref="base.user_root"/>
@@ -12,39 +12,68 @@
       <field name="state">code</field>
       <field name="code">model.custom_report_fix([
         {'name': 'Facturas',
-         'name_new': 'Facturas',
+         'new_name': 'Facturas',
          'template_old': 'account.report_invoice_with_payments',
-         'template_new': 'al_base.custom_invoice'
+         'template_new': 'al_base.custom_invoice',
+         'id': env.ref('account.account_invoices').id,
+         'paperformat_id': env.ref('al_base.paper_format_letter_custom').id,
+         'print_report_name': '(object._get_custom_report_name())'
          },
         {'name': 'Guía de Despacho SII (DTE 52)',
-         'name_new': 'Guía de Despacho SII (DTE 52)',
+         'new_name': 'Guía de Despacho SII (DTE 52)',
          'template_old': 'l10n_cl_edi_stock.delivery_guide_document',
-         'template_new': 'al_base.custom_dispatch_guide'
+         'template_new': 'al_base.custom_dispatch_guide',
+         'id': env.ref('l10n_cl_edi_stock.action_delivery_guide_report_pdf').id,
+         'paperformat_id': env.ref('al_base.paper_format_letter_custom').id
          },
         {'name': 'Órden de Compra',
-         'name_new': 'Órden de Compra',
+         'new_name': 'Órden de Compra',
          'template_old': 'purchase.report_purchaseorder',
-         'template_new': 'al_base.custom_purchase_order'
+         'template_new': 'al_base.custom_purchase_order',
+         'id': env.ref('purchase.action_report_purchase_order').id,
+         'paperformat_id': env.ref('al_base.paper_format_letter_custom').id
          },
         {'name': 'Presupuesto / Pedido',
-         'name_new': 'Presupuesto / Pedido',
+         'new_name': 'Presupuesto / Pedido',
          'template_old': 'purchase.report_purchaseorder',
-         'template_new': 'al_base.custom_purchase_order'
+         'template_new': 'al_base.custom_purchase_order',
+         'id': env.ref('sale.action_report_saleorder').id,
+         'paperformat_id': env.ref('al_base.paper_format_letter_custom').id
          },
         {'name': 'Código de barras del paquete (PDF)',
-         'name_new': 'Código de barras del paquete (PDF)',
+         'new_name': 'Código de barras del paquete (PDF)',
          'template_old': 'stock.label_transfer_template_view_pdf',
-         'template_new': 'al_base.custom_label_lot_product_barcode'
+         'template_new': 'al_base.custom_label_lot_product_barcode',
+         'id': env.ref('stock.action_label_transfer_template_pdf').id,
+         'paperformat_id': env.ref('al_base.paper_format_100x150_custom').id
          },
         {'name': 'Numero de Lote/Serie (PDF)',
-         'name_new': 'Numero de Lote/Serie (PDF)',
+         'new_name': 'Numero de Lote/Serie (PDF)',
          'template_old': 'stock.report_lot_label',
-         'template_new': 'al_base.custom_label_lot_product_barcode_unit_lot'
+         'template_new': 'al_base.custom_label_lot_product_barcode_unit_lot',
+         'id': env.ref('stock.action_report_lot_label').id,
+         'paperformat_id': env.ref('al_base.paper_format_100x150_custom').id
          },
         {'name': 'Etiqueta de Producto Terminado (PDF)',
-         'name_new': 'Etiqueta de Producto Terminado (PDF)',
+         'new_name': 'Etiqueta de Producto Terminado (PDF)',
          'template_old': 'mrp.label_production_view_pdf',
-         'template_new': 'al_base.custom_label_lot_product_barcode_unit_lot'
+         'template_new': 'al_base.custom_label_lot_product_barcode_unit_lot',
+         'id': env.ref('mrp.action_report_finished_product').id,
+         'paperformat_id': env.ref('al_base.paper_format_100x150_custom').id
+         },
+        {'name': 'Código de Barras del Producto (PDF)',
+         'new_name': 'Código de Barras del Producto (PDF)',
+         'template_old': 'product.report_productbarcode',
+         'template_new': 'al_base.custom_label_product_barcode',
+         'id': env.ref('product.report_product_product_barcode').id,
+         'paperformat_id': env.ref('al_base.paper_format_100x150_custom').id
+         },
+        {'name': 'Código de Barras del Producto (PDF)',
+         'new_name': 'Código de Barras del Producto (PDF)',
+         'template_old': 'product.report_producttemplatebarcode',
+         'template_new': 'al_base.custom_label_product_barcode',
+         'id': env.ref('product.report_product_template_barcode').id,
+         'paperformat_id': env.ref('al_base.paper_format_100x150_custom').id
          }
       ])</field>
     </record>

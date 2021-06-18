@@ -68,6 +68,45 @@
             </field>
         </record>
 
+        <record id="route_map_line_tree_client_view" model="ir.ui.view">
+            <field name="name">Lineas de Hoja de Ruta</field>
+            <field name="model">route.map.line</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom" create="false" delete="true">
+                    <button string="Cambiar Estado" type="object"
+                            name="button_change_state"/>
+                    <field name="dispatch_id" readonly="1" widget="many2onebutton"/>
+                    <field name="sale_id" readonly="1" widget="many2onebutton"/>
+                    <field name="invoices_name" readonly="1"/>
+                    <field name="address_to_delivery" readonly="1"/>
+                    <field name="dispatch_date" readonly="1"
+                           attrs="{'column_invisible':[('parent.state','=','draft')]}"/>
+                    <field name="date_done" readonly="1"/>
+                    <field name="line_value"/>
+                    <field name="state" readonly="1"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="route_map_line_tree_other_view" model="ir.ui.view">
+            <field name="name">Lineas de Hoja de Ruta Otros</field>
+            <field name="model">route.map.line</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom" decoration-success="state == 'done'" decoration-danger="state == 'rejected'"
+                      create="false" delete="true">
+                    <button string="Cambiar Estado" type="object"
+                            name="button_change_state" attrs="{'invisible': [('state','!=','to_delivered')]}"/>
+                    <field name="dispatch_id" readonly="1" widget="many2onebutton"/>
+                    <field name="address_to_delivery" readonly="1"/>
+                    <field name="dispatch_date" readonly="1"
+                           attrs="{'column_invisible':[('parent.state','=','draft')]}"/>
+                    <field name="date_done" readonly="1"/>
+                    <field name="line_value"/>
+                    <field name="state" readonly="1"/>
+                </tree>
+            </field>
+        </record>
 
         <record id="route_map_line_search_view" model="ir.ui.view">
             <field name="name">route_map_line.search</field>
@@ -80,6 +119,28 @@
                                 context="{'group_by':'map_id'}"/>
                     </group>
                 </search>
+            </field>
+        </record>
+
+
+        <record id="route_map_line_change_state_view" model="ir.ui.view">
+            <field name="name">Cambio de Estado</field>
+            <field name="model">change.state.route.line</field>
+            <field name="arch" type="xml">
+                <form string="Cambio de Estado">
+                    <group>
+                        <p>
+                            Seleccion Estado
+                        </p>
+                        <p>
+                            <field name="state_id"/>
+                        </p>
+                    </group>
+                    <footer>
+                        <button type="object" name="change_state" string="Cambiar"/>
+                        <button type="button" name="cancel" data-dismiss="modal" string="Cancelar"/>
+                    </footer>
+                </form>
             </field>
         </record>
 

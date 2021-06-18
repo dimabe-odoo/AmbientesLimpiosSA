@@ -25,37 +25,22 @@
                                 <field name="truck_id" domain="[('driver_id','!=',None)]"/>
                                 <field name="sell"/>
                                 <field name="route_value"/>
+                                <field name="type_of_map" invisible="1"/>
                                 <field name="add_more"/>
                             </group>
                         </group>
                         <notebook>
-                            <page name="dispatch" string="Despachos">
-                                <field name="picking_id" attrs="{'invisible': [('state','!=','draft')]}"
-                                       context="{'isRouteMap':'Prueba'}"/>
-                                <button type="object" name="add_picking" string="Agregar"
-                                        attrs="{'invisible': [('state','!=','draft')]}"/>
-                                <field name="dispatch_ids">
-                                    <tree editable="bottom" delete="true" create="false">
-                                        <button type="object" name="button_done" string="Entregar"
-                                                attrs="{'column_invisible':[('parent.state','=','draft')],'invisible': [('state','not in',('draft','to_delivered'))]}"/>
-                                        <button type="object" name="button_cancel" string="Cancelar"
-                                                attrs="{'invisible':[('state','not in',('draft','to_delivered'))]}"/>
-                                        <field name="dispatch_id" readonly="1"/>
-                                        <field name="sale_id" readonly="1"/>
-                                        <field name="invoices_name" readonly="1"/>
-                                        <field name="address_to_delivery" readonly="1"/>
-                                        <field name="dispatch_date" readonly="1"
-                                               attrs="{'column_invisible': [('parent.state','=','draft')]}"/>
-                                        <field name="date_done" readonly="1"/>
-                                        <field name="line_value"/>
-                                        <field name="state" readonly="1"/>
-                                    </tree>
-                                </field>
+                            <page name="dispatch" string="Despachos" attrs="{'invisible': [('type_of_map','=','other')]}">
+                                <field name="picking_id"
+                                       attrs="{'invisible': [('type_of_map','=','other')]}"
+                                       context="{'isRouteMap':True}"/>
+                                <button type="object" name="add_picking" string="Agregar" attrs="{'invisible': [('state','!=','draft')]}"/>
+                                <field name="dispatch_ids" context="{'tree_view_ref': 'route_map.route_map_line_tree_client_view'}"/>
                             </page>
-                            <page string="Observaciones" name="observations">
-                                <group>
-                                    <field name="observations"/>
-                                </group>
+                            <page name="pickings" string="Entrega" attrs="{'invisible': [('type_of_map','=','client')]}">
+                                <field name="picking_other_id" attrs="{'invisible': [('type_of_map','=','client')]}"/>
+                                <button type="object" name="add_picking" string="Agregar" attrs="{'invisible': [('state','!=','draft')]}"/>
+                                <field name="dispatch_ids" context="{'tree_view_ref' : 'route_map.route_map_line_tree_other_view'}"/>
                             </page>
                         </notebook>
                     </sheet>
@@ -82,16 +67,38 @@
 
 
         <record id="route_map_act_window" model="ir.actions.act_window">
+            <field name="name">Hoja de Ruta Cliente</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">route.map</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{
+                'default_type_of_map': 'client'
+            }</field>
+            <field name="domain">
+                [('type_of_map', '=', 'client')]
+            </field>
+        </record>
+
+        <record id="route_map_other_act_window" model="ir.actions.act_window">
             <field name="name">Hoja de Ruta</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">route.map</field>
             <field name="view_mode">tree,form</field>
+            <field name="context">{
+                'default_type_of_map': 'other'
+            }</field>
+            <field name="domain">
+                [('type_of_map', '=', 'other')]
+            </field>
         </record>
+
+
 
         <menuitem name="Hoja de Ruta" id="route_map_parent_menu" parent="stock.menu_stock_root"/>
 
-        <menuitem name="Hojas de Ruta" id="route_map_menu" parent="route_map.route_map_parent_menu"
+        <menuitem name="Hojas de Ruta Cliente" id="route_map_menu" parent="route_map.route_map_parent_menu"
                   action="route_map.route_map_act_window"/>
 
+        <menuitem name="Hoja de Ruta" id="route_map_client_menu" parent="route_map.route_map_parent_menu" action="route_map_other_act_window"/>
     </data>
 </odoo>
