@@ -111,10 +111,10 @@ class SaleOrderComercionet(models.Model):
     def create_sale_order(self):
         if not self.client_id:
             raise models.ValidationError('El cliente no se encuentra establecido')
-        if self.client_id and self.client_code_comercionet:
-            for line in self.comercionet_line_id:
-                if not line.product_id:
-                    raise models.ValidationError('la linea {} no cuenta con un producto asociado'.format(line.number))
+        #if self.client_id and self.client_code_comercionet:
+        #    for line in self.comercionet_line_id:
+        #        if not line.product_id:
+        #            raise models.ValidationError('la linea {} no cuenta con un producto asociado'.format(line.number))
         sale_order = self.env['sale.order'].create({
             'date_order': datetime.now(),
             'l10n_latam_document_type_id': self.env['l10n_latam.document.type'].search([('code', '=', 33)]).id,
@@ -134,17 +134,18 @@ class SaleOrderComercionet(models.Model):
 
         line_ids = []
         for line in self.comercionet_line_id:
-            line_ids.append({
-                'product_id': line.product_id.id,
-                'customer_lead': 3,
-                'name': line.product_id.display_name,
-                'order_id': sale_order.id,
-                'price_unit': line.price,
-                'price_list_comercionet': line.price_list,
-                'product_uom_qty': line.quantity,
-                'price_subtotal': line.final_price,
-                'discount': line.discount_percent if line.discount_percent > 0 else 0
-            })
+            if line.product_id:
+                line_ids.append({
+                    'product_id': line.product_id.id,
+                    'customer_lead': 3,
+                    'name': line.product_id.display_name,
+                    'order_id': sale_order.id,
+                    'price_unit': line.price,
+                    'price_list_comercionet': line.price_list,
+                    'product_uom_qty': line.quantity,
+                    'price_subtotal': line.final_price,
+                    'discount': line.discount_percent if line.discount_percent > 0 else 0
+                })
         self.env['sale.order.line'].create(line_ids)
 
         self.write({
@@ -170,7 +171,7 @@ class SaleOrderComercionet(models.Model):
     def update_price_list(self):
         for line in self.comercionet_line_id:
             line.write({
-                'price_list': get_price_list(line.product_id,self.client_id)
+                'price_list': get_price_list(line.product_id, self.client_id)
             })
 
     def download_oc_pdf(self):
@@ -206,7 +207,6 @@ class SaleOrderComercionet(models.Model):
                                 {'pdf_file': d['pdf_file']}
                             )
 
-
     def assign_client(self):
         client = self.env['res.partner'].search([('comercionet_box', 'like', f'%{self.client_code_comercionet}%')],
                                                 limit=1)
@@ -218,7 +218,6 @@ class SaleOrderComercionet(models.Model):
             self.write({
                 'client_id': client.id
             })
-
 
     def get_orders(self):
         orders = comercionet_scrapper.get_sale_orders()
@@ -260,20 +259,14 @@ class SaleOrderComercionet(models.Model):
                             'comercionet_id': comercionet.id,
                             'product_id': product.id if product else None
                         })
-'''
-    def get_price_list(self, product, client):
-        price_list = 0
-        client_id = client
-        if client.parent_id:
-            client_id = client.parent_id
 
-        if client_id.property_product_pricelist:
-            for line in client_id.property_product_pricelist.item_ids:
-                if line.product_tmpl_id.id == product.id:
-                    price_list = line.product_tmpl_id.fixed_price
-                    break
-
-        return price_list'''
+    def can_edit(self, field):
+        if self.have_sale_order:
+            return False
+        elif field in ['product_id', 'final_price', 'price']:
+            return True
+        else:
+            return False
 
 
 class SaleOrderComercionetLine(models.Model):
@@ -288,6 +281,7 @@ class SaleOrderComercionetLine(models.Model):
     comercionet_id = fields.Many2one('sale.order.comercionet')
     product_id = fields.Many2one('product.product', string='Producto')
     price_difference = fields.Integer('Diferencia', compute="_compute_price_difference")
+    have_sale_order = fields.Boolean(compute="_compute_have_sale_order")
 
     def _compute_price_difference(self):
         for item in self:
@@ -295,3 +289,42 @@ class SaleOrderComercionetLine(models.Model):
                 item.price_difference = abs(item.price - item.price_list)
             else:
                 item.price_difference = 0
+
+    def _compute_have_sale_order(self):
+        for item in self:
+            item.have_sale_order = self.comercionet_id.have_sale_order
+
+    def write(self, values):
+        if 'product_id' in values.keys():
+            if self.comercionet_id.client_id:
+                new_product_id = self.env['product.product'].search([('id', '=', values['product_id'])])
+                price_list = get_price_list(new_product_id, self.comercionet_id.client_id)
+                if price_list:
+                    values['product_code'] = new_product_id.al_dun
+                    values['price_list'] = price_list
+                else:
+                    client = self.comercionet_id.client_id.name
+                    if self.comercionet_id.client_id.parent_id:
+                        client = self.comercionet_id.client_id.parent_id.name
+                    raise models.ValidationError(f'El producto seleccionado: {new_product_id.name}  \nNo posee precio lista para cliente {client} \nFavor registrar')
+
+            else:
+                raise models.ValidationError(
+                    'Para editar el producto, La orden de Venta Comercionet debe tener un Cliente asignado para obtener el precio de lista del producto')
+
+        new_price = self.price
+        new_final_price = self.final_price
+        if 'price' in values.keys():
+            new_price = values['price']
+        if 'final_price' in values.keys():
+            new_final_price = values['final_price']
+
+
+        if new_price < new_final_price:
+            raise models.ValidationError(f'Precio Comercionet {new_price} no puede ser menor al precio final {new_final_price}')
+
+        discount_percent = 100 - ((new_final_price / new_price * self.quantity)) * 100
+        values['discount_percent'] = discount_percent
+
+        return super(SaleOrderComercionetLine, self).write(values)
+
