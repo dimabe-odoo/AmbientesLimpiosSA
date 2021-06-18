@@ -35,7 +35,7 @@ class StockMoveLine(models.Model):
             item.verify_stock_move_line()
         return super(StockMoveLine, self)._action_done()
 
-     def verify_stock_move_line(self):
+    def verify_stock_move_line(self):
         for item in self:
             if item.picking_id:
                 if item.picking_id.sale_id:
@@ -53,7 +53,7 @@ class StockMoveLine(models.Model):
                 elif item.picking_id.purchase_id:
                     lines = self.env['purchase.order.line'].sudo().search(
                         [('order_id', '=', item.picking_id.purchase_id.id), ('product_id', '=', item.product_id.id)])
-                    if isinstance(lines,list):
+                    if isinstance(lines, list):
                         for line in lines:
                             if self.env.user.company_id.tolerance_percentage and self.env.user.company_id.tolerance_percentage > 0:
                                 tolerance = self.env.user.company_id.tolerance_percentage
