@@ -50,7 +50,7 @@
         'reports/payment_voucher.xml',
         'views/account_payment_register_view.xml',
         'views/account_payment.xml',
-        'data/account_check_inbound.xml'
+        'data/account_check_inbound.xml',
         'views/custom_change_status_dte.xml',
         'reports/report_picking_odoo.xml'
     ],
