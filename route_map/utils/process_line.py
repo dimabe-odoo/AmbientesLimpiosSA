@@ -1,11 +1,14 @@
 from xmlrpc import client
+from odoo import http
+from odoo.http import request
 
 
 def make_done(data, state, latitude, longitude, observations):
-    url = 'http://192.168.100.88:8069'
-    db_name = 'alsa_pu_5'
-    user = 'admin'
-    password = 'dimabe21'
+    url = request.env['ir.config_parameter'].sudo().get_param('web.base.url')
+    db_name = request._cr.dbname
+    models = client.ServerProxy('{}/xmlrpc/2/object'.format(url))
+    user = request.env['ir.config_parameter'].sudo().get_param('user_admin')
+    password = request.env['ir.config_parameter'].sudo().search([('key','=','user_admin_pass')]).password
     common = client.ServerProxy('{}/xmlrpc/2/common'.format(url))
     uid = common.authenticate(db_name, user, password, {})
 
