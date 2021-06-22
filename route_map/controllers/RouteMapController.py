@@ -60,6 +60,7 @@ class RouteMapController(http.Controller):
                         'store_fname': file,
                         'mimetype': 'image/jpeg'
                     }
+
                     if line.invoice_ids:
                         data['invoice_id'] = line.invoice_ids[0].id
                     make_done(data=data, state=state, latitude=latitude, longitude=longitude, observations=observations)
