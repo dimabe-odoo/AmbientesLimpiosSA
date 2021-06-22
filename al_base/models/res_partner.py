@@ -22,4 +22,3 @@ class ResPartner(models.Model):
                     values['l10n_cl_activity_description'] = parent_id.l10n_cl_activity_description
 
         return super(ResPartner, self).create(values)
-

@@ -9,4 +9,7 @@
   <record id="custom_remaining_caf_notification" model="res.groups">
     <field name="name">Notificación CAF Disponibles</field>
   </record>
+  <record id="custom_change_status_notification" model="res.groups">
+    <field name="name">Notificacion de Aceptacion</field>
+  </record>
 </odoo>

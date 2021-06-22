@@ -10,3 +10,5 @@ from . import account_move
 from . import custom_user
 from . import res_users
 from . import sale_order
+from . import change_state_route_line
+from . import ir_attachment

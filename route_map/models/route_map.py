@@ -9,13 +9,21 @@ class RouteMap(Model):
 
     display_name = fields.Char('Nombre a mostrar')
 
+    type_of_map = fields.Selection([('client', 'Cliente'), ('other', 'Otro')])
+
     truck_id = fields.Many2one('fleet.vehicle', string='Camion', required=True)
 
     driver_id = fields.Many2one('res.partner', string='Conductor', related='truck_id.driver_id')
 
     picking_id = fields.Many2one('stock.picking', 'Despacho',
                                  domain=[('picking_type_id.sequence_code', '=', 'OUT'), ('state', '=', 'done'),
-                                         ('map_id', '=', None), ('sale_id', '!=', None),('sale_id.invoice_publish_ids','!=',False)])
+                                         ('map_id', '=', None), ('sale_id', '!=', None),
+                                         ('sale_id.invoice_publish_ids', '!=', False)])
+
+    picking_other_id = fields.Many2one('stock.picking',
+                                       domain=[('state', '=', 'done'), ('map_id', '=', False),
+                                               ('picking_type_id.sequence_code', 'in', ['IN', 'OUT'])
+                                               ])
 
     dispatch_ids = fields.One2many('route.map.line', 'map_id', string="Despacho")
 
@@ -41,6 +49,12 @@ class RouteMap(Model):
 
     invoices_name = fields.Char('Facturas', compute='compute_invoices_name')
 
+    route_value = fields.Float('Valor:')
+
+    is_regional = fields.Boolean('Es Regional')
+
+    regional_value = fields.Float('Valor Regional')
+
     def action_dispatch(self):
         for item in self:
             item.write({
@@ -52,23 +66,56 @@ class RouteMap(Model):
             item.invoices_name = ','.join(item.dispatch_ids.mapped('invoices_name'))
 
     def add_picking(self):
-        line = self.env['route.map.line'].sudo().create({
-            'map_id': self.id,
-            'dispatch_id': self.picking_id.id,
-            'sale_id': self.picking_id.sale_id.id,
-        })
-        for product in self.picking_id.move_line_ids_without_package:
-            self.env['product.line'].sudo().create({
-                'line_id': line.id,
-                'product_id': product.product_id.id,
-                'qty_to_delivery': product.qty_done
+        if self.type_of_map == 'client':
+            line = self.env['route.map.line'].sudo().create({
+                'map_id': self.id,
+                'dispatch_id': self.picking_id.id,
+                'sale_id': self.picking_id.sale_id.id,
+                'line_value': self.route_value if len(self.dispatch_ids) == 0 else self.route_value / len(
+                    self.dispatch_ids)
             })
-        self.picking_id.sudo().write({
-            'map_id': self.id
-        })
-        self.write({
-            'picking_id': None
-        })
+            if len(self.dispatch_ids) > 1:
+                for line in self.dispatch_ids:
+                    line.write({
+                        'line_value': self.route_value / len(self.dispatch_ids)
+                    })
+            for product in self.picking_id.move_line_ids_without_package:
+                self.env['product.line'].sudo().create({
+                    'line_id': line.id,
+                    'product_id': product.product_id.id,
+                    'qty_to_delivery': product.qty_done
+                })
+
+            self.picking_id.sudo().write({
+                'map_id': self.id
+            })
+            self.write({
+                'picking_id': None
+            })
+        else:
+            line = self.env['route.map.line'].sudo().create({
+                'map_id': self.id,
+                'dispatch_id': self.picking_other_id.id,
+                'line_value': self.route_value if len(self.dispatch_ids) == 0 else self.route_value / len(
+                    self.dispatch_ids)
+            })
+            if len(self.dispatch_ids) > 1:
+                for line in self.dispatch_ids:
+                    line.write({
+                        'line_value': self.route_value / len(self.dispatch_ids)
+                    })
+            for product in self.picking_id.move_line_ids_without_package:
+                self.env['product.line'].sudo().create({
+                    'line_id': line.id,
+                    'product_id': product.product_id.id,
+                    'qty_to_delivery': product.qty_done
+                })
+            self.picking_other_id.sudo().write({
+                'map_id': self.id,
+            })
+            self.write({
+                'picking_other_id': None
+            })
 
     @api.model
     def create(self, values):

@@ -3,26 +3,24 @@ from odoo import http
 from odoo.http import request
 from ..jwt_token import generate_token
 from ..utils import hash_pasword as password_encoding
+from xmlrpc import client
 
 
 class LoginController(http.Controller):
 
-    @http.route('/api/login', type='json', auth='public', cors='*')
+    @http.route('/api/login', type='json', auth='none', cors='*')
     def do_login(self, user, password):
-        uid = request.session.authenticate(
-            request.env.cr.dbname,
-            user,
-            password
-        )
-        if not uid:
-            return self.errcode(code=400, message='incorrect login')
-
-        token = generate_token(uid)
-
-        user_object = request.env['res.users'].sudo().search([('id', '=', uid)])
-
-        return {'user': uid, 'partner_id': user_object.partner_id.id, 'name': user_object.name, 'token': token,
-                'email': user_object.login}
+        url = request.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        db_name = request._cr.dbname
+        common = client.ServerProxy(f'{url}/xmlrpc/2/common'.format(url))
+        models = client.ServerProxy('{}/xmlrpc/2/object'.format(url))
+        uid = common.authenticate(db_name, user, password, {})
+        user = models.execute_kw(db_name, uid, password,
+                                 'res.users', 'search_read',
+                                 [[['id', '=', uid]]],
+                                 {'fields': ['name', 'partner_id', 'login'], 'limit': 1})[0]
+        user['token'] = generate_token(uid)
+        return user
 
     @http.route('/api/reset_password', type='json', auth='public', cors='*')
     def reset_password(self, email):

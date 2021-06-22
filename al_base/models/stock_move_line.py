@@ -37,7 +37,7 @@ class StockMoveLine(models.Model):
 
     def verify_stock_move_line(self):
         for item in self:
-            if item.picking_id:
+            if item.picking_id and item.qty_done and item.qty_done > 0:
                 if item.picking_id.sale_id:
                     line = item.env['sale.order.line'].sudo().search(
                         [('order_id', '=', item.picking_id.sale_id.id), ('product_id', '=', item.product_id.id)])
@@ -50,15 +50,27 @@ class StockMoveLine(models.Model):
                         if qty_remaining < item.qty_done:
                             raise models.UserError(
                                 f'No puede validar mas {item.product_id.uom_id.name} de {item.product_id.display_name} de la cantidad restante a entregar de la venta')
-                elif item.picking_id.purchase_id:
-                    line = self.env['purchase.order.line'].sudo().search(
+                elif item.picking_id.purchase_id and item.qty_done and item.qty_done > 0:
+                    lines = self.env['purchase.order.line'].sudo().search(
                         [('order_id', '=', item.picking_id.purchase_id.id), ('product_id', '=', item.product_id.id)])
-                    if self.env.user.company_id.tolerance_percentage and self.env.user.company_id.tolerance_percentage > 0:
-                        tolerance = self.env.user.company_id.tolerance_percentage
-                        qty = (line.product_uom_qty * tolerance) / 100 + line.product_uom_qty
-                        if qty < item.qty_done:
+                    if isinstance(lines, list):
+                        for line in lines:
+                            if self.env.user.company_id.tolerance_percentage and self.env.user.company_id.tolerance_percentage > 0:
+                                tolerance = self.env.user.company_id.tolerance_percentage
+                                qty = (line.product_uom_qty * tolerance) / 100 + line.product_uom_qty
+                                if qty < item.qty_done:
+                                    raise models.UserError(
+                                        f'No puede validar mas {item.product_id.uom_id.name} de {item.product_id.display_name} de los solicitado en la compra')
+                            elif line.product_uom_qty < item.qty_done:
+                                raise models.UserError(
+                                    f'No puede validar mas {item.product_id.uom_id.name} de {item.product_id.display_name} de los solicitado en la compra')
+                    else:
+                        if self.env.user.company_id.tolerance_percentage and self.env.user.company_id.tolerance_percentage > 0:
+                            tolerance = self.env.user.company_id.tolerance_percentage
+                            qty = (lines.product_uom_qty * tolerance) / 100 + lines.product_uom_qty
+                            if qty < item.qty_done:
+                                raise models.UserError(
+                                    f'No puede validar mas {item.product_id.uom_id.name} de {item.product_id.display_name} de los solicitado en la compra')
+                        elif lines.product_uom_qty < item.qty_done:
                             raise models.UserError(
                                 f'No puede validar mas {item.product_id.uom_id.name} de {item.product_id.display_name} de los solicitado en la compra')
-                    elif line.product_uom_qty < item.qty_done:
-                        raise models.UserError(
-                            f'No puede validar mas {item.product_id.uom_id.name} de {item.product_id.display_name} de los solicitado en la compra')
