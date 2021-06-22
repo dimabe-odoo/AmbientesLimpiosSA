@@ -38,5 +38,16 @@
                 </xpath>
             </field>
         </record>
+        <record id="view_partner_vat_form_inherit" model="ir.ui.view">
+            <field name="name">Formulario de Contacto DTE</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="l10n_latam_base.view_partner_latam_form"/>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@class='oe_inline'][2]" position="attributes">
+                    <attribute name="attrs">{'required': [('l10n_cl_sii_taxpayer_type', '=', '1')]}</attribute>
+                </xpath>
+            </field>
+        </record>
     </data>
 </odoo>
