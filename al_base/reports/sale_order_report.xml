@@ -154,10 +154,22 @@
                                     <th style="width:50%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
                                         DESCRIPCIÓN
                                     </th>
-                                    <th style="width:12%;border-right:1px solid; border-bottom:1px solid;padding-top: 6px;">
-                                        VALOR UNIT.
-                                    </th>
-                                    <th style="width:12%;border-bottom:1px solid;padding-top: 6px;">TOTAL</th>
+                                    <t t-if="d.is_comercionet">
+                                        <th style="width:8%;border-right:1px solid; border-bottom:1px solid;padding-top: 6px;">
+                                            PRECIO LISTA
+                                        </th>
+                                        <th style="width:8%;border-right:1px solid; border-bottom:1px solid;padding-top: 6px;">
+                                            PRECIO VENTA
+                                        </th>
+                                        <th style="width:8%;border-bottom:1px solid;padding-top: 6px;">TOTAL</th>
+                                    </t>
+                                    <t t-else="">
+                                        <th style="width:12%;border-right:1px solid; border-bottom:1px solid;padding-top: 6px;">
+                                            VALOR UNIT.
+                                        </th>
+                                        <th style="width:12%;border-bottom:1px solid;padding-top: 6px;">TOTAL</th>
+                                    </t>
+
                                 </tr>
                                 <t t-foreach="d.order_line" t-as="line">
                                     <tr>
@@ -170,6 +182,11 @@
                                         <td style="border-right:1px solid;border-bottom:1px solid;text-align:left;padding-right:4px;padding-left:4px;">
                                             <span t-field="line.name"/>
                                         </td>
+                                        <t t-if="d.is_comercionet">
+                                            <td style="border-right:1px solid;border-bottom:1px solid;text-align:right;padding-right:4px;">
+                                                <span t-esc="d.roundclp(line.price_list_comercionet)"/>
+                                            </td>
+                                        </t>
                                         <td style="border-right:1px solid;border-bottom:1px solid;text-align:right;padding-right:4px;">
                                             <span t-esc="d.roundclp(line.price_unit)"/>
                                         </td>

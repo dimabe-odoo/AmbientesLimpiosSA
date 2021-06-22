@@ -36,7 +36,7 @@ class RouteMapController(http.Controller):
                                               'route.map.line', 'search_read',
                                               [[['id', '=', dispatch]]],
                                               {'fields': ['partner_latitude', 'partner_longitude', 'partner_id',
-                                                          'state', 'address_to_delivery'], 'limit': 5})
+                                                          'state', 'address_to_delivery','picking_code'], 'limit': 5})
             record['dispatch_ids'][index] = dispatch_read
             index += 1
         return record
@@ -45,7 +45,7 @@ class RouteMapController(http.Controller):
     def make_done_line(self, line_id, latitude, longitude, state, observations='', files=None,
                        ):
         line = request.env['route.map.line'].sudo().search([('id', '=', line_id)])
-
+        is_done = False
         if line:
             if files and len(files) > 0:
                 for file in files:
@@ -55,12 +55,13 @@ class RouteMapController(http.Controller):
                         'res_model': 'route.map.line',
                         'db_datas': file,
                         'datas': file,
-                        'invoice_id': line.invoice_ids[0].id,
                         'file_size': (len(file) * 6 - file.count('=') * 8) / 8,
                         'name': f"{line.map_id.display_name} Imagen Pedido {line.sale_id.name} 12",
                         'store_fname': file,
                         'mimetype': 'image/jpeg'
                     }
+                    if line.invoice_ids:
+                        data['invoice_id'] = line.invoice_ids[0].id
                     make_done(data=data, state=state, latitude=latitude, longitude=longitude, observations=observations)
                     if Enumerable(line.map_id.dispatch_ids).all(lambda x: x.state != 'to_delivered'):
                         url = request.env['ir.config_parameter'].sudo().get_param('web.base.url')
@@ -69,7 +70,8 @@ class RouteMapController(http.Controller):
                         models.execute_kw(db_name, 2, 'dimabe21', 'route.map', 'write', [[line.map_id.id], {
                             'state': 'done',
                         }])
-            if line.map_id.state == 'done':
+                        is_done = True
+            if is_done:
                 return {'ok': True, 'is_Completed': True, "message": "Hoja Completada"}
         return {'ok': True, "message": "Pedido entregado"}
 

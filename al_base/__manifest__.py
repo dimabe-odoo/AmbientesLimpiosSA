@@ -49,6 +49,7 @@
         #'views/main_data_change_report.xml',
         'views/custom_change_status_dte.xml',
         'reports/report_picking_odoo.xml'
+        'reports/payment_voucher.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

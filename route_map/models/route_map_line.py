@@ -13,6 +13,10 @@ class RouteMapLine(models.Model):
 
     dispatch_id = fields.Many2one('stock.picking', string='Despacho', required=True)
 
+    picking_type_id = fields.Many2one('stock.picking.type',related='dispatch_id.picking_type_id')
+
+    picking_code = fields.Char(related='picking_type_id.sequence_code')
+
     sale_id = fields.Many2one('sale.order', string='Pedido')
 
     date_done = fields.Datetime('Fecha de Entrega')

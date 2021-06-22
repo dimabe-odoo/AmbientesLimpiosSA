@@ -107,23 +107,24 @@ class AccountMove(models.Model):
     def custom_report_fix(self, list_report_list):
         report_linq = Enumerable(list_report_list)
         report_ids = report_linq.select(lambda x: x['id'])
-        report = self.env['ir.actions.report'].search([('id','in',report_ids.to_list())])
+        report = self.env['ir.actions.report'].search([('id', 'in', report_ids.to_list())])
 
         for rep in report:
             report_to_update = report_linq.first_or_default(lambda x: x['id'] == rep.id)
             if report_to_update:
-                new_name = report_to_update['new_name']
-                new_template_name = report_to_update['template_new']
-                paperformat_id = report_to_update['paperformat_id']
-                print_report_name = report_to_update['print_report_name']
-                if rep.report_name != new_template_name or rep.report_file != new_template_name or rep.print_report_name != print_report_name or rep.name != new_name or rep.paperformat_id != paperformat_id:
-                    rep.write({
-                        'report_name': new_template_name,
-                        'report_file': new_template_name,
-                        'print_report_name': print_report_name,
-                        'name': new_name,
-                        'paperformat_id': paperformat_id
-                    })
+                new_name = report_to_update['new_name'] if 'new_name' in report_to_update.keys() else rep.name
+                new_template_name = report_to_update['template_new'] if 'template_new' in report_to_update.keys() else rep.report_name
+                paperformat_id = report_to_update['paperformat_id'] if 'paperformat_id' in report_to_update.keys() else rep.paperformat_id
+                print_report_name = report_to_update['print_report_name'] if 'print_report_name' in report_to_update.keys() else rep.print_report_name
+
+                if rep.report_name != new_template_name or rep.report_file != new_template_name or rep.name != new_name or rep.paperformat_id != paperformat_id or rep.print_report_name != print_report_name:
+                        rep.write({
+                            'report_name': new_template_name,
+                            'report_file': new_template_name,
+                            'name': new_name,
+                            'paperformat_id': paperformat_id,
+                            'print_report_name': print_report_name
+                        })
                 else:
                     continue
             else:
@@ -158,3 +159,64 @@ class AccountMove(models.Model):
             return f"<p>Estimados.<br/><br/> Le informamos que el cliente informa reclamo del DTE {self.name}"
         elif type == 'accepted':
             return f"<p>Estimados.<br/><br/> Le informamos que el DTE {self.name} fue Aceptado por el cliente"
+
+            return super(AccountMove, item).write(values)
+
+
+
+
+    def generate_voucher(self):
+        #payment_id = self.env['account.payment'].search([('ref','=', self.payment_reference)])
+        if self.payment_state == 'paid':
+            report = self.env.ref('al_base.action_custom_payment_voucher_template')
+            ctx = self.env.context.copy()
+            ctx['flag'] = True
+            pdf = report.with_context(ctx)._render_qweb_pdf(self.id)
+            file = base64.b64encode(pdf[0])
+            ir_attachment_id = self.env['ir.attachment'].sudo().create({
+                'name': f'Ingreso de Pago {self.name}',
+                'store_fname': f'Ingreso de Pago {self.name}.pdf',
+                'res_name': f'Ingreso de Pago {self.name}',
+                'res_model': 'account.move',
+                'res_id': self.id,
+                'type': 'binary',
+                'db_datas': file,
+                'datas': file
+            })
+
+    @api.depends(
+        'line_ids.matched_debit_ids.debit_move_id.move_id.payment_id.is_matched',
+        'line_ids.matched_debit_ids.debit_move_id.move_id.line_ids.amount_residual',
+        'line_ids.matched_debit_ids.debit_move_id.move_id.line_ids.amount_residual_currency',
+        'line_ids.matched_credit_ids.credit_move_id.move_id.payment_id.is_matched',
+        'line_ids.matched_credit_ids.credit_move_id.move_id.line_ids.amount_residual',
+        'line_ids.matched_credit_ids.credit_move_id.move_id.line_ids.amount_residual_currency',
+        'line_ids.debit',
+        'line_ids.credit',
+        'line_ids.currency_id',
+        'line_ids.amount_currency',
+        'line_ids.amount_residual',
+        'line_ids.amount_residual_currency',
+        'line_ids.payment_id.state',
+        'line_ids.full_reconcile_id')
+    def _compute_amount(self):
+        for item in self:
+            res = super(AccountMove, item)._compute_amount()
+
+            if item.payment_state == 'paid':
+                item.generate_voucher()
+
+            return res
+
+'''
+
+    def get_account_move(self):
+        payment = self.env['account.payment'].search([(self.id, 'in', 'reconciled_invoice_ids.id')])
+        #payment = self.env['account.payment'].search([('id', '=', 20)])
+
+        if payment:
+            test = ''
+            for line in payment.move_id.line_ids:
+                test += f'{line.account_id} {line.debit} {line.credit} \n'
+
+'''

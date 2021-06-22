@@ -25,3 +25,13 @@ class HrSalaryRule(models.Model):
                 'amount_select':'code',
                 'amount_python_compute':f'result = inputs.{self.code}.amount'
             })
+
+    @api.onchange('is_permanent_discount')
+    def onchange_method_is_permanent_discount(self):
+        if self.is_permanent_discount:
+            self.write({
+                'condition_select': 'python',
+                'condition_python': f'result = (inputs.{self.code} and inputs.{self.code}.amount > 0)',
+                'amount_select': 'code',
+                'amount_python_compute': f'result = inputs.{self.code}.amount'
+            })
