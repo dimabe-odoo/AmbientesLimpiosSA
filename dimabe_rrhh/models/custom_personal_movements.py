@@ -24,6 +24,7 @@ class CustomPersonalMovements(models.Model):
 
     payslip_id = fields.Many2one('hr.payslip', auto_join=True)
 
+    @api.model
     def create(self, values):
         for value in values:
             date_start = fields.Date.from_string(value['date_start'])

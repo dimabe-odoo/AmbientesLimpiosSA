@@ -47,9 +47,12 @@
         'views/l10n_latam_document_type_view.xml',
         'views/custom_remaining_caf_group.xml',
         #'views/main_data_change_report.xml',
+        'reports/payment_voucher.xml',
+        'views/account_payment_register_view.xml',
+        'views/account_payment.xml',
+        'data/account_check_inbound.xml',
         'views/custom_change_status_dte.xml',
         'reports/report_picking_odoo.xml'
-        'reports/payment_voucher.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

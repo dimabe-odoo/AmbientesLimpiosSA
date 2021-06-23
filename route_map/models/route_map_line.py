@@ -174,7 +174,7 @@ class RouteMapLine(models.Model):
             'store_fname': file,
             'mimetype': 'image/jpeg',
         })
-
+    @api.model
     def create(self, values):
         dispatch = self.env['route.map.line'].search([('id', '=', values['dispatch_id']), ('state', '!=', 'cancel')])
         if dispatch:

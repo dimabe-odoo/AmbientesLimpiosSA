@@ -16,6 +16,7 @@ class StockMoveLine(models.Model):
     def onchange_lot_id(self):
         self.supplier_lot = self.lot_id.supplier_lot if self.lot_id.supplier_lot else ''
 
+    @api.model
     def create(self, values):
         res = super(StockMoveLine, self).create(values)
         if len(res) > 1:
