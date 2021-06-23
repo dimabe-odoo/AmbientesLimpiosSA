@@ -5,11 +5,6 @@ from ..utils import hash_pasword as password_encoding
 class ResUser(models.Model):
     _inherit = 'res.users'
 
-    def write(self, values):
-        custom_user_id = self.env['custom.user'].search([('user_id', '=', self.id)])
-        res = super(ResUser, self).write(values)
-        return res
-
     @api.model
     @tools.ormcache('self._uid', 'group_ext_id')
     def _has_group(self, group_ext_id):

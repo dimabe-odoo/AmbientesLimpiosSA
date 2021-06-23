@@ -24,3 +24,6 @@ def get_range_discount(approve_sale_ids, amount_discount):
                 approve_sale_id = item.id
                 break
     return approve_sale_ids.filtered(lambda a: a.id == approve_sale_id)
+
+
+

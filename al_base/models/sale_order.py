@@ -50,11 +50,13 @@ class SaleOrder(models.Model):
         for item in self:
             item.amount_discount = (item.amount_undiscounted - (item.amount_total - item.amount_tax))
 
+
     def send_message(self, partner_list, approve_type):
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         body = f'<p>Estimados.<br/><br/>Se ha generado una nueva órden de venta <a href="{base_url}/web#id={self.id}&action=343&model=sale.order&view_type=form&cids=&menu_id=229">{self.name}</a>. La cual requiere aprobación por {approve_type}<br/></p>Atte,<br/>{self.company_id.name}'
         subject = f'Nueva órden de venta - Aprobar por {approve_type}'
         self.message_post(author_id=2, subject=subject, body=body, partner_ids=partner_list)
+
 
     def order_to_discount_approve(self):
         if self.l10n_latam_document_type_id.code == "33":
@@ -68,6 +70,7 @@ class SaleOrder(models.Model):
         else:
             self.action_confirm()
 
+
     def state_to_toconfirm(self):
         if not self.invisible_btn_confirm:
             self.write({
@@ -79,6 +82,7 @@ class SaleOrder(models.Model):
         else:
             raise models.ValidationError(
                 'Usted no tiene los permisos correspondientes para aprobar por Descuento el Pedido de Venta')
+
 
     def action_confirm(self):
         if self.env.user.partner_id.id not in self.get_partner_to() and self.state == 'toconfirm':
@@ -98,47 +102,69 @@ class SaleOrder(models.Model):
         ]
         return partner_list
 
+
     @api.model
     def _compute_invisible_btn_confirm(self):
         for item in self:
             if item.state == 'todiscountapprove' or item.state == 'draft' or item.state == 'sent':
                 if item.get_range_discount():
                     user_can_access = False
-                    if item.env.user in item.get_range_discount().user_ids:
-                        user_can_access = True
+                    if item.get_range_discount().user_configuration == 'leader':
+                        if item.state == 'draft' or item.state == 'sent':
+                            if item.env.user in self.get_team_by_vendor(item.user_id).mapped('member_ids') or item.env.user in item.get_range_discount().mapped('external_user_ids'):
+                                user_can_access = True
+                        else:
+                            if item.env.user == self.get_leader_by_vendor(item.user_id):
+                                user_can_access = True
+                    else:
+                        if item.env.user in item.get_range_discount().user_ids:
+                            user_can_access = True
                     item.invisible_btn_confirm = not user_can_access
                 else:
                     item.invisible_btn_confirm = False
             else:
                 item.invisible_btn_confirm = True
 
+
     def get_partners_by_range(self, range):
-        user_list = [
-            usr.partner_id.id for usr in range.user_ids if usr.partner_id
-        ]
+        user_list = []
+        if range.user_configuration == 'leader':
+            leader_id = self.get_leader_by_vendor(self.user_id)
+            user_list.append(leader_id.partner_id.id)
+        else:
+            user_list = [
+                usr.partner_id.id for usr in range.user_ids if usr.partner_id
+            ]
         return user_list
+
+
+    def get_leader_by_vendor(self, vendor):
+        return self.get_team_by_vendor(vendor).user_id
+
+
+    def get_team_by_vendor(self, vendor):
+        sale_team_ids = self.env['crm.team'].search([])
+
+        for team in sale_team_ids:
+            if vendor in team.mapped('member_ids'):
+                return team
+
 
     @api.model
     def get_range_discount(self):
         approve_sale_ids = self.env['custom.range.approve.sale'].sudo().search([])
         return get_range_discount(approve_sale_ids, self.amount_discount)
 
-    @api.model
-    def get_email_to_discount_approve(self):
-        approve_sale_id = self.get_range_discount()
-        if len(approve_sale_id) > 0:
-            email_list = [
-                usr.partner_id.email for usr in approve_sale_id.user_ids if usr.partner_id.email
-            ]
-            return ','.join(email_list)
 
     @api.onchange('date_order')
     def _onchange_date_order(self):
         for item in self:
             item.validity_date = calculate_business_day_dates(item.date_order, 2)
 
+
     def roundclp(self, value):
         return round_clp(value)
+
 
     def _get_custom_report_name(self):
         return '%s %s' % ('Nota de Venta - ', self.name)
@@ -170,11 +196,9 @@ class SaleOrderLine(models.Model):
 
         return super().create(vals_list)
 
-
     def write(self, values):
         self.unique_product_validation(self.order_id.id, values, False)
         return super(SaleOrderLine, self).write(values)
-
 
     def unique_product_validation(self, order, product, create):
         product_ids = self.env['sale.order.line'].search([('order_id', '=', order)]).mapped(
@@ -185,7 +209,8 @@ class SaleOrderLine(models.Model):
                     if create:
                         return False
                     else:
-                        raise models.ValidationError('No puede agregar el producto {} más de una vez'.format(product['name']))
+                        raise models.ValidationError(
+                            'No puede agregar el producto {} más de una vez'.format(product['name']))
 
         else:
             return True

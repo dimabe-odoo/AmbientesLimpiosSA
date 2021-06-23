@@ -5,9 +5,16 @@ class CustomRangeApproveSale(models.Model):
     _name = 'custom.range.approve.sale'
 
     name = fields.Char('Nombre')
-    user_ids = fields.Many2many('res.users', string='Usuarios')
+
+    user_ids = fields.Many2many(comodel_name="res.users", relation="custom_user_rel", string='Usuarios')
+
+    user_configuration = fields.Selection([('leader', 'Por Lider de Equipo Venta'), ('user', 'Por Usuario')], string="Configuración de Usuario", default="leader")
+
     min_amount = fields.Integer('Monto Minimo')
+
     max_amount = fields.Integer('Monto Máximo', help='Si no tiene monto máximo, dejar en 0')
+
+    external_user_ids = fields.Many2many(comodel_name="res.users", relation="custom_external_user_rel", string='Usuarios (Apoyo a Vendedor)', help="Usuarios que pueden pasar un pedido de estado Presupuesto a Aprobación por Descuento")
 
     @api.model
     def create(self, values):
