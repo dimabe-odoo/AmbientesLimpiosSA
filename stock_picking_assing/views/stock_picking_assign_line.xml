@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="stock_picking_assign_line_tree" model="ir.ui.view">
+            <field name="name">Listado de Asignaciones</field>
+            <field name="model">assign.line</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom" create="true" delete="true">
+                    <field name="user_id" required="1"/>
+                    <field name="picking_id" required="1"/>
+                </tree>
+            </field>
+        </record>
+        <record id="stock_picking_assign_line_form" model="ir.ui.view">
+            <field name="name">Formulador de Asignacion de Picking</field>
+            <field name="model">assign.line</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="stock_picking_assign_id"/>
+                            <h1>
+                                <field name="stock_picking_assign_id" placeholder="Asignacion"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="user_id"/>
+                                <field name="picking_id"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="assign_line_tree_view" model="ir.ui.view">
+            <field name="name">asing_line.tree</field>
+            <field name="model">assign.line</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="user_id" widget="many2onebutton"/>
+                    <field name="picking_id" widget="many2onebutton"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="stock_assign_line_action" model="ir.actions.act_window">
+            <field name="name">Asignaciones de Picking</field>
+            <field name="res_model">assign.line</field>
+            <field name="view_id" ref="assign_line_tree_view"/>
+            <field name="view_mode">tree,form,kanban</field>
+        </record>
+
+        <menuitem name="Asignacion por Usuario" id="stock_assign_line_menu_child"
+                  parent="stock_picking_assign_parent_menu" sequence="10" action="stock_assign_line_action"/>
+
+    </data>
+</odoo>

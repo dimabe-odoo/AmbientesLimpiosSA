@@ -3,6 +3,7 @@ from odoo import fields, models, api
 class StockWarehouseOrderpoint(models.Model):
     _inherit = 'stock.warehouse.orderpoint'
 
+    @api.model
     def create(self, values):
         for val in values:
             if 'location_id' in val.keys():
