@@ -22,7 +22,7 @@ class HrPaySlip(models.Model):
 
     personal_movement_ids = fields.One2many('custom.personal.movements', 'payslip_id')
 
-    fee_id = fields.Many2one('cutom.fee', string='Cuota Pagada')
+    fee_id = fields.Many2one('custom.fee', string='Cuota Pagada')
 
     @api.model
     def _compute_basic_salary(self):

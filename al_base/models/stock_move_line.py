@@ -9,18 +9,15 @@ class StockMoveLine(models.Model):
 
     is_loteable = fields.Boolean()
 
-    stock_product_qty = fields.Float('Stock Disponible', compute="_compute_stock_product_qty",digits=[16,3])
+    stock_product_qty = fields.Float('Stock Disponible', compute="_compute_stock_product_qty", digits=[16, 3])
 
     product_quant_ids = fields.Many2many('stock.quant', compute='_compute_stock_product_qty')
 
-    @api.onchange('product_id','location_id')
+    @api.onchange('product_id', 'location_id')
     def verify_stock(self):
-        res = {
-            'domain':{
-                'lot_id': [('id','in',self.product_quant_ids.filtered(lambda x: x.location_id.id == self.location_id.id).mapped('lot_id').ids)]
-            }
+        return {
+            'warning': {'title': "Warning", 'message': "What is this?", 'type': 'notification'},
         }
-        return res
 
     @api.onchange('product_id', 'lot_id')
     def _compute_stock_product_qty(self):
