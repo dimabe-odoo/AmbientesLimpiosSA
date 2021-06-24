@@ -17,7 +17,7 @@ class RouteMapController(http.Controller):
         models = client.ServerProxy('{}/xmlrpc/2/object'.format(url))
         record = models.execute_kw(db_name, 2, password,
                                    'route.map', 'search_read',
-                                   [[['driver_id', '=', driver_id], ('state', '!=', 'done')]],
+                                   [[['driver_id', '=', driver_id], ('state', '=', 'incoming')]],
                                    {'fields': ['display_name', 'type_of_map'], 'limit': 5})
         return record
 
