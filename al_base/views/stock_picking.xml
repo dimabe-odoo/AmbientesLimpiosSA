@@ -16,6 +16,9 @@
         <xpath expr="//field[@name='lot_id']" position="attributes">
           <attribute name="options">{'no_create': True, 'no_create_edit':True}</attribute>
         </xpath>
+        <xpath expr="//field[@name='lot_id']" position="after">
+          <field name="stock_product_qty" readonly="1"/>
+        </xpath>
       </field>
     </record>
 

@@ -13,8 +13,9 @@ class RouteMapController(http.Controller):
     def get_route_maps(self, driver_id):
         url = request.env['ir.config_parameter'].sudo().get_param('web.base.url')
         db_name = request._cr.dbname
+        password = request.env['ir.config_parameter'].sudo().search([('key', '=', 'user_admin_pass')]).password
         models = client.ServerProxy('{}/xmlrpc/2/object'.format(url))
-        record = models.execute_kw(db_name, 2, 'dimabe21',
+        record = models.execute_kw(db_name, 2, password,
                                    'route.map', 'search_read',
                                    [[['driver_id', '=', driver_id], ('state', '!=', 'done')]],
                                    {'fields': ['display_name', 'type_of_map'], 'limit': 5})
@@ -24,15 +25,16 @@ class RouteMapController(http.Controller):
     def get_route_map(self, map_id):
         url = request.env['ir.config_parameter'].sudo().get_param('web.base.url')
         db_name = request._cr.dbname
+        password = request.env['ir.config_parameter'].sudo().search([('key', '=', 'user_admin_pass')]).password
         models = client.ServerProxy('{}/xmlrpc/2/object'.format(url))
-        ids = models.execute_kw(db_name, 2, 'dimabe21',
+        ids = models.execute_kw(db_name, 2, password,
                                 'route.map', 'search',
                                 [[['id', '=', map_id]]])
         record = models.execute_kw(db_name, 2, 'dimabe21',
                                    'route.map', 'read', [ids])[0]
         index = 0
         for dispatch in record['dispatch_ids']:
-            dispatch_read = models.execute_kw(db_name, 2, 'dimabe21',
+            dispatch_read = models.execute_kw(db_name, 2, password,
                                               'route.map.line', 'search_read',
                                               [[['id', '=', dispatch]]],
                                               {'fields': ['partner_latitude', 'partner_longitude', 'partner_id',
@@ -46,6 +48,7 @@ class RouteMapController(http.Controller):
                        ):
         line = request.env['route.map.line'].sudo().search([('id', '=', line_id)])
         is_done = False
+        password = request.env['ir.config_parameter'].sudo().search([('key', '=', 'user_admin_pass')]).password
         if line:
             if files and len(files) > 0:
                 for file in files:
@@ -68,7 +71,7 @@ class RouteMapController(http.Controller):
                         url = request.env['ir.config_parameter'].sudo().get_param('web.base.url')
                         db_name = request._cr.dbname
                         models = client.ServerProxy('{}/xmlrpc/2/object'.format(url))
-                        models.execute_kw(db_name, 2, 'dimabe21', 'route.map', 'write', [[line.map_id.id], {
+                        models.execute_kw(db_name, 2, password, 'route.map', 'write', [[line.map_id.id], {
                             'state': 'done',
                         }])
                         is_done = True
@@ -81,7 +84,8 @@ class RouteMapController(http.Controller):
         url = request.env['ir.config_parameter'].sudo().get_param('web.base.url')
         db_name = request._cr.dbname
         models = client.ServerProxy('{}/xmlrpc/2/object'.format(url))
-        state = models.execute_kw(db_name, 2, 'dimabe21', 'ir.model.fields.selection', 'search_read', [
+        password = request.env['ir.config_parameter'].sudo().search([('key', '=', 'user_admin_pass')]).password
+        state = models.execute_kw(db_name, 2, password, 'ir.model.fields.selection', 'search_read', [
             [['field_id.model_id.name', '=', 'route.map.line'], ['value', '!=', 'to_delivered']]],
                                   {'fields': ['name', 'value']})
         return state
