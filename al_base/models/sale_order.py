@@ -111,10 +111,26 @@ class SaleOrder(models.Model):
                     user_can_access = False
                     if item.get_range_discount().user_configuration == 'leader':
                         if item.state == 'draft' or item.state == 'sent':
-                            if item.env.user in self.get_team_by_vendor(item.user_id).mapped('member_ids') or item.env.user in item.get_range_discount().mapped('external_user_ids'):
+                            team = self.get_team_by_vendor(item.user_id)
+                            if team:
+                                if item.env.user in team.mapped('member_ids'):
+                                    user_can_access = True
+                            else:
+                                user_can_access = False
+                        else:
+                            leader = self.get_leader_by_vendor(item.user_id)
+                            if leader:
+                                if item.env.user == leader:
+                                    user_can_access = True
+                            else:
+                                user_can_access = False
+                    elif item.get_range_discount().user_configuration == 'user':
+                        if item.state == 'draft' or item.state == 'sent':
+                            vendor_group = self.env.ref('al_base.custom_group_vendors')
+                            if item.env.user in vendor_group.users:
                                 user_can_access = True
                         else:
-                            if item.env.user == self.get_leader_by_vendor(item.user_id):
+                            if item.env.user in item.get_range_discount().user_ids:
                                 user_can_access = True
                     else:
                         if item.env.user in item.get_range_discount().user_ids:
@@ -139,7 +155,12 @@ class SaleOrder(models.Model):
 
 
     def get_leader_by_vendor(self, vendor):
-        return self.get_team_by_vendor(vendor).user_id
+        team = self.get_team_by_vendor(vendor)
+        if team:
+            if team.user_id:
+                return team.user_id
+        else:
+            return False
 
 
     def get_team_by_vendor(self, vendor):
@@ -148,6 +169,7 @@ class SaleOrder(models.Model):
         for team in sale_team_ids:
             if vendor in team.mapped('member_ids'):
                 return team
+        return False
 
 
     @api.model

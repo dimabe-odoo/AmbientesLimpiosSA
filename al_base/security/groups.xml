@@ -3,6 +3,9 @@
   <record id="group_order_confirmation" model="res.groups">
     <field name="name">Cobranza</field>
   </record>
+  <record id="custom_group_vendors" model="res.groups">
+    <field name="name">Vendedores</field>
+  </record>
   <record id="custom_templates" model="res.groups">
     <field name="name">Plantillas Personalizadas</field>
   </record>

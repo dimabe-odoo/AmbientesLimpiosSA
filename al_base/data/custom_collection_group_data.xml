@@ -8,6 +8,10 @@
             <field name="name">Grupo Cobranza</field>
             <field name="group_id" ref="al_base.group_order_confirmation"/>
         </record>
+        <record id="custom_vendors_group_data" model="custom.collection.group">
+            <field name="name">Grupo Vendedores</field>
+            <field name="group_id" ref="al_base.custom_group_vendors"/>
+        </record>
         <record id="custom_noti_aceptation_dte" model="custom.collection.group">
             <field name="name">Grupo Notificacion Aceptacion DTE</field>
             <field name="group_id" ref="al_base.custom_change_status_notification"/>

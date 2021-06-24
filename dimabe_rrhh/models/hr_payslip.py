@@ -72,7 +72,7 @@ class HrPaySlip(models.Model):
                     })
             item.salary_id = None
 
-    def compute_sheet(self):
+    def update_other_entries(self):
         self.get_permanent_discounts()
         loan_id = self.env['custom.loan'].search(
             [('employee_id', '=', self.employee_id.id), ('state', '=', 'in_process'),
@@ -107,7 +107,7 @@ class HrPaySlip(models.Model):
             self.write({
                 'loan_id': loan_id.id
             })
-        return super(HrPaySlip, self).compute_sheet()
+
 
     def action_payslip_done(self):
         for item in self:

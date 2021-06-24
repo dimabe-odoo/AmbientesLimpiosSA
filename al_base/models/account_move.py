@@ -139,7 +139,7 @@ class AccountMove(models.Model):
                 doc_id = self.env['ir.attachment'].search(
                     [('res_model', '=', 'account.move'), ('res_id', '=', item.id), ('name', 'like', 'SII')],
                     order='create_date desc')
-                if doc_id:
+                if doc_id and len(doc_id) > 0:
                     values['ted'] = item.get_ted(doc_id[0])
             if 'l10n_cl_dte_acceptation_status' in values.keys():
                 message = self.get_message(values['l10n_cl_dte_acceptation_status'])
@@ -208,15 +208,4 @@ class AccountMove(models.Model):
 
             return res
 
-'''
 
-    def get_account_move(self):
-        payment = self.env['account.payment'].search([(self.id, 'in', 'reconciled_invoice_ids.id')])
-        #payment = self.env['account.payment'].search([('id', '=', 20)])
-
-        if payment:
-            test = ''
-            for line in payment.move_id.line_ids:
-                test += f'{line.account_id} {line.debit} {line.credit} \n'
-
-'''

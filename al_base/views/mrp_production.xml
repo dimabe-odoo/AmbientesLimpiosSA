@@ -1,17 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
+  <data>
 
-        <record id="mrp_subcontracting_inherit" model="ir.ui.view">
-            <field name="name">mrp_subcontracting_inherit</field>
-            <field name="model">mrp.production</field>
-            <field name="inherit_id" ref="mrp_subcontracting.mrp_production_subcontracting_form_view"/>
-            <field name="priority" eval="8"/>
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='lot_producing_id']" position="attributes">
-                    <attribute name="readonly">1</attribute>
-                </xpath>
-            </field>
-        </record>
-    </data>
+    <record id="mrp_subcontracting_inherit" model="ir.ui.view">
+      <field name="name">mrp_subcontracting_inherit</field>
+      <field name="model">mrp.production</field>
+      <field name="inherit_id" ref="mrp_subcontracting.mrp_production_subcontracting_form_view"/>
+      <field name="priority" eval="8"/>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='lot_producing_id']" position="attributes">
+          <attribute name="readonly">1</attribute>
+        </xpath>
+      </field>
+    </record>
+
+    <record id="mrp_production_tree_view_inherit" model="ir.ui.view">
+      <field name="name">mrp.production.tree.inherit</field>
+      <field name="model">mrp.production</field>
+      <field name="inherit_id" ref="mrp.mrp_production_tree_view"/>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='state']" position="attributes">
+          <attribute name="string">Estado</attribute>
+        </xpath>
+      </field>
+    </record>
+  </data>
 </odoo>

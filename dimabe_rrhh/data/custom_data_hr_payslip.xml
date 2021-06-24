@@ -82,7 +82,7 @@
             <field name="amount_python_compute">result = round(((payslip.indicator_id.mapped('data_ids').filtered(lambda a: a.type == '5')[0].value - contract.wage) / 30) * worked_days.WORK100.number_of_days)</field>
         </record>
         <record id="custom_hr_salary_rule_extra_hours" model="hr.salary.rule">
-            <field name="name">Horas Extra</field>
+            <field name="name">Horas Extra 50</field>
             <field name="code">HEX50</field>
             <field name="sequence">4</field>
             <field name="category_id" ref="custom_hr_salary_rule_category_taxable"/>
@@ -92,6 +92,31 @@
             <field name="amount_select">code</field>
             <field name="amount_python_compute">result = round(0.0077777*contract.wage*inputs.HEX50.amount)</field>
         </record>
+
+        <record id="custom_hr_salary_rule_extra_hours100" model="hr.salary.rule">
+            <field name="name">Horas Extra 100</field>
+            <field name="code">HEX100</field>
+            <field name="sequence">4</field>
+            <field name="category_id" ref="custom_hr_salary_rule_category_taxable"/>
+            <field name="struct_id" ref="custom_hr_payroll_structure_cl"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = inputs.HEX100 and inputs.HEX100.amount > 0</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = round(contract.wage / 30 * 28) * 2 * inputs.HEX100.amount</field>
+        </record>
+
+        <record id="custom_hr_salary_rule_extra_hours150" model="hr.salary.rule">
+            <field name="name">Horas Extra 150</field>
+            <field name="code">HEX150</field>
+            <field name="sequence">4</field>
+            <field name="category_id" ref="custom_hr_salary_rule_category_taxable"/>
+            <field name="struct_id" ref="custom_hr_payroll_structure_cl"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = inputs.HEX150 and inputs.HEX150.amount > 0</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = round(round(contract.wage / 30 * 28) * 2.5) * inputs.HEX150.amount</field>
+        </record>
+
         <record id="custom_hr_salary_rule_discount_hours" model="hr.salary.rule">
             <field name="name">Horas Descuento</field>
             <field name="sequence">5</field>
