@@ -79,7 +79,7 @@ class StockMoveLine(models.Model):
     def verify_stock_move_line(self):
         for item in self:
             if item.picking_id and item.qty_done and item.qty_done > 0:
-                if item.picking_id.sale_id and item.picking_type_id.sequence_code == 'OUT':
+                if item.picking_id.sale_id and item.picking_id.picking_type_id.sequence_code == 'OUT':
                     line = item.env['sale.order.line'].sudo().search(
                         [('order_id', '=', item.picking_id.sale_id.id), ('product_id', '=', item.product_id.id)])
                     if line.qty_delivered == 0:
@@ -91,7 +91,7 @@ class StockMoveLine(models.Model):
                         if qty_remaining < item.qty_done:
                             raise models.UserError(
                                 f'No puede validar mas {item.product_id.uom_id.name} de {item.product_id.display_name} de la cantidad restante a entregar de la venta')
-                elif item.picking_id.purchase_id and item.picking_type_id.sequence_code == 'IN' and item.qty_done and item.qty_done > 0:
+                elif item.picking_id.purchase_id and item.picking_id.picking_type_id.sequence_code == 'IN' and item.qty_done and item.qty_done > 0:
                     lines = self.env['purchase.order.line'].sudo().search(
                         [('order_id', '=', item.picking_id.purchase_id.id), ('product_id', '=', item.product_id.id)])
                     if isinstance(lines, list):
