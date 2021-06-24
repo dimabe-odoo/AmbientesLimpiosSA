@@ -13,11 +13,6 @@ class StockMoveLine(models.Model):
 
     product_quant_ids = fields.Many2many('stock.quant', compute='_compute_stock_product_qty')
 
-    @api.onchange('product_id', 'location_id')
-    def verify_stock(self):
-        return {
-            'warning': {'title': "Warning", 'message': "What is this?", 'type': 'notification'},
-        }
 
     @api.onchange('product_id', 'lot_id')
     def _compute_stock_product_qty(self):
