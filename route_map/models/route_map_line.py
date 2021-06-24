@@ -13,7 +13,7 @@ class RouteMapLine(models.Model):
 
     dispatch_id = fields.Many2one('stock.picking', string='Despacho', required=True)
 
-    picking_type_id = fields.Many2one('stock.picking.type',related='dispatch_id.picking_type_id')
+    picking_type_id = fields.Many2one('stock.picking.type', related='dispatch_id.picking_type_id')
 
     picking_code = fields.Char(related='picking_type_id.sequence_code')
 
@@ -40,9 +40,9 @@ class RouteMapLine(models.Model):
 
     address_to_delivery = fields.Char(related='partner_id.street', string='Direccion de Entrega')
 
-    partner_latitude = fields.Float(string='Latitude Cliente',related='partner_id.partner_latitude')
+    partner_latitude = fields.Float(string='Latitude Cliente', related='partner_id.partner_latitude')
 
-    partner_longitude = fields.Float(string='Longitude Cliente',related='partner_id.partner_longitude')
+    partner_longitude = fields.Float(string='Longitude Cliente', related='partner_id.partner_longitude')
 
     is_delivered = fields.Boolean('Esta entregado?')
 
@@ -174,9 +174,27 @@ class RouteMapLine(models.Model):
             'store_fname': file,
             'mimetype': 'image/jpeg',
         })
+
     @api.model
     def create(self, values):
         dispatch = self.env['route.map.line'].search([('id', '=', values['dispatch_id']), ('state', '!=', 'cancel')])
         if dispatch:
             raise models.ValidationError('No puede existe mas de una linea de hoja de ruta con el mismo despacho')
         return super(RouteMapLine, self).create(values)
+
+    def write(self, values):
+        res = super(RouteMapLine, self).write(values)
+        if isinstance(values, list):
+            for value in values:
+                if 'line_value' in value.keys():
+                    map_value = sum(self.map_id.dispatch_ids.mapped('line_value'))
+                    self.map_id.write({
+                        'route_value': map_value
+                    })
+        else:
+            if 'line_value' in values.keys():
+                map_value = sum(self.map_id.dispatch_ids.mapped('line_value'))
+                self.map_id.write({
+                    'route_value': map_value
+                })
+        return res

@@ -1,6 +1,7 @@
 from odoo import fields, models, api
 from odoo.models import Model
 from datetime import datetime
+from xmlrpc import client
 
 
 class RouteMap(Model):
@@ -54,6 +55,9 @@ class RouteMap(Model):
     is_regional = fields.Boolean('Es Regional')
 
     regional_value = fields.Float('Valor Regional')
+
+    change_from_line = fields.Boolean('Cambio datos desde la linea')
+
 
     def action_dispatch(self):
         for item in self:

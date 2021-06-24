@@ -14,12 +14,9 @@
                                 <field name="name" readonly="1"/>
                             </h1>
                         </div>
-                        <group>
-                            <group>
-                                <field name="assign_line_ids" style="{'width':100%;}"
-                                       context="{'tree_view_ref': 'stock_picking_assing.stock_picking_assign_line_tree'}"/>
-                            </group>
-                        </group>
+                        <notebook>
+                            <page></page>
+                        </notebook>
                     </sheet>
                 </form>
             </field>

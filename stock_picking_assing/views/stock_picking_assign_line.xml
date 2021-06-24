@@ -7,7 +7,7 @@
             <field name="arch" type="xml">
                 <tree editable="bottom" create="true" delete="true">
                     <field name="user_id" required="1"/>
-                    <field name="picking_id" required="1"/>
+                    <field name="picking_id" widget="many2onebutton" required="1"/>
                 </tree>
             </field>
         </record>
@@ -23,11 +23,9 @@
                                 <field name="stock_picking_assign_id" placeholder="Asignacion"/>
                             </h1>
                         </div>
-                        <group>
-                            <group>
-                                <field name="user_id"/>
-                                <field name="picking_id"/>
-                            </group>
+                        <group style="width: 100%;">
+                            <field name="user_id"/>
+                            <field name="picking_id"/>
                         </group>
                     </sheet>
                 </form>

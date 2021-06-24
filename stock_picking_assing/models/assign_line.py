@@ -13,6 +13,8 @@ class StockPickingAssignLine(models.Model):
                                  domain=[('state', '!=', 'done'), ('picking_type_id.sequence_code', '=', 'OUT')],
                                  required=True)
 
+    state = fields.Selection(selection=[('done','Hecha')])
+
     def create(self, values):
         if isinstance(values, list):
             for value in values:
