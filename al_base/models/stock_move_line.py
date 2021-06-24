@@ -17,7 +17,7 @@ class StockMoveLine(models.Model):
     def verify_stock(self):
         res = {
             'domain':{
-                'lot_id': [('id','in',self.product_quant_ids.mapped('lot_id').ids)]
+                'lot_id': [('id','in',self.product_quant_ids.filtered(lambda x: x.location_id.id == self.location_id.id).mapped('lot_id').ids)]
             }
         }
         return res
