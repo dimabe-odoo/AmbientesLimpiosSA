@@ -32,16 +32,18 @@ class SaleOrder(models.Model):
         if isinstance(values, list):
             for value in values:
                 if 'client_order_ref' in value.keys():
-                    client = self.env['sale.order'].search([('client_order_ref', '=', value['client_order_ref'])])
-                    if client:
-                        raise models.ValidationError(
-                            f'No puede crear una nota de venta con la OC {value["client_order_ref"]}')
+                    if value['client_order_ref']:
+                        client = self.env['sale.order'].search([('client_order_ref', '=', value['client_order_ref'])])
+                        if client:
+                            raise models.ValidationError(
+                                f'No puede crear una nota de venta con la OC {value["client_order_ref"]}')
         else:
             if 'client_order_ref' in values.keys():
-                client = self.env['sale.order'].search([('client_order_ref', '=', values['client_order_ref'])])
-                if client:
-                    raise models.ValidationError(
-                        f'No puede crear una nota de venta con la oc {values["client_order_ref"]}')
+                if values['client_order_ref']:
+                    client = self.env['sale.order'].search([('client_order_ref', '=', values['client_order_ref'])])
+                    if client:
+                        raise models.ValidationError(
+                            f'No puede crear una nota de venta con la oc {values["client_order_ref"]}')
         return super(SaleOrder, self).create(values)
 
     @api.onchange('user_id')
