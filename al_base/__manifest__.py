@@ -52,7 +52,8 @@
         'views/account_payment.xml',
         'data/account_check_inbound.xml',
         'views/custom_change_status_dte.xml',
-        'reports/report_picking_odoo.xml'
+        'reports/report_picking_odoo.xml',
+        'data/ir_cron_sale_order.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

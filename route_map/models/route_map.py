@@ -52,9 +52,7 @@ class RouteMap(Model):
 
     route_value = fields.Float('Valor:')
 
-    is_regional = fields.Boolean('Es Regional')
-
-    regional_value = fields.Float('Valor Regional')
+    has_regional_value = fields.Boolean('Tiene Valor Regional')
 
     change_from_line = fields.Boolean('Cambio datos desde la linea')
 

@@ -24,7 +24,8 @@ class RouteMapLine(models.Model):
     state = fields.Selection(
         [('to_delivered', 'Por Despachar'), ('ok', 'Entrega Ok'), ('parcial', 'Entrega Parcial'),
          ('rejected', 'Rechazo Total Cliente'),
-         ('homeless', 'Sin Moradores'), ('after hour', 'Fuera de Horario'), ('cancel', 'Cancelado')],
+         ('homeless', 'Sin Moradores'), ('after hour', 'Fuera de Horario'), ('cancel', 'Cancelado'),
+         ('conveyor', 'Entregado a Transportadora')],
         string='Estado',
         default='to_delivered')
 
@@ -61,6 +62,8 @@ class RouteMapLine(models.Model):
     invoices_name = fields.Char('Factura', compute='compute_invoice_name')
 
     line_value = fields.Float('Valor')
+
+    regional_line_value = fields.Float('Valor Regional')
 
     def _compute_pallets_quantity(self):
         for item in self:
