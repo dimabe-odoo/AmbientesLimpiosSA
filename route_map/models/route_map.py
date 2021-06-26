@@ -16,10 +16,8 @@ class RouteMap(Model):
 
     driver_id = fields.Many2one('res.partner', string='Conductor', related='truck_id.driver_id')
 
-    picking_id = fields.Many2one('stock.picking', 'Despacho',
-                                 domain=[('picking_type_id.sequence_code', '=', 'OUT'), ('state', '=', 'done'),
-                                         ('map_id', '=', None), ('sale_id', '!=', None),
-                                         ('sale_id.invoice_publish_ids', '!=', False)])
+    sale_id = fields.Many2one('sale.order', 'Pedido',
+                              domain=[('state', 'in', ['sale', 'done']), ('invoice_publish_ids', '!=', False)])
 
     picking_other_id = fields.Many2one('stock.picking',
                                        domain=[('state', '=', 'done'), ('map_id', '=', False),
@@ -56,6 +54,11 @@ class RouteMap(Model):
 
     change_from_line = fields.Boolean('Cambio datos desde la linea')
 
+    sale_ids = fields.Many2many('sale.order', compute='compute_sale_ids')
+
+    def compute_sale_ids(self):
+        for item in self:
+            item.sale_ids = self.dispatch_ids.mapped('sale_id')
 
     def action_dispatch(self):
         for item in self:
@@ -63,36 +66,41 @@ class RouteMap(Model):
                 'state': 'incoming'
             })
 
+    @api.onchange('truck_id')
+    def onchange_truck_id(self):
+        for item in self:
+            item.route_value = item.truck_id.transport_value
+
     def compute_invoices_name(self):
         for item in self:
             item.invoices_name = ','.join(item.dispatch_ids.mapped('invoices_name'))
 
     def add_picking(self):
         if self.type_of_map == 'client':
-            line = self.env['route.map.line'].sudo().create({
-                'map_id': self.id,
-                'dispatch_id': self.picking_id.id,
-                'sale_id': self.picking_id.sale_id.id,
-                'line_value': self.route_value if len(self.dispatch_ids) == 0 else self.route_value / len(
-                    self.dispatch_ids)
-            })
+            for picking in self.sale_id.picking_ids:
+                line = self.env['route.map.line'].sudo().create({
+                    'map_id': self.id,
+                    'dispatch_id': picking.id,
+                    'sale_id': self.sale_id.id,
+                    'line_value': self.route_value if len(self.dispatch_ids) == 0 else self.route_value / len(
+                        self.dispatch_ids)
+                })
+                for product in picking.move_line_ids_without_package:
+                    self.env['product.line'].sudo().create({
+                        'line_id': line.id,
+                        'product_id': product.product_id.id,
+                        'qty_to_delivery': product.qty_done
+                    })
+                picking.sudo().write({
+                    'map_id': self.id
+                })
             if len(self.dispatch_ids) > 1:
                 for line in self.dispatch_ids:
                     line.write({
                         'line_value': self.route_value / len(self.dispatch_ids)
                     })
-            for product in self.picking_id.move_line_ids_without_package:
-                self.env['product.line'].sudo().create({
-                    'line_id': line.id,
-                    'product_id': product.product_id.id,
-                    'qty_to_delivery': product.qty_done
-                })
-
-            self.picking_id.sudo().write({
-                'map_id': self.id
-            })
             self.write({
-                'picking_id': None
+                'sale_id': None
             })
         else:
             line = self.env['route.map.line'].sudo().create({

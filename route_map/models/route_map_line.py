@@ -21,6 +21,12 @@ class RouteMapLine(models.Model):
 
     date_done = fields.Datetime('Fecha de Entrega')
 
+    pallet_qty = fields.Float('Cantidad de Pallet')
+
+    have_return_pallet = fields.Boolean('Existe Retorno de Palllet')
+
+
+
     state = fields.Selection(
         [('to_delivered', 'Por Despachar'), ('ok', 'Entrega Ok'), ('parcial', 'Entrega Parcial'),
          ('rejected', 'Rechazo Total Cliente'),

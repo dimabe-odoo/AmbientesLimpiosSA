@@ -12,3 +12,4 @@ from . import res_users
 from . import sale_order
 from . import change_state_route_line
 from . import ir_attachment
+from . import fleet_vehicle

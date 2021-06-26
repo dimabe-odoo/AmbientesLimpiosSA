@@ -26,21 +26,30 @@
                                 <field name="sell"/>
                                 <field name="route_value" context="{'isFromMap': True}"/>
                                 <field name="type_of_map" invisible="1"/>
+                                <field name="has_regional_value"/>
                                 <field name="add_more"/>
                             </group>
                         </group>
                         <notebook>
-                            <page name="dispatch" string="Despachos" attrs="{'invisible': [('type_of_map','=','other')]}">
-                                <field name="picking_id"
+                            <page name="dispatch" string="Despachos"
+                                  attrs="{'invisible': [('type_of_map','=','other')]}">
+                                <field name="sale_ids" invisible="1"/>
+                                <field name="sale_id"
+                                       domain="[('id','not in',sale_ids)]"
                                        attrs="{'invisible': [('type_of_map','=','other')]}"
                                        context="{'isRouteMap':True}"/>
-                                <button type="object" name="add_picking" string="Agregar" attrs="{'invisible': [('state','!=','draft')]}"/>
-                                <field name="dispatch_ids" context="{'tree_view_ref': 'route_map.route_map_line_tree_client_view'}"/>
+                                <button type="object" name="add_picking" string="Agregar"
+                                        attrs="{'invisible': [('state','!=','draft')]}"/>
+                                <field name="dispatch_ids"
+                                       context="{'tree_view_ref': 'route_map.route_map_line_tree_client_view'}"/>
                             </page>
-                            <page name="pickings" string="Entrega" attrs="{'invisible': [('type_of_map','=','client')]}">
+                            <page name="pickings" string="Entrega"
+                                  attrs="{'invisible': [('type_of_map','=','client')]}">
                                 <field name="picking_other_id" attrs="{'invisible': [('type_of_map','=','client')]}"/>
-                                <button type="object" name="add_picking" string="Agregar" attrs="{'invisible': [('state','!=','draft')]}"/>
-                                <field name="dispatch_ids" context="{'tree_view_ref' : 'route_map.route_map_line_tree_other_view'}"/>
+                                <button type="object" name="add_picking" string="Agregar"
+                                        attrs="{'invisible': [('state','!=','draft')]}"/>
+                                <field name="dispatch_ids"
+                                       context="{'tree_view_ref' : 'route_map.route_map_line_tree_other_view'}"/>
                             </page>
                         </notebook>
                     </sheet>
@@ -93,12 +102,12 @@
         </record>
 
 
-
         <menuitem name="Hoja de Ruta" id="route_map_parent_menu" parent="stock.menu_stock_root"/>
 
         <menuitem name="Hojas de Ruta Cliente" id="route_map_menu" parent="route_map.route_map_parent_menu"
                   action="route_map.route_map_act_window"/>
 
-        <menuitem name="Hoja de Ruta" id="route_map_client_menu" parent="route_map.route_map_parent_menu" action="route_map_other_act_window"/>
+        <menuitem name="Hoja de Ruta" id="route_map_client_menu" parent="route_map.route_map_parent_menu"
+                  action="route_map_other_act_window"/>
     </data>
 </odoo>
