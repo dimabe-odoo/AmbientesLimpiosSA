@@ -13,6 +13,15 @@ class StockMoveLine(models.Model):
 
     product_quant_ids = fields.Many2many('stock.quant', compute='_compute_stock_product_qty')
 
+    @api.onchange('product_id','location_id')
+    def onchange_product_stock(self):
+        res = {
+            'domain': {
+                'lot_id': [('id','in',self.product_id.stock_quant_ids.filtered(lambda x: x.location_id.id == self.location_id.id).mapped('lot_id').ids)]
+            }
+        }
+        return res
+
 
     @api.onchange('product_id', 'lot_id')
     def _compute_stock_product_qty(self):
