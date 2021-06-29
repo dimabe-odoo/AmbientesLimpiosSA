@@ -2,10 +2,16 @@
 <odoo>
   <data>
     <record id="account_payment_method_check" model="account.payment.method">
-            <field name="name">Cheque</field>
-            <field name="code">chq</field>
-            <field name="payment_type">inbound</field>
-            <field name="sequence">20</field>
-        </record>
+      <field name="name">Cheque</field>
+      <field name="code">chq</field>
+      <field name="payment_type">inbound</field>
+      <field name="sequence">20</field>
+    </record>
+    <record id="account_payment_method_check_outbound" model="account.payment.method">
+      <field name="name">Cheque</field>
+      <field name="code">chq</field>
+      <field name="payment_type">outbound</field>
+      <field name="sequence">20</field>
+    </record>
   </data>
 </odoo>

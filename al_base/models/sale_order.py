@@ -21,7 +21,7 @@ class SaleOrder(models.Model):
 
     confirm_date = fields.Datetime('Fecha de aprobación desde Cobranza')
 
-    invisible_btn_confirm = fields.Boolean(compute="_compute_invisible_btn_confirm", default=False)
+    invisible_btn_confirm = fields.Boolean(compute="_compute_invisible_btn_confirm", default=True)
 
     amount_discount = fields.Float(compute="_compute_amount_discount")
 
@@ -115,8 +115,14 @@ class SaleOrder(models.Model):
                             if team:
                                 if item.env.user in team.mapped('member_ids'):
                                     user_can_access = True
+                                else:
+                                    if item.env.user in item.get_range_discount().external_user_ids:
+                                        user_can_access = True
                             else:
-                                user_can_access = False
+                                if item.env.user in item.get_range_discount().external_user_ids:
+                                    user_can_access = True
+                                else:
+                                    user_can_access = False
                         else:
                             leader = self.get_leader_by_vendor(item.user_id)
                             if leader:

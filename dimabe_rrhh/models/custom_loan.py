@@ -17,7 +17,7 @@ class CustomLoan(models.Model):
     type_of_loan = fields.Selection([('new', 'Nuevo'), ('in_process', 'En proceso')], default='new',
                                     string='Tipo de Prestamo', required=True)
 
-    employee_id = fields.Many2one('hr.employee', string='Empleado', required=True)
+    employee_id = fields.Many2one('hr.employee', string='Empleado')
 
     fee_qty = fields.Integer('Cantidad de Cuota', track_visibility='onchange')
 
@@ -152,3 +152,5 @@ class CustomLoan(models.Model):
                     })
                 remaing += 1
         return sum(loan.fee_ids.mapped('value'))
+
+

@@ -12,7 +12,7 @@
     <field name="arch" type="xml">
       <tree>
         <field name="name"/>
-        <field name="user_ids" widget="many2many_tags"/>
+        <field name="user_configuration"/>
         <field name="min_amount"/>
         <field name="max_amount"/>
       </tree>
@@ -30,7 +30,7 @@
             <field name="user_configuration" widget="radio"/>
           </group>
           <group>
-            <field name="user_ids">
+            <field name="user_ids" attrs="{'invisible':[('user_configuration','=','leader')]}">
               <tree>
                 <field name="name"/>
                 <field name="login"/>

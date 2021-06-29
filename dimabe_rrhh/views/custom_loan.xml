@@ -19,7 +19,7 @@
                         <div class="oe_title">
                             <label for="employee_id"/>
                             <h1>
-                                <field name="employee_id" attrs="{'readonly': [('state','!=','draft')]}"/>
+                                <field name="employee_id" attrs="{'readonly': [('state','!=','draft')]}" required="1"/>
                             </h1>
                         </div>
                         <group>

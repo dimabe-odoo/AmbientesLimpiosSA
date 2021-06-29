@@ -7,3 +7,5 @@ class AccountPayment(models.Model):
     check_number = fields.Char('Número de Cheque')
 
     bank_name = fields.Char('Banco',related='partner_bank_id.bank_id.name')
+
+    bank_id = fields.Many2one('res.bank', 'Banco')

@@ -28,3 +28,11 @@ class MrpProduction(models.Model):
                 lambda m: m.product_id == self.product_id).move_line_ids.lot_id = self.lot_producing_id
         if self.product_id.tracking == 'serial':
             self._set_qty_producing()
+
+    def button_mark_done(self):
+        for line in self.move_raw_ids:
+            if not line.product_id.product_tmpl_id.allow_consume_zero_in_op and line.quantity_done == 0:
+                raise models.ValidationError(f'No es permitido el consumo en cero del Componente {line.product_id.product_tmpl_id.name}')
+
+        return super(MrpProduction, self).button_mark_done()
+

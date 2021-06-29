@@ -15,4 +15,7 @@
   <record id="custom_change_status_notification" model="res.groups">
     <field name="name">Notificacion de Aceptacion</field>
   </record>
+  <record id="custom_admin_sale_group" model="res.groups">
+    <field name="name">Administrador Venta para Grupos</field>
+  </record>
 </odoo>

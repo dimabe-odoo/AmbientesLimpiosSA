@@ -16,6 +16,7 @@ class HrEmployee(models.Model):
 
     marital = fields.Selection(selection_add=[('civilunion', 'Unión Civil')])
 
+
     @api.model
     def _get_computed_name(self, last_name, first_name, last_name2=None, middle_name=None):
         names = []
@@ -33,3 +34,7 @@ class HrEmployee(models.Model):
     def get_name(self):
         if self.first_name and self.last_name:
             self.name = self._get_computed_name(self.last_name, self.first_name, self.mothers_name, self.middle_name)
+
+    def unlink(self):
+        test = super().unlink()
+        return test

@@ -10,9 +10,7 @@
               <xpath expr="//field[@name='communication']" position="after">
                 <field name="check_number_invisible" invisible="1"/>
                 <field name="check_number" attrs="{'invisible':[('check_number_invisible','=',True)]}"/>
-              </xpath>
-              <xpath expr="//field[@name='partner_bank_id']" position="after">
-                <field name="partner_bank_id" attrs="{'invisible':[('check_number_invisible','=',True)]}"/>
+                <field name="bank_id" attrs="{'invisible':[('check_number_invisible','=',True)]}"  options="{'no_create': True, 'no_create_edit':True}"/>
               </xpath>
             </field>
         </record>

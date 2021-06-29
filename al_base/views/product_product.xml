@@ -18,6 +18,9 @@
             <attribute name="string">SKU</attribute>
             <attribute name="required">1</attribute>
         </xpath>
+        <xpath expr="//field[@name='al_dun']" position="after">
+          <field name="allow_consume_zero_in_op"/>
+        </xpath>
       </field>
     </record>
 
