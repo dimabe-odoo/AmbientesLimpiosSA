@@ -9,18 +9,26 @@ class StockMoveLine(models.Model):
 
     is_loteable = fields.Boolean()
 
-    stock_product_qty = fields.Float('Stock Disponible', compute="_compute_stock_product_qty",digits=[16,3])
+    stock_product_qty = fields.Float('Stock Disponible', compute="_compute_stock_product_qty", digits=[16, 3])
 
     product_quant_ids = fields.Many2many('stock.quant', compute='_compute_stock_product_qty')
 
     @api.onchange('product_id','location_id')
-    def verify_stock(self):
+    def onchange_product_stock(self):
         res = {
-            'domain':{
-                'lot_id': [('id','in',self.product_quant_ids.filtered(lambda x: x.location_id.id == self.location_id.id).mapped('lot_id').ids)]
+            'domain': {
+                'lot_id': [('id','in',self.product_id.stock_quant_ids.filtered(lambda x: x.location_id.id == self.location_id.id).mapped('lot_id').ids)]
             }
         }
         return res
+
+    @api.onchange('location_dest_id')
+    def onchange_location_dest_id(self):
+        for item in self:
+            if item.picking_id.picking_type_id == 'INT':
+                if item.location_id.id == item.location_dest_id.id:
+                    raise models.ValidationError('No puede seleccionar la misma ubicacion para una transferencia')
+
 
     @api.onchange('product_id', 'lot_id')
     def _compute_stock_product_qty(self):

@@ -17,7 +17,9 @@
                     <field name="bank_account_id" can_create="true" can_write="true"/>
                 </group>
             </xpath>
-
+            <xpath expr="//field[@name='address_home_id']" position="attributes">
+                <attribute name="string">Contacto</attribute>
+            </xpath>
             <xpath expr="//field[@name='name']/.." position="after">
                 <label for="first_name" class="oe_edit_only"/>
                     <h1>

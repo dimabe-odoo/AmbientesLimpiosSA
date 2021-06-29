@@ -14,6 +14,9 @@ class l10n_latam_document_type(models.Model):
 
     first_caf_loaded = fields.Integer('Primer Folio Cargado', compute="_compute_first_caf_loaded")
 
+    def _is_doc_type_ticket(self):
+        return True
+
     def _compute_last_caf_available(self):
         for item in self:
             if item.active:

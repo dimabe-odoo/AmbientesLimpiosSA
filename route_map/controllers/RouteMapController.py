@@ -17,7 +17,7 @@ class RouteMapController(http.Controller):
         models = client.ServerProxy('{}/xmlrpc/2/object'.format(url))
         record = models.execute_kw(db_name, 2, password,
                                    'route.map', 'search_read',
-                                   [[['driver_id', '=', driver_id], ('state', '!=', 'done')]],
+                                   [[['driver_id', '=', driver_id], ('state', '=', 'incoming')]],
                                    {'fields': ['display_name', 'type_of_map'], 'limit': 5})
         return record
 
@@ -30,7 +30,7 @@ class RouteMapController(http.Controller):
         ids = models.execute_kw(db_name, 2, password,
                                 'route.map', 'search',
                                 [[['id', '=', map_id]]])
-        record = models.execute_kw(db_name, 2, 'dimabe21',
+        record = models.execute_kw(db_name, 2, password,
                                    'route.map', 'read', [ids])[0]
         index = 0
         for dispatch in record['dispatch_ids']:
@@ -44,8 +44,7 @@ class RouteMapController(http.Controller):
         return record
 
     @http.route('/api/done', type='json', auth='token', method='GET', cors='*')
-    def make_done_line(self, line_id, latitude, longitude, state, observations='', files=None,
-                       ):
+    def make_done_line(self, line_id, latitude, longitude, state, observations='', files=None,):
         line = request.env['route.map.line'].sudo().search([('id', '=', line_id)])
         is_done = False
         password = request.env['ir.config_parameter'].sudo().search([('key', '=', 'user_admin_pass')]).password

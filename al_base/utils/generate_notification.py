@@ -1,5 +1,6 @@
 from odoo.http import request
 
+
 def send_notification(subject, body, author_id, user_group, model, model_id):
     partner_list = [
         usr.partner_id.id for usr in user_group if usr.partner_id
@@ -21,3 +22,13 @@ def send_notification(subject, body, author_id, user_group, model, model_id):
             'notification_type': user.notification_type,
             'notification_status': 'ready'
         })
+
+
+def get_followers(model_name, record_id):
+    followers = request.env[model_name].sudo().search([('id', '=', record_id)]).message_follower_ids
+    list_followers = []
+    for follower in followers:
+        user = request.env['res.users'].sudo().search([('partner_id', '=', follower.partner_id.id)])
+        if user:
+            list_followers.append(user)
+    return list_followers

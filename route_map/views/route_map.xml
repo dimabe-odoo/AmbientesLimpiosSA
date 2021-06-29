@@ -26,21 +26,69 @@
                                 <field name="sell"/>
                                 <field name="route_value" context="{'isFromMap': True}"/>
                                 <field name="type_of_map" invisible="1"/>
+                                <field name="has_regional_value"/>
                                 <field name="add_more"/>
                             </group>
                         </group>
                         <notebook>
-                            <page name="dispatch" string="Despachos" attrs="{'invisible': [('type_of_map','=','other')]}">
-                                <field name="picking_id"
+                            <page name="dispatch" string="Despachos"
+                                  attrs="{'invisible': [('type_of_map','=','other')]}">
+                                <field name="sale_ids" invisible="1"/>
+                                <field name="sale_id"
+                                       domain="[('id','not in',sale_ids)]"
                                        attrs="{'invisible': [('type_of_map','=','other')]}"
                                        context="{'isRouteMap':True}"/>
-                                <button type="object" name="add_picking" string="Agregar" attrs="{'invisible': [('state','!=','draft')]}"/>
-                                <field name="dispatch_ids" context="{'tree_view_ref': 'route_map.route_map_line_tree_client_view'}"/>
+                                <button type="object" name="add_picking" string="Agregar"
+                                        attrs="{'invisible': [('state','!=','draft')]}"/>
+                                <field name="dispatch_ids">
+                                    <tree editable="bottom" create="false" delete="true"
+                                          decoration-success="state == 'done'"
+                                          decoration-danger="state == 'rejected'">
+                                        <button string="Cambiar Estado" type="object"
+                                                name="button_change_state"/>
+                                        <field name="dispatch_id" readonly="1" widget="many2onebutton"/>
+                                        <field name="sale_id" readonly="1" widget="many2onebutton"/>
+                                        <field name="invoices_name" readonly="1"/>
+                                        <field name="address_to_delivery" readonly="1"/>
+                                        <field name="dispatch_date" readonly="1"
+                                               attrs="{'column_invisible':[('parent.state','=','draft')]}"/>
+                                        <field name="date_done" readonly="1"/>
+                                        <field name="regional_line_value"
+                                               attrs="{'column_invisible': [('parent.has_regional_value','=',False)]}"/>
+                                        <field name="pallet_qty"/>
+                                        <field name="have_return_pallet" readonly="1"/>
+                                        <field name="line_value"/>
+                                        <field name="state" readonly="1"/>
+                                    </tree>
+                                </field>
                             </page>
-                            <page name="pickings" string="Entrega" attrs="{'invisible': [('type_of_map','=','client')]}">
+                            <page name="pickings" string="Entrega"
+                                  attrs="{'invisible': [('type_of_map','=','client')]}">
                                 <field name="picking_other_id" attrs="{'invisible': [('type_of_map','=','client')]}"/>
-                                <button type="object" name="add_picking" string="Agregar" attrs="{'invisible': [('state','!=','draft')]}"/>
-                                <field name="dispatch_ids" context="{'tree_view_ref' : 'route_map.route_map_line_tree_other_view'}"/>
+                                <button type="object" name="add_picking" string="Agregar"
+                                        attrs="{'invisible': [('state','!=','draft')]}"/>
+                                <field name="dispatch_ids">
+                                    <tree editable="bottom" decoration-success="state == 'done'"
+                                          decoration-danger="state == 'rejected'"
+                                          create="false" delete="true">
+                                        <button string="Cambiar Estado" type="object"
+                                                name="button_change_state"
+                                                attrs="{'invisible': [('state','!=','to_delivered')]}"/>
+                                        <field name="dispatch_id" readonly="1" widget="many2onebutton"/>
+                                        <field name="address_to_delivery" readonly="1"/>
+                                        <field name="dispatch_date" readonly="1"
+                                               attrs="{'column_invisible':[('parent.state','=','draft')]}"/>
+                                        <field name="dispatch_date" readonly="1"
+                                               attrs="{'column_invisible':[('parent.state','=','draft')]}"/>
+                                        <field name="regional_line_value"
+                                               attrs="{'column_invisible': [('parent.has_regional_value','=',False)]}"/>
+                                        <field name="date_done" readonly="1"/>
+                                        <field name="pallet_qty"/>
+                                        <field name="have_return_pallet" readonly="1"/>
+                                        <field name="line_value"/>
+                                        <field name="state" readonly="1"/>
+                                    </tree>
+                                </field>
                             </page>
                         </notebook>
                     </sheet>
@@ -73,7 +121,8 @@
             <field name="view_mode">tree,form</field>
             <field name="context">{
                 'default_type_of_map': 'client'
-            }</field>
+                }
+            </field>
             <field name="domain">
                 [('type_of_map', '=', 'client')]
             </field>
@@ -86,12 +135,12 @@
             <field name="view_mode">tree,form</field>
             <field name="context">{
                 'default_type_of_map': 'other'
-            }</field>
+                }
+            </field>
             <field name="domain">
                 [('type_of_map', '=', 'other')]
             </field>
         </record>
-
 
 
         <menuitem name="Hoja de Ruta" id="route_map_parent_menu" parent="stock.menu_stock_root"/>
@@ -99,6 +148,7 @@
         <menuitem name="Hojas de Ruta Cliente" id="route_map_menu" parent="route_map.route_map_parent_menu"
                   action="route_map.route_map_act_window"/>
 
-        <menuitem name="Hoja de Ruta" id="route_map_client_menu" parent="route_map.route_map_parent_menu" action="route_map_other_act_window"/>
+        <menuitem name="Hoja de Ruta" id="route_map_client_menu" parent="route_map.route_map_parent_menu"
+                  action="route_map_other_act_window"/>
     </data>
 </odoo>

@@ -1,8 +1,10 @@
 from odoo import models, fields, api
+from py_linq import Enumerable
 from datetime import datetime, timedelta
 from ..utils.get_range_to_approve import get_range_discount
 from ..utils.calculate_business_day_dates import calculate_business_day_dates
 from ..utils.roundformat_clp import round_clp
+from ..utils.generate_notification import send_notification, get_followers
 
 
 class SaleOrder(models.Model):
@@ -24,6 +26,25 @@ class SaleOrder(models.Model):
     invisible_btn_confirm = fields.Boolean(compute="_compute_invisible_btn_confirm", default=True)
 
     amount_discount = fields.Float(compute="_compute_amount_discount")
+
+    @api.model
+    def create(self, values):
+        if isinstance(values, list):
+            for value in values:
+                if 'client_order_ref' in value.keys():
+                    if value['client_order_ref']:
+                        client = self.env['sale.order'].search([('client_order_ref', '=', value['client_order_ref'])])
+                        if client:
+                            raise models.ValidationError(
+                                f'No puede crear una nota de venta con la OC {value["client_order_ref"]}')
+        else:
+            if 'client_order_ref' in values.keys():
+                if values['client_order_ref']:
+                    client = self.env['sale.order'].search([('client_order_ref', '=', values['client_order_ref'])])
+                    if client:
+                        raise models.ValidationError(
+                            f'No puede crear una nota de venta con la oc {values["client_order_ref"]}')
+        return super(SaleOrder, self).create(values)
 
     @api.onchange('user_id')
     def on_change_user(self):
@@ -196,6 +217,27 @@ class SaleOrder(models.Model):
 
     def _get_custom_report_name(self):
         return '%s %s' % ('Nota de Venta - ', self.name)
+
+    def close_orders(self):
+        sale_orders = self.env['sale.order'].search([])
+        sale_order_parcial = Enumerable(sale_orders).where(lambda x: len(x.picking_ids) > 1 and x.state != 'done')
+        if sale_order_parcial.count() > 0:
+            for sale in sale_order_parcial:
+                followers = get_followers(self._inherit, sale.id)
+                send_notification('Pedido Cerrar', 'Pedido Cerrado por cierre automatico del dia', 2, followers,
+                                  self._inherit, sale.id)
+                delivery_pending = Enumerable(sale.picking_ids).where(lambda x: x.state != 'done')
+                if delivery_pending.count() == 0:
+                    continue
+                for pending in delivery_pending:
+                    followers = get_followers('stock.picking', pending.id)
+                    send_notification('Pedido Cancelado', 'Pedido Cancelado por cierre automatico del dia', 2,
+                                      followers, 'stock.picking',
+                                      pending.id)
+                    pending.action_cancel()
+                sale.write({
+                    'state': 'done'
+                })
 
 
 class SaleOrderLine(models.Model):

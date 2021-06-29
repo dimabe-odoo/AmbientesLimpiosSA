@@ -21,10 +21,17 @@ class RouteMapLine(models.Model):
 
     date_done = fields.Datetime('Fecha de Entrega')
 
+    pallet_qty = fields.Integer('Cantidad de Pallet')
+
+    have_return_pallet = fields.Boolean('Existe Retorno de Palllet')
+
+    returned_pallet = fields.Float('Pallets devueltos')
+
     state = fields.Selection(
         [('to_delivered', 'Por Despachar'), ('ok', 'Entrega Ok'), ('parcial', 'Entrega Parcial'),
          ('rejected', 'Rechazo Total Cliente'),
-         ('homeless', 'Sin Moradores'), ('after hour', 'Fuera de Horario'), ('cancel', 'Cancelado')],
+         ('homeless', 'Sin Moradores'), ('after hour', 'Fuera de Horario'), ('cancel', 'Cancelado'),
+         ('conveyor', 'Entregado a Transportadora')],
         string='Estado',
         default='to_delivered')
 
@@ -52,8 +59,6 @@ class RouteMapLine(models.Model):
 
     product_line_ids = fields.One2many('product.line', 'line_id')
 
-    pallets_quantity = fields.Integer('Lotes', compute="_compute_pallets_quantity")
-
     kgs_quantity = fields.Float('Kilos', _compute="_compute_kgs_quantity")
 
     invoice_ids = fields.Many2many('account.move', compute='compute_invoice_ids')
@@ -61,6 +66,8 @@ class RouteMapLine(models.Model):
     invoices_name = fields.Char('Factura', compute='compute_invoice_name')
 
     line_value = fields.Float('Valor')
+
+    regional_line_value = fields.Float('Valor Regional')
 
     def _compute_pallets_quantity(self):
         for item in self:
@@ -123,7 +130,7 @@ class RouteMapLine(models.Model):
         for item in self:
             view_id = self.env.ref('route_map.route_map_line_change_state_view')
             wiz_id = self.env['change.state.route.line'].sudo().create({
-                'line_id': self.id
+                'line_id': item.id
             })
             return {
                 'name': 'Seleccione Estado de la Entrega',
