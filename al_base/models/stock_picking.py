@@ -23,7 +23,7 @@ class StockPicking(models.Model):
 
     amount_total = fields.Float('TOTAL', compute="_compute_amount_total")
 
-    #invisible_btn_ted = fields.Boolean(compute="_compute_show_btn_ted", default=True)
+    # invisible_btn_ted = fields.Boolean(compute="_compute_show_btn_ted", default=True)
 
     is_subcontract = fields.Boolean(compute='compute_is_subcontract')
 
@@ -37,8 +37,8 @@ class StockPicking(models.Model):
             'Guía de Despacho Electrónica',
             self.l10n_latam_document_number if self.l10n_latam_document_number else self.id)
 
-    #@api.model
-    #def _compute_show_btn_ted(self):
+    # @api.model
+    # def _compute_show_btn_ted(self):
     #    for item in self:
     #        if item.picking_type_id.sequence_code == 'OUT':
     #            if item.ted or (item.state == 'draft' or item.state == 'cancel'):
@@ -47,6 +47,18 @@ class StockPicking(models.Model):
     #                item.invisible_btn_ted = False
     #        else:
     #            item.invisible_btn_ted = True
+
+    @api.onchange('location_id')
+    def onchange_location_id(self):
+        for item in self:
+            if item.picking_type_id.sequence_code == 'INT':
+                res = {
+                    'domain': {
+                        'location_id': [('usage', '=', 'internal')],
+                        'location_dest_id': [('usage', '=', 'internal'),('id','!=',self.location_id.id)]
+                    }
+                }
+                return res
 
     def get_ted(self, doc_id):
 
@@ -68,7 +80,6 @@ class StockPicking(models.Model):
                     return img_str
                 except:
                     cols += 1
-
 
     @api.onchange('picking_type_id')
     def onchange_picking_type_id(self):

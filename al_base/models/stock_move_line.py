@@ -22,6 +22,13 @@ class StockMoveLine(models.Model):
         }
         return res
 
+    @api.onchange('location_dest_id')
+    def onchange_location_dest_id(self):
+        for item in self:
+            if item.picking_id.picking_type_id == 'INT':
+                if item.location_id.id == item.location_dest_id.id:
+                    raise models.ValidationError('No puede seleccionar la misma ubicacion para una transferencia')
+
 
     @api.onchange('product_id', 'lot_id')
     def _compute_stock_product_qty(self):

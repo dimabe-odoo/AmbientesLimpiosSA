@@ -84,20 +84,22 @@ class SaleOrderComercionet(models.Model):
 
     def get_product(self, product_code):
         product_code = product_code.lstrip('0')
-        product = self.env['product.product'].search([('al_dun', '=', product_code)], limit=1)
+        product = self.env['product.product'].search([('al_dun', '=', product_code)], limit=1, order='id desc')
         if not product:
-            p_tmpl = self.env['product.template'].search([('al_dun', '=', product_code)], limit=1)
+            p_tmpl = self.env['product.template'].search([('al_dun', '=', product_code)], limit=1, order='id desc')
             if p_tmpl:
-                product = self.env['product.product'].search([('product_tmpl_id', '=', p_tmpl.id)])
+                product = self.env['product.product'].search([('product_tmpl_id', '=', p_tmpl.id)], limit=1,
+                                                             order='id desc')
                 if product:
                     product.write({
                         'al_dun': p_tmpl.al_dun,
                         'al_sku': p_tmpl.al_sku
                     })
             else:
-                product = self.env['product.product'].search([('barcode', '=', product_code)], limit=1)
+                product = self.env['product.product'].search([('barcode', '=', product_code)], limit=1, order='id desc')
                 if not product:
-                    product = self.env['product.template'].search([('barcode', '=', product_code)], limit=1)
+                    product = self.env['product.template'].search([('barcode', '=', product_code)], limit=1,
+                                                                  order='id desc')
         return product
 
     def update_product_id_line(self):
@@ -109,14 +111,19 @@ class SaleOrderComercionet(models.Model):
                 })
 
     def create_sale_order(self):
+        fields.Datetime.to_string(
+            pytz.timezone(self.env.context['tz']).localize(fields.Datetime.from_string(datetime.datetime.now()),
+                                                           is_dst=None).astimezone(pytz.utc))
         if not self.client_id:
             raise models.ValidationError('El cliente no se encuentra establecido')
-        #if self.client_id and self.client_code_comercionet:
+        # if self.client_id and self.client_code_comercionet:--
         #    for line in self.comercionet_line_id:
         #        if not line.product_id:
         #            raise models.ValidationError('la linea {} no cuenta con un producto asociado'.format(line.number))
         sale_order = self.env['sale.order'].create({
-            'date_order': datetime.now(),
+            'date_order': fields.Datetime.to_string(
+            pytz.timezone(self.env.context['tz']).localize(fields.Datetime.from_string(datetime.now()),
+                                                           is_dst=None).astimezone(pytz.utc)),
             'l10n_latam_document_type_id': self.env['l10n_latam.document.type'].search([('code', '=', 33)]).id,
             'partner_id': self.client_id.parent_id.id if self.client_id.parent_id else self.client_id.id,
             'partner_shipping_id': self.client_id.id,
@@ -125,7 +132,9 @@ class SaleOrderComercionet(models.Model):
             'payment_term_id': self.client_id.parent_id.property_payment_term_id.id,
             'pricelist_id': self.client_id.property_product_pricelist.id,
             'client_order_ref': self.purchase_order,
-            'validity_date': self.comercionet_dispatched_date,
+            'validity_date': fields.Datetime.to_string(
+            pytz.timezone(self.env.context['tz']).localize(fields.Datetime.from_string(self.comercionet_dispatched_date),
+                                                           is_dst=None).astimezone(pytz.utc)),
             'user_id': self.client_id.user_id.id if self.client_id.user_id else None,
             'warehouse_id': self.env['stock.warehouse'].search([('code', '=', 'BoD01')]).id,
             'comercionet_id': self.id,
@@ -306,7 +315,8 @@ class SaleOrderComercionetLine(models.Model):
                     client = self.comercionet_id.client_id.name
                     if self.comercionet_id.client_id.parent_id:
                         client = self.comercionet_id.client_id.parent_id.name
-                    raise models.ValidationError(f'El producto seleccionado: {new_product_id.name}  \nNo posee precio lista para cliente {client} \nFavor registrar')
+                    raise models.ValidationError(
+                        f'El producto seleccionado: {new_product_id.name}  \nNo posee precio lista para cliente {client} \nFavor registrar')
 
             else:
                 raise models.ValidationError(
@@ -327,10 +337,10 @@ class SaleOrderComercionetLine(models.Model):
 
         if edit_price:
             if new_price * self.quantity < new_final_price:
-                raise models.ValidationError(f'Precio Comercionet {new_price} x {self.quantity}  no puede ser menor al precio final {new_final_price}')
+                raise models.ValidationError(
+                    f'Precio Comercionet {new_price} x {self.quantity}  no puede ser menor al precio final {new_final_price}')
             else:
                 discount_percent = 100 - ((new_final_price / (new_price * self.quantity)) * 100)
                 values['discount_percent'] = discount_percent
 
         return super(SaleOrderComercionetLine, self).write(values)
-

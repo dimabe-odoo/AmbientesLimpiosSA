@@ -18,7 +18,7 @@ class HrPaySlip(models.Model):
 
     payment_term_id = fields.Many2one('custom.payslip.payment.term', 'Forma de Pago')
 
-    loan_id = fields.Many2one('custom.loan')
+    loan_ids = fields.Many2many('custom.loan')
 
     personal_movement_ids = fields.One2many('custom.personal.movements', 'payslip_id')
 
@@ -78,34 +78,36 @@ class HrPaySlip(models.Model):
             [('employee_id', '=', self.employee_id.id), ('state', '=', 'in_process'),
              ('rule_id.code', 'not in', self.input_line_ids.mapped('code'))])
         loan_id = loan_id.filtered(lambda a: self.date_from <= a.next_fee_date <= self.date_to)
-        if not self.input_line_ids.filtered(lambda a: a.code == loan_id.rule_id.code and a.amount > 0) and loan_id:
-            type_id = self.env['hr.payslip.input.type'].search([('code', '=', loan_id.rule_id.code)])
-            actual_fee = len(loan_id.fee_ids.filtered(lambda a: a.paid == True)) + 1
-            if type_id:
-                self.env['hr.payslip.input'].create({
-                    'additional_info': f'Cuota {actual_fee}/{loan_id.fee_qty}',
-                    'code': loan_id.rule_id.code,
-                    'contract_id': self.contract_id.id,
-                    'payslip_id': self.id,
-                    'amount': loan_id.next_fee_id.value,
-                    'input_type_id': type_id.id
-                })
-            else:
-                input_type = self.env['hr.payslip.input.type'].create({
-                    'name': loan_id.rule_id.name,
-                    'code': loan_id.rule_id.code
-                })
-                self.env['hr.payslip.input'].create({
-                    'additional_info': f'Cuota {actual_fee}/{loan_id.fee_qty}',
-                    'code': loan_id.rule_id.code,
-                    'contract_id': self.contract_id.id,
-                    'payslip_id': self.id,
-                    'amount': loan_id.next_fee_id.value,
-                    'input_type_id': input_type.id
-                })
-
+        loans = []
+        for loan in loan_id:
+            if not self.input_line_ids.filtered(lambda a: a.code == loan.rule_id.code and a.amount > 0):
+                type_id = self.env['hr.payslip.input.type'].search([('code', '=', loan.rule_id.code)])
+                actual_fee = len(loan_id.fee_ids.filtered(lambda a: a.paid)) + 1
+                if type_id:
+                    self.env['hr.payslip.input'].create({
+                        'additional_info': f'Cuota {actual_fee}/{loan.fee_qty}',
+                        'code': loan.rule_id.code,
+                        'contract_id': self.contract_id.id,
+                        'payslip_id': self.id,
+                        'amount': loan.next_fee_id.value,
+                        'input_type_id': type_id.id
+                    })
+                else:
+                    input_type = self.env['hr.payslip.input.type'].create({
+                        'name': loan.rule_id.name,
+                        'code': loan.rule_id.code
+                    })
+                    self.env['hr.payslip.input'].create({
+                        'additional_info': f'Cuota {actual_fee}/{loan.fee_qty}',
+                        'code': loan.rule_id.code,
+                        'contract_id': self.contract_id.id,
+                        'payslip_id': self.id,
+                        'amount': loan.next_fee_id.value,
+                        'input_type_id': input_type.id
+                    })
+                loans.append(loan.id)
             self.write({
-                'loan_id': loan_id.id
+                'loan_ids': [(4, l) for l in loans]
             })
         return super(HrPaySlip, self).compute_sheet()
 
@@ -162,7 +164,7 @@ class HrPaySlip(models.Model):
                     })
 
     def exist_input(self, salary_rule_code):
-        input_type_id = self.env['hr.payslip.input.type'].search([('code','=', salary_rule_code)])
+        input_type_id = self.env['hr.payslip.input.type'].search([('code', '=', salary_rule_code)])
 
         if input_type_id:
             payslip_input = self.env['hr.payslip.input'].search(
@@ -174,9 +176,9 @@ class HrPaySlip(models.Model):
 
 
 class HrPaySlipLine(models.Model):
-
     _inherit = 'hr.payslip.line'
 
     def _get_additional_info(self):
-        payslip_input = self.env['hr.payslip.input'].search([('code', '=', self.code), ('payslip_id','=', self.slip_id.id)])
+        payslip_input = self.env['hr.payslip.input'].search(
+            [('code', '=', self.code), ('payslip_id', '=', self.slip_id.id)])
         return f' - {payslip_input.additional_info}' if payslip_input.additional_info else ''

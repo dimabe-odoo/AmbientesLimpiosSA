@@ -21,11 +21,11 @@ class RouteMapLine(models.Model):
 
     date_done = fields.Datetime('Fecha de Entrega')
 
-    pallet_qty = fields.Float('Cantidad de Pallet')
+    pallet_qty = fields.Integer('Cantidad de Pallet')
 
     have_return_pallet = fields.Boolean('Existe Retorno de Palllet')
 
-
+    returned_pallet = fields.Float('Pallets devueltos')
 
     state = fields.Selection(
         [('to_delivered', 'Por Despachar'), ('ok', 'Entrega Ok'), ('parcial', 'Entrega Parcial'),
@@ -58,8 +58,6 @@ class RouteMapLine(models.Model):
     longitude_delivery = fields.Float('Longitude de Entrega')
 
     product_line_ids = fields.One2many('product.line', 'line_id')
-
-    pallets_quantity = fields.Integer('Lotes', compute="_compute_pallets_quantity")
 
     kgs_quantity = fields.Float('Kilos', _compute="_compute_kgs_quantity")
 
@@ -132,7 +130,7 @@ class RouteMapLine(models.Model):
         for item in self:
             view_id = self.env.ref('route_map.route_map_line_change_state_view')
             wiz_id = self.env['change.state.route.line'].sudo().create({
-                'line_id': self.id
+                'line_id': item.id
             })
             return {
                 'name': 'Seleccione Estado de la Entrega',

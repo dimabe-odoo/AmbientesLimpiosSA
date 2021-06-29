@@ -44,8 +44,7 @@ class RouteMapController(http.Controller):
         return record
 
     @http.route('/api/done', type='json', auth='token', method='GET', cors='*')
-    def make_done_line(self, line_id, latitude, longitude, state, observations='', files=None,
-                       ):
+    def make_done_line(self, line_id, latitude, longitude, state, observations='', files=None,):
         line = request.env['route.map.line'].sudo().search([('id', '=', line_id)])
         is_done = False
         password = request.env['ir.config_parameter'].sudo().search([('key', '=', 'user_admin_pass')]).password
