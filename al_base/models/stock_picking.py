@@ -27,6 +27,9 @@ class StockPicking(models.Model):
 
     is_subcontract = fields.Boolean(compute='compute_is_subcontract')
 
+    location_dest_id = fields.Many2one('stock.location', domain=[('usage', '=', 'internal'), ('active', '=', True)])
+
+
     def compute_is_subcontract(self):
         for item in self:
             list = Enumerable(item.move_ids_without_package)
@@ -141,6 +144,7 @@ class StockPicking(models.Model):
 
     @api.model
     def create(self, values):
+        self.verify_location_equal(values)
         res = super(StockPicking, self).create(values)
         sale = self.env['sale.order'].search([('name', '=', res.origin)])
         if sale:
@@ -175,6 +179,7 @@ class StockPicking(models.Model):
         return round_clp(value)
 
     def write(self, values):
+        self.verify_location_equal(values)
         if 'l10n_cl_dte_status' in values.keys():
             if values['l10n_cl_dte_status'] == 'rejected':
                 get_remaining_caf(self.l10n_latam_document_type_id.id)
@@ -186,3 +191,18 @@ class StockPicking(models.Model):
                 values['ted'] = self.get_ted(doc_id[0])
 
         return super(StockPicking, self).write(values)
+
+
+    def verify_location_equal(self, values):
+        if 'location_id' in values.keys():
+            location_id = values['location_id']
+        elif self.location_id:
+            location_id = self.location_id.id
+
+        if 'location_dest_id' in values.keys():
+            location_dest_id = values['location_dest_id']
+        elif self.location_id:
+            location_dest_id = self.location_dest_id.id
+
+        if location_dest_id == location_id:
+            raise models.ValidationError(f'La ubicación de Origen no puede ser la misma que la ubicación de destino')

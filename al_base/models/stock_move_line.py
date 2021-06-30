@@ -11,7 +11,7 @@ class StockMoveLine(models.Model):
 
     stock_product_qty = fields.Float('Stock Disponible', compute="_compute_stock_product_qty", digits=[16, 3])
 
-    product_quant_ids = fields.Many2many('stock.quant', compute='_compute_stock_product_qty', string="Stock Disponible Bodega")
+    product_quant_ids = fields.Many2many('stock.quant', compute='_compute_stock_product_qty')
 
     @api.onchange('product_id','location_id')
     def onchange_product_stock(self):
@@ -42,7 +42,7 @@ class StockMoveLine(models.Model):
                     lambda x: x.location_id.id == item.location_id.id)
                 item.stock_product_qty = quant.sum(lambda x: x.quantity)
             else:
-                quant = Enumerable(self.product_id.stock_quant_ids).where(
+                quant = Enumerable(item.product_id.stock_quant_ids).where(
                     lambda x: x.location_id.id == item.location_id.id)
                 if item.lot_id:
                     quant = quant.where(lambda x: x.lot_id.id == item.lot_id.id)
@@ -50,11 +50,13 @@ class StockMoveLine(models.Model):
                     lambda x: x.location_id.id == item.location_id.id)
                 item.stock_product_qty = quant.sum(lambda x: x.quantity)
 
+
     @api.onchange('lot_id')
     def onchange_lot_id(self):
         quant = self.env['stock.quant'].sudo().search(
             [('lot_id', '=', self.lot_id.id), ('location_id', '=', self.location_id.id)])
         self.stock_product_qty = quant.quantity
+
 
     @api.onchange('product_id')
     def onchange_product_id(self):
@@ -63,6 +65,20 @@ class StockMoveLine(models.Model):
     @api.onchange('lot_id')
     def onchange_lot_id(self):
         self.supplier_lot = self.lot_id.supplier_lot if self.lot_id.supplier_lot else ''
+
+    @api.onchange('location_id')
+    def onchange_location(self):
+        self.show_lot_with_stock()
+
+    def show_lot_with_stock(self):
+        quants = self.env['stock.quant'].search([('product_id', '=', 'product_id'), ('quantity', '>', 0)])
+        return {
+            'domain': {
+                'lot_id': [
+                    ('id', 'in', quants.lot_id.ids)
+                ]
+            }
+        }
 
     @api.model
     def create(self, values):

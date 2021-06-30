@@ -40,7 +40,7 @@ class AccountMoveLine(models.Model):
         return res
 
     def create(self, values_list):
-        res = super(AccountMoveLine, self).create(values)
+        res = super(AccountMoveLine, self).create(values_list)
         move_id = 0
         for values in values_list:
             if 'move_id'in values.keys() and values['move_id']:
