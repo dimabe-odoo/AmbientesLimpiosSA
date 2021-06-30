@@ -38,3 +38,19 @@ class AccountMoveLine(models.Model):
             res['price_item'] = res['price_item'] + (float(res['total_discount']) / self.quantity)
 
         return res
+
+    def create(self, values_list):
+        res = super(AccountMoveLine, self).create(values)
+        move_id = 0
+        for values in values_list:
+            if 'move_id'in values.keys() and values['move_id']:
+                move_id = values['move_id']
+                break
+
+        count_line = self.env['account.move.line'].search([('move_id', '=', move_id), ('exclude_from_invoice_tab', '=', False)])
+
+        if len(count_line) > 20:
+            raise models.ValidationError('No puede ingresar más de 20 lineas de productos')
+
+        return res
+

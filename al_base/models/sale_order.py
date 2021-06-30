@@ -250,12 +250,13 @@ class SaleOrderLine(models.Model):
         product_to_registered = []
 
         for values in vals_list:
-            not_registered_duplicate = False
+            registered_duplicate = False
             if 'order_id' in values.keys():
                 if values['product_id'] in product_to_registered:
-                    not_registered_duplicate = True
+                    registered_duplicate = True
                 product_to_registered.append(values['product_id'])
-                if not self.unique_product_validation(values['order_id'], values, True) or not_registered_duplicate:
+
+                if not self.unique_product_validation(values['order_id'], values, True) or registered_duplicate:
                     if values['name'] not in list_product_duplicate:
                         duplicate_count += 1
                         list_product_duplicate = list_product_duplicate + '\n' + values['name']
@@ -281,6 +282,7 @@ class SaleOrderLine(models.Model):
                     else:
                         raise models.ValidationError(
                             'No puede agregar el producto {} más de una vez'.format(product['name']))
-
+                else:
+                    return True
         else:
             return True

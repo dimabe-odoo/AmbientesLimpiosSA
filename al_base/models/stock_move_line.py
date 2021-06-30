@@ -11,7 +11,7 @@ class StockMoveLine(models.Model):
 
     stock_product_qty = fields.Float('Stock Disponible', compute="_compute_stock_product_qty", digits=[16, 3])
 
-    product_quant_ids = fields.Many2many('stock.quant', compute='_compute_stock_product_qty')
+    product_quant_ids = fields.Many2many('stock.quant', compute='_compute_stock_product_qty', string="Stock Disponible Bodega")
 
     @api.onchange('product_id','location_id')
     def onchange_product_stock(self):
