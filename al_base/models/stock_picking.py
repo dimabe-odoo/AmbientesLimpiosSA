@@ -194,6 +194,8 @@ class StockPicking(models.Model):
 
 
     def verify_location_equal(self, values):
+        location_id = ''
+        location_dest_id = ''
         if 'location_id' in values.keys():
             location_id = values['location_id']
         elif self.location_id:
@@ -204,5 +206,6 @@ class StockPicking(models.Model):
         elif self.location_id:
             location_dest_id = self.location_dest_id.id
 
-        if location_dest_id == location_id:
-            raise models.ValidationError(f'La ubicación de Origen no puede ser la misma que la ubicación de destino')
+        if location_dest_id != '' and location_id != '':
+            if location_dest_id == location_id:
+                raise models.ValidationError(f'La ubicación de Origen no puede ser la misma que la ubicación de destino')
