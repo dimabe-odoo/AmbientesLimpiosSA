@@ -112,7 +112,7 @@ class SaleOrderComercionet(models.Model):
 
     def create_sale_order(self):
         fields.Datetime.to_string(
-            pytz.timezone(self.env.context['tz']).localize(fields.Datetime.from_string(datetime.datetime.now()),
+            pytz.timezone(self.env.context['tz']).localize(fields.Datetime.from_string(datetime.now()),
                                                            is_dst=None).astimezone(pytz.utc))
         if not self.client_id:
             raise models.ValidationError('El cliente no se encuentra establecido')
