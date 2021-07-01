@@ -38,6 +38,7 @@ class AccountMoveLine(models.Model):
             res['price_item'] = res['price_item'] + (float(res['total_discount']) / self.quantity)
 
         return res
+'''
 
     def create(self, values_list):
         res = super(AccountMoveLine, self).create(values_list)
@@ -53,4 +54,5 @@ class AccountMoveLine(models.Model):
             raise models.ValidationError('No puede ingresar más de 20 lineas de productos')
 
         return res
+'''
 
