@@ -13,6 +13,8 @@ class HrSalaryRule(models.Model):
 
     category_code = fields.Char('Código Categoría', related="category_id.code")
 
+    is_other_savings = fields.Boolean('Otro Ahorro')
+
 
     @api.onchange('is_bonus')
     def onchange_method(self):
@@ -29,6 +31,16 @@ class HrSalaryRule(models.Model):
     @api.onchange('is_permanent_discount')
     def onchange_method_is_permanent_discount(self):
         if self.is_permanent_discount:
+            self.write({
+                'condition_select': 'python',
+                'condition_python': f'result = (inputs.{self.code} and inputs.{self.code}.amount > 0)',
+                'amount_select': 'code',
+                'amount_python_compute': f'result = inputs.{self.code}.amount'
+            })
+
+    @api.onchange('is_other_savings')
+    def onchange_method_is_other_saving(self):
+        if self.is_other_savings:
             self.write({
                 'condition_select': 'python',
                 'condition_python': f'result = (inputs.{self.code} and inputs.{self.code}.amount > 0)',

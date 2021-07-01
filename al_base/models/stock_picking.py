@@ -209,3 +209,13 @@ class StockPicking(models.Model):
         if location_dest_id != '' and location_id != '':
             if location_dest_id == location_id:
                 raise models.ValidationError(f'La ubicación de Origen no puede ser la misma que la ubicación de destino')
+
+    def filter_lots(self):
+        for line in self.move_line_ids_without_package:
+            #quants = self.env['stock.quant'].search([('product_id', '=', line.product_id.id), ('location_id', '=', line.location_id.id), ('quantity', '>', 0)])
+            line.show_lot_with_stock()
+            #line.lot_id.update({
+            #    'domain': [('id', 'in', quants.lot_id.ids)]
+            #})
+
+            #return {'domain': {'lot_id': [('id', 'in', quants.lot_id.ids)]}}

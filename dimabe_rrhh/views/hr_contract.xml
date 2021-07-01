@@ -19,18 +19,46 @@
       </xpath>
       <xpath expr="//page[@name='information']" position="after">
         <page string="Descuentos Fijos/Permanentes" name="permanent_discounts">
-            <field name="permanent_discounts_ids" mode="tree">
-              <form>
-                <group>
-                  <field name="salary_rule_id"/>
-                  <field name="amount"/>
-                </group>
-              </form>
-              <tree>
+          <field name="permanent_discounts_ids" mode="tree">
+            <form>
+              <group>
                 <field name="salary_rule_id"/>
                 <field name="amount"/>
-              </tree>
+              </group>
+            </form>
+            <tree>
+              <field name="salary_rule_id"/>
+              <field name="amount"/>
+            </tree>
+          </field>
+        </page>
+        <page string="Ahorros" name="savings">
+          <group string="CCAF" style="width:50%;">
+            <field name="have_saving_ccaf"/>
+            <field name="saving_ccaf" attrs="{'invisible':[('have_saving_ccaf','=',False)]}"/>
+          </group>
+          <group string="APV" style="width:50%">
+            <field name="apv_type_id" invisible="1"/>
+            <field name="apv_id" domain="[('data_type_id','=',apv_type_id)]"
+                   context="{'default_data_type_id':apv_type_id}"/>
+            <field name="apv_currency"/>
+            <field name="apv_amount"/>
+            <field name="apv_payment_term"/>
+          </group>
+          <group>
+            <field name="other_saving_ids" mode="tree">
+              <form>
+              <group>
+                <field name="salary_rule_id"/>
+                <field name="amount"/>
+              </group>
+            </form>
+            <tree>
+              <field name="salary_rule_id"/>
+              <field name="amount"/>
+            </tree>
             </field>
+          </group>
         </page>
       </xpath>
       <xpath expr="//page[@name='permanent_discounts']" position="after">
@@ -59,24 +87,13 @@
             <field name="fun_number" attrs="{'invisible':[('is_fonasa','=',True)]}"/>
             <field name="own_account_isapre" attrs="{'invisible':[('is_fonasa','=',True)]}"/>
           </group>
-          <group string="CCAF" style="width:50%;">
-            <field name="have_saving_ccaf"/>
-            <field name="saving_ccaf" attrs="{'invisible':[('have_saving_ccaf','=',False)]}"/>
-          </group>
+
           <group string="Seguro Complementario" style="width:50%;">
             <field name="supplementary_insurance_type_id" invisible="1"/>
             <field name="supplementary_insurance_id" domain="[('data_type_id','=',supplementary_insurance_type_id)]"
                    context="{'default_type':'safe','default_data_type_id':supplementary_insurance_type_id}"/>
             <field name="currency_supplementary_insurance_id"/>
             <field name="supplementary_insurance_agreed_quotes_uf"/>
-          </group>
-          <group string="APV" style="width:50%">
-            <field name="apv_type_id" invisible="1"/>
-            <field name="apv_id" domain="[('data_type_id','=',apv_type_id)]"
-                   context="{'default_data_type_id':apv_type_id}"/>
-            <field name="apv_currency"/>
-            <field name="apv_amount"/>
-            <field name="apv_payment_term"/>
           </group>
         </page>
       </xpath>

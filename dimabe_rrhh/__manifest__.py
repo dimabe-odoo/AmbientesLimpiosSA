@@ -52,7 +52,8 @@
         'views/res_company.xml',
         'views/custom_loan.xml',
         'views/confirm_loan.xml',
-        'views/custom_holidays.xml'
+        'views/custom_holidays.xml',
+        'views/main_data_change_report.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

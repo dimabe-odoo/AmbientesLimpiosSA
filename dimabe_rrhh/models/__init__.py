@@ -30,3 +30,4 @@ from . import confirm_loan
 from . import custom_personal_movements
 from . import custom_permanent_discounts
 from . import hr_payslip_input
+from . import custom_other_savings

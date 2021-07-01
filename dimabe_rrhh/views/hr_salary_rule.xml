@@ -17,6 +17,7 @@
                     <field name="discount_in_fee" attrs="{'invisible':[('category_code', '!=', 'ODES')]}"/>
                     <field name="category_code" invisible="1"/>
                     <field name="is_permanent_discount" attrs="{'invisible':[('category_code', '!=', 'ODES')]}"/>
+                    <field name="is_other_savings" attrs="{'invisible':[('category_code', '!=', 'ODES')]}"/>
                 </xpath>
             </field>
         </record>

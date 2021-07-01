@@ -1,5 +1,5 @@
 from odoo import models, fields, api
-
+from py_linq import Enumerable
 
 class HrPaySlip(models.Model):
     _inherit = 'hr.payslip'
@@ -74,6 +74,7 @@ class HrPaySlip(models.Model):
 
     def update_other_entries(self):
         self.get_permanent_discounts()
+        self.get_other_savings()
         loan_id = self.env['custom.loan'].search(
             [('employee_id', '=', self.employee_id.id), ('state', '=', 'in_process'),
              ('rule_id.code', 'not in', self.input_line_ids.mapped('code'))])
@@ -128,6 +129,41 @@ class HrPaySlip(models.Model):
                     })
             return super(HrPaySlip, self).action_payslip_done()
 
+    def get_other_savings(self):
+        if self.contract_id and len(self.contract_id.other_saving_ids) > 0:
+            for item in self.contract_id.other_saving_ids:
+                exist_input = self.exist_input(item.salary_rule_id.code)
+                if not exist_input:
+                    type_id = self.env['hr.payslip.input.type'].search([('code', '=', item.salary_rule_id.code)])
+                    if type_id:
+                        self.env['hr.payslip.input'].create({
+                            'additional_info': 'Ahorro',
+                            'code': item.salary_rule_id.code,
+                            'contract_id': self.contract_id.id,
+                            'payslip_id': self.id,
+                            'input_type_id': type_id.id,
+                            'amount': item.amount
+                        })
+                    else:
+                        input_type = self.env['hr.payslip.input.type'].create({
+                            'name': item.salary_rule_id.name,
+                            'code': item.salary_rule_id.code
+                        })
+
+                        self.env['hr.payslip.input'].create({
+                            'additional_info': 'Ahorro',
+                            'code': item.salary_rule_id.code,
+                            'contract_id': self.contract_id.id,
+                            'payslip_id': self.id,
+                            'input_type_id': input_type.id,
+                            'amount': item.amount
+                        })
+                else:
+                    exist_input.write({
+                        'amount': item.amount
+                    })
+
+
     def get_permanent_discounts(self):
         if self.contract_id and len(self.contract_id.permanent_discounts_ids) > 0:
             for item in self.contract_id.permanent_discounts_ids:
@@ -173,6 +209,35 @@ class HrPaySlip(models.Model):
             return payslip_input
         else:
             False
+
+    def custom_report_fix(self, list_report_list):
+        report_linq = Enumerable(list_report_list)
+        report_ids = report_linq.select(lambda x: x['id'])
+        report = self.env['ir.actions.report'].search([('id', 'in', report_ids.to_list())])
+
+        for rep in report:
+            report_to_update = report_linq.first_or_default(lambda x: x['id'] == rep.id)
+            if report_to_update:
+                new_name = report_to_update['new_name'] if 'new_name' in report_to_update.keys() else rep.name
+                new_template_name = report_to_update[
+                    'template_new'] if 'template_new' in report_to_update.keys() else rep.report_name
+                paperformat_id = report_to_update[
+                    'paperformat_id'] if 'paperformat_id' in report_to_update.keys() else rep.paperformat_id
+                print_report_name = report_to_update[
+                    'print_report_name'] if 'print_report_name' in report_to_update.keys() else rep.print_report_name
+
+                if rep.report_name != new_template_name or rep.report_file != new_template_name or rep.name != new_name or rep.paperformat_id != paperformat_id or rep.print_report_name != print_report_name:
+                    rep.write({
+                        'report_name': new_template_name,
+                        'report_file': new_template_name,
+                        'name': new_name,
+                        'paperformat_id': paperformat_id,
+                        'print_report_name': print_report_name
+                    })
+                else:
+                    continue
+            else:
+                continue
 
 
 

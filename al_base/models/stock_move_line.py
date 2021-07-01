@@ -13,6 +13,7 @@ class StockMoveLine(models.Model):
 
     product_quant_ids = fields.Many2many('stock.quant', compute='_compute_stock_product_qty')
 
+
     @api.onchange('product_id','location_id')
     def onchange_product_stock(self):
         res = {
@@ -56,22 +57,20 @@ class StockMoveLine(models.Model):
         quant = self.env['stock.quant'].sudo().search(
             [('lot_id', '=', self.lot_id.id), ('location_id', '=', self.location_id.id)])
         self.stock_product_qty = quant.quantity
+        self.supplier_lot = self.lot_id.supplier_lot if self.lot_id.supplier_lot else ''
 
 
     @api.onchange('product_id')
     def onchange_product_id(self):
         self.is_loteable = self.product_id.tracking == 'lot'
 
-    @api.onchange('lot_id')
-    def onchange_lot_id(self):
-        self.supplier_lot = self.lot_id.supplier_lot if self.lot_id.supplier_lot else ''
-
     @api.onchange('location_id')
     def onchange_location(self):
         self.show_lot_with_stock()
 
+
     def show_lot_with_stock(self):
-        quants = self.env['stock.quant'].search([('product_id', '=', 'product_id'), ('quantity', '>', 0)])
+        quants = self.env['stock.quant'].search([('product_id', '=', self.product_id.id), ('location_id', '=', self.location_id.id) ,('quantity', '>', 0)])
         return {
             'domain': {
                 'lot_id': [

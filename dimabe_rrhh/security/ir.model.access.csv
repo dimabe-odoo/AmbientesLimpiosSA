@@ -19,3 +19,5 @@ access_dimabe_custom_fee,dimabe_rrhh.custom_fee,model_custom_fee,,1,1,1,1
 access_dimabe_confirm_done_loan,dimabe_rrhh.confirm_done_loan,model_confirm_done_loan,,1,1,1,1
 access_dimabe_custom_personal_movements,dimabe_rrhh.custom_personal_movements,model_custom_personal_movements,,1,1,1,1
 access_dimabe_custom_permanent_discounts,dimabe_rrhh.custom_permanent_discounts,model_custom_permanent_discounts,,1,1,1,1
+access_dimabe_custom_other_savings,dimabe_rrhh.custom_other_savings,model_custom_other_savings,,1,1,1,1
+

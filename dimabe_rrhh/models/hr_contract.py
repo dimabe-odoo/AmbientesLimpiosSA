@@ -77,6 +77,8 @@ class HrContract(models.Model):
 
     permanent_discounts_ids = fields.One2many('custom.permanent_discounts', 'contract_id', string='Descuentos Fijos/Permanentes')
 
+    other_saving_ids = fields.One2many('custom.other_savings', 'contract_saving_id', string="Otros Ahorros")
+
     @api.onchange('is_fonasa')
     def onchange_is_fonasa(self):
         for item in self:
