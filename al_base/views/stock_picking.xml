@@ -73,10 +73,10 @@
         <xpath expr="//header" position="inside">
           <field name="is_subcontract" invisible="1"/>
         </xpath>
-        <xpath expr="//field[@name='location_dest_id']" position="after">
+        <!--<xpath expr="//field[@name='location_dest_id']" position="after">
             <button type="object" string="Filtrar Lotes con stock" name="filter_lots"
                   attrs="{'invisible':[('picking_type_id','!=',5)]}" class="oe_highlight"/>
-        </xpath>
+        </xpath>-->
       </field>
     </record>
   </data>
