@@ -42,21 +42,18 @@ class StockMoveLine(models.Model):
                     lambda x: x.location_id.id == item.location_id.id)
                 item.product_quant_ids = item.product_id.stock_quant_ids.filtered(
                     lambda x: x.location_id.id == item.location_id.id)
+                test = quant.sum(lambda x: x.quantity)
+                print(test)
                 item.stock_product_qty = quant.sum(lambda x: x.quantity)
             else:
-                quant = Enumerable(item.product_id.stock_quant_ids).where(
-                    lambda x: x.location_id.id == item.location_id.id)
+                quant = item.product_id.stock_quant_ids.filtered(lambda x: x.location_id.id == self.location_id.id)
                 if item.lot_id:
-                    quant = quant.where(lambda x: x.lot_id.id == item.lot_id.id)
-                item.product_quant_ids = item.product_id.stock_quant_ids.filtered(
-                    lambda x: x.location_id.id == item.location_id.id)
-                item.stock_product_qty = quant.sum(lambda x: x.quantity)
+                    quant = quant.filtered(lambda x: x.lot_id.id == item.lot_id.id)
+                item.stock_product_qty = sum(quant.mapped('quantity'))
+                item.product_quant_ids = quant
 
     @api.onchange('lot_id')
     def onchange_lot_id(self):
-        quant = self.env['stock.quant'].sudo().search(
-            [('lot_id', '=', self.lot_id.id), ('location_id', '=', self.location_id.id)])
-        self.stock_product_qty = quant.quantity
         self.supplier_lot = self.lot_id.supplier_lot if self.lot_id.supplier_lot else ''
 
     @api.onchange('product_id')
