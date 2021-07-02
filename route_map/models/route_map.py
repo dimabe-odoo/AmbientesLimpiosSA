@@ -17,7 +17,8 @@ class RouteMap(Model):
     driver_id = fields.Many2one('res.partner', string='Conductor', related='truck_id.driver_id')
 
     sale_id = fields.Many2one('sale.order', 'Pedido',
-                              domain=[('state', 'in', ['sale', 'done']), ('invoice_publish_ids', '!=', False)])
+                              domain=[('state', 'in', ['sale', 'done']), ('invoice_ids', '!=', False),
+                                      ('invoice_publish_ids', '!=', False)])
 
     picking_other_id = fields.Many2one('stock.picking',
                                        domain=[('state', '=', 'done'), ('map_id', '=', False),
@@ -52,6 +53,8 @@ class RouteMap(Model):
 
     has_regional_value = fields.Boolean('Tiene Valor Regional')
 
+    total_regional_value = fields.Float('Valor Regional')
+
     change_from_line = fields.Boolean('Cambio datos desde la linea')
 
     sale_ids = fields.Many2many('sale.order', compute='compute_sale_ids')
@@ -77,7 +80,12 @@ class RouteMap(Model):
 
     def add_picking(self):
         if self.type_of_map == 'client':
-            for picking in self.sale_id.picking_ids.filtered(lambda x: x.picking_type_id.sequence_code != 'IN'):
+            for picking in self.sale_id.picking_ids.filtered(
+                    lambda x: x.picking_type_id.sequence_code != 'IN' and x.state == 'done'):
+                route_map_line = self.env['route.map.line'].search(
+                    [('map_id', '!=', self.id), ('dispatch_id.id', '=', picking.id)])
+                if route_map_line:
+                    continue
                 line = self.env['route.map.line'].sudo().create({
                     'map_id': self.id,
                     'dispatch_id': picking.id,

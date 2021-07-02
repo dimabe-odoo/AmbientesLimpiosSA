@@ -27,6 +27,7 @@
                                 <field name="route_value" context="{'isFromMap': True}"/>
                                 <field name="type_of_map" invisible="1"/>
                                 <field name="has_regional_value"/>
+                                <field name="total_regional_value" attrs="{'invisible': [('has_regional_value','=',False)]}"/>
                                 <field name="add_more"/>
                             </group>
                         </group>
@@ -78,13 +79,12 @@
                                         <field name="address_to_delivery" readonly="1"/>
                                         <field name="dispatch_date" readonly="1"
                                                attrs="{'column_invisible':[('parent.state','=','draft')]}"/>
-                                        <field name="dispatch_date" readonly="1"
-                                               attrs="{'column_invisible':[('parent.state','=','draft')]}"/>
                                         <field name="regional_line_value"
                                                attrs="{'column_invisible': [('parent.has_regional_value','=',False)]}"/>
                                         <field name="date_done" readonly="1"/>
                                         <field name="pallet_qty"/>
-                                        <field name="have_return_pallet" readonly="1"/>
+                                        <field name="have_return_pallet"/>
+                                        <field name="returned_pallet_qty" attrs="{'invisible': [('have_return_pallet','=',False)]}"/>
                                         <field name="line_value"/>
                                         <field name="state" readonly="1"/>
                                     </tree>

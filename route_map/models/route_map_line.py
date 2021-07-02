@@ -69,6 +69,8 @@ class RouteMapLine(models.Model):
 
     regional_line_value = fields.Float('Valor Regional')
 
+    returned_pallet_qty = fields.Integer('Cantidad Pallet Devueltos')
+
     def _compute_pallets_quantity(self):
         for item in self:
             pallet_ids = []
@@ -77,9 +79,11 @@ class RouteMapLine(models.Model):
                     pallet_ids.append(line.id)
             item.pallets_quantity = len(pallet_ids)
 
+
+
     def compute_invoice_ids(self):
         for item in self:
-            item.invoice_ids = item.sale_id.invoice_ids
+            item.invoice_ids = item.sale_id.invoice_ids.filtered(lambda x: 'refund' not in x.move_type)
 
     def compute_invoice_name(self):
         for item in self:
@@ -198,10 +202,20 @@ class RouteMapLine(models.Model):
                     self.map_id.write({
                         'route_value': map_value
                     })
+                if 'regional_line_value' in value.keys():
+                    regional_value = sum(self.map_id.dispatch_ids.mapped('regional_line_value'))
+                    self.map_id.write({
+                        'total_regional_value' : regional_value
+                    })
         else:
             if 'line_value' in values.keys():
                 map_value = sum(self.map_id.dispatch_ids.mapped('line_value'))
                 self.map_id.write({
                     'route_value': map_value
+                })
+            if 'regional_line_value' in values.keys():
+                regional_value = sum(self.map_id.dispatch_ids.mapped('regional_line_value'))
+                self.map_id.write({
+                    'total_regional_value': regional_value
                 })
         return res
