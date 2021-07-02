@@ -8,6 +8,7 @@
         <xpath expr="//field[@name='product_id']"
                position="after">
           <field name="is_loteable" invisible="1"/>
+          <field name="product_lot_ids" invisible="1"/>
           <field name="supplier_lot" attrs="{'readonly':[('is_loteable','!=',True)]}"/>
         </xpath>
         <xpath expr="//field[@name='lot_name']" position="attributes">
@@ -15,6 +16,7 @@
         </xpath>
         <xpath expr="//field[@name='lot_id']" position="attributes">
           <attribute name="options">{'no_create': True, 'no_create_edit':True}</attribute>
+          <attribute name="domain">[('id','in',product_lot_ids)]</attribute>
         </xpath>
         <xpath expr="//field[@name='lot_id']" position="after">
           <field name="stock_product_qty" readonly="1"/>

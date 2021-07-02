@@ -6,11 +6,11 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     @api.model
-    def create(self,values):
-        if isinstance(values,list):
+    def create(self, values):
+        if isinstance(values, list):
             for val in values:
                 if 'parent_id' in val.keys():
-                    parent_id = self.env['res.partner'].search([('id','=',val['parent_id'])])
+                    parent_id = self.env['res.partner'].search([('id', '=', val['parent_id'])])
                     if parent_id.l10n_cl_dte_email and parent_id.l10n_cl_dte_email != '':
                         val['l10n_cl_dte_email'] = parent_id.l10n_cl_dte_email
                         val['l10n_cl_activity_description'] = parent_id.l10n_cl_activity_description

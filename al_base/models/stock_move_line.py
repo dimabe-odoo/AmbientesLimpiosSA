@@ -13,12 +13,14 @@ class StockMoveLine(models.Model):
 
     product_quant_ids = fields.Many2many('stock.quant', compute='_compute_stock_product_qty')
 
+    product_lot_ids = fields.Many2many('stock.production.lot')
 
-    @api.onchange('product_id','location_id')
+    @api.onchange('product_id', 'location_id', 'lot_id')
     def onchange_product_stock(self):
         res = {
             'domain': {
-                'lot_id': [('id','in',self.product_id.stock_quant_ids.filtered(lambda x: x.location_id.id == self.location_id.id).mapped('lot_id').ids)]
+                'lot_id': [('id', 'in', self.product_id.stock_quant_ids.filtered(
+                    lambda x: x.location_id.id == self.location_id.id).mapped('lot_id').ids)]
             }
         }
         return res
@@ -29,7 +31,6 @@ class StockMoveLine(models.Model):
             if item.picking_id.picking_type_id == 'INT':
                 if item.location_id.id == item.location_dest_id.id:
                     raise models.ValidationError('No puede seleccionar la misma ubicacion para una transferencia')
-
 
     @api.onchange('product_id', 'lot_id')
     def _compute_stock_product_qty(self):
@@ -51,14 +52,12 @@ class StockMoveLine(models.Model):
                     lambda x: x.location_id.id == item.location_id.id)
                 item.stock_product_qty = quant.sum(lambda x: x.quantity)
 
-
     @api.onchange('lot_id')
     def onchange_lot_id(self):
         quant = self.env['stock.quant'].sudo().search(
             [('lot_id', '=', self.lot_id.id), ('location_id', '=', self.location_id.id)])
         self.stock_product_qty = quant.quantity
         self.supplier_lot = self.lot_id.supplier_lot if self.lot_id.supplier_lot else ''
-
 
     @api.onchange('product_id')
     def onchange_product_id(self):
@@ -68,9 +67,9 @@ class StockMoveLine(models.Model):
     def onchange_location(self):
         self.show_lot_with_stock()
 
-
     def show_lot_with_stock(self):
-        quants = self.env['stock.quant'].search([('product_id', '=', self.product_id.id), ('location_id', '=', self.location_id.id) ,('quantity', '>', 0)])
+        quants = self.env['stock.quant'].search(
+            [('product_id', '=', self.product_id.id), ('location_id', '=', self.location_id.id), ('quantity', '>', 0)])
         return {
             'domain': {
                 'lot_id': [
@@ -87,6 +86,8 @@ class StockMoveLine(models.Model):
                 r.verify_stock_move_line()
         else:
             res.verify_stock_move_line()
+        res.product_lot_ids = res.product_id.stock_quant_ids.filtered(
+            lambda x: x.location_id.id == res.location_id.id).mapped('lot_id')
         return res
 
     def write(self, values):
