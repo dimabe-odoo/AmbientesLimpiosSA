@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="total_order_form_view" model="ir.ui.view">
+            <field name="name">Reporte de Total Pedidos</field>
+            <field name="model">wizard.excel.report</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                    </sheet>
+                    <footer>
+                        <button type="object" name="create_total_order" string="Generar"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="wizard_excel_report_act_window" model="ir.actions.act_window">
+            <field name="name">Reporte de Total Pedidos</field>
+            <field name="res_model">wizard.excel.report</field>
+            <field name="view_mode">form</field>
+        </record>
+
+        <menuitem name="Reporte de Total Pedido" id="total_order_menu" parent="sale.menu_sale_report" action="wizard_excel_report_act_window"/>
+
+    </data>
+</odoo>
