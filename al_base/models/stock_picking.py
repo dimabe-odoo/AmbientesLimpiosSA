@@ -29,6 +29,8 @@ class StockPicking(models.Model):
 
     location_dest_id = fields.Many2one('stock.location', domain=[('usage', '=', 'internal'), ('active', '=', True)])
 
+    location_id = fields.Many2one('stock.location', domain=[('usage', '=', 'internal'), ('active', '=', True)])
+
 
     def compute_is_subcontract(self):
         for item in self:
