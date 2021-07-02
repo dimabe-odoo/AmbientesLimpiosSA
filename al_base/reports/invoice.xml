@@ -149,7 +149,13 @@
                     </td>
                     <td style="text-align:left;">
                       :
-                      <span t-field="d.partner_shipping_id.street"/>
+                      <t t-if="d.partner_id.parent_id">
+                        <span t-field="d.partner_id.parent_id.street"/>
+                      </t>
+                      <t else="">
+                        <span t-field="d.partner_id.street"/>
+                      </t>
+
                     </td>
                     <td style="text-align:left;">
                       <strong>CIUDAD</strong>
@@ -275,7 +281,8 @@
             <p style="font-size: 11px;">
               <strong>Sirvase Recibir Conforme lo siguiente según Detalle:</strong>
             </p>
-            <div style="width:100%;margin:0 auto;min-height:500px;border:1px solid; border-radius: 5px; margin-top:4px;">
+            <div
+                style="width:100%;margin:0 auto;min-height:500px;border:1px solid; border-radius: 5px; margin-top:4px;">
               <table style="width:100%;font-size:9px;" cellspacing="0">
                 <tr>
                   <t t-if="d.l10n_latam_document_type_id.code == '39'">
@@ -312,7 +319,7 @@
                       </td>
                     </t>
                     <td style="border-right:1px solid;border-bottom:1px solid;text-align:center;padding-right:4px;">
-                      <span t-esc="line.quantity"/>
+                      <span t-esc="int(line.quantity)"/>
                     </td>
                     <td style="border-right:1px solid;border-bottom:1px solid;text-align:left;padding-right:4px;padding-left:4px;">
                       <span t-field="line.name"/>
@@ -379,7 +386,7 @@
                     <t t-foreach="d.l10n_cl_reference_ids" t-as="line">
                       <tr>
                         <td style="border-right: 1px solid; border-bottom: 1px solid;">
-                          <span t-esc="line.reference_doc_code[3:]"/>
+                          <span t-field="line.reference_doc_code"/>
                         </td>
                         <td style="border-right: 1px solid; border-bottom: 1px solid;">
                           <span t-field="line.reason"/>
@@ -524,10 +531,10 @@
                 </div>
               </t>
               <t t-if="l == range_copies and d.l10n_latam_document_type_id.code != '39'">
-                  <div style="float: right; width: 100%; text-align: right; margin-top: 5px;">
-                    <span><strong>CEDIBLE</strong></span>
-                  </div>
-                </t>
+                <div style="float: right; width: 100%; text-align: right; margin-top: 5px;">
+                  <span><strong>CEDIBLE</strong></span>
+                </div>
+              </t>
             </div>
             <t t-if="l == range_copies or d.l10n_latam_document_type_id.code == '39'">
               <div style="page-break-after:avoid;"></div>
@@ -672,7 +679,12 @@
                   </td>
                   <td style="text-align:left;">
                     :
-                    <span t-field="d.partner_id.street"/>
+                    <t t-if="d.partner_id.parent_id">
+                      <span t-field="d.partner_id.parent_id.street"/>
+                    </t>
+                    <t else="">
+                      <span t-field="d.partner_id.street"/>
+                    </t>
                   </td>
                   <td style="text-align:left;">
                     <strong>GIRO:</strong>
