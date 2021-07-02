@@ -77,7 +77,7 @@ class RouteMap(Model):
 
     def add_picking(self):
         if self.type_of_map == 'client':
-            for picking in self.sale_id.picking_ids.filtered(lambda x: x.picking_type_id.sequence_code != 'IN' and):
+            for picking in self.sale_id.picking_ids.filtered(lambda x: x.picking_type_id.sequence_code != 'IN'):
                 line = self.env['route.map.line'].sudo().create({
                     'map_id': self.id,
                     'dispatch_id': picking.id,
