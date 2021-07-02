@@ -64,7 +64,7 @@ class StockMoveLine(models.Model):
     def onchange_product_id(self):
         self.is_loteable = self.product_id.tracking == 'lot'
 
-    @api.onchange('location_id')
+    @api.onchange('product_id')
     def onchange_location(self):
         self.show_lot_with_stock()
 
