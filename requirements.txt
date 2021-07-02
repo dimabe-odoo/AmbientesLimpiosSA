@@ -7,4 +7,5 @@ pytz
 pandas
 pydifact == 0.0.5
 PyJWT
+XlsxWriter
 cryptography
