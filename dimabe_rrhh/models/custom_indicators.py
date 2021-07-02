@@ -96,6 +96,7 @@ class CustomIndicators(models.Model):
         tables = soup.find_all('table')
         indicators = []
         values = []
+        utm_uta = []
         for table in tables:
             if table == tables[0]:
                 uf_value = self.get_table_type_1(table)
@@ -113,6 +114,7 @@ class CustomIndicators(models.Model):
                         row +=1
             elif table == tables[1]:
                 table_data = self.get_utm_uta(table)
+                utm_uta = self.get_utm_uta(table)
                 self.env['custom.indicators.data'].create({
                     'name':table_data['data'][0]['title'],
                     'value': d['data'],
@@ -203,14 +205,17 @@ class CustomIndicators(models.Model):
                     })
 
         taxes = getTaxeUniques(self.get_month(self.month))
-        for item in taxes:
-            self.env['custom.unique.tax'].create({
-                'salary_from': item['from'],
-                'salary_to': item['to'],
-                'factor': item['factor'],
-                'amount_to_reduce': item['discount'],
-                'indicator_id' : self.id
-            })
+        if taxes:
+            for item in taxes:
+                self.env['custom.unique.tax'].create({
+                    'salary_from': item['from'],
+                    'salary_to': item['to'],
+                    'factor': item['factor'],
+                    'amount_to_reduce': item['discount'],
+                    'indicator_id' : self.id
+                })
+        else:
+            self.createTaxesUniques(utm_uta)
 
     def get_household_allowance_data(self,table):
         data = []
@@ -466,3 +471,76 @@ class CustomIndicators(models.Model):
             return 'Noviembre'
         elif 'dec' == month:
             return 'Diciembre'
+
+
+    def createTaxesUniques(self, utm_uta):
+        utm = 0
+        if len(utm_uta['data']) > 0:
+            for item in utm_uta['data']:
+                if item['title'] == 'UTM':
+                    utm = item['value']
+        if utm != 0:
+            self.clean_unique_tax_registered()
+            self.env['custom.unique.tax'].create({
+                'salary_from': utm * 13.5 + 0.01,
+                'salary_to': utm * 30,
+                'factor': 0.04,
+                'amount_to_reduce': utm * 0.54,
+                'indicator_id': self.id
+            })
+
+            self.env['custom.unique.tax'].create({
+                'salary_from': utm * 30 + 0.01,
+                'salary_to': utm * 50,
+                'factor': 0.08,
+                'amount_to_reduce': utm * 1.74,
+                'indicator_id': self.id
+            })
+
+            self.env['custom.unique.tax'].create({
+                'salary_from': utm * 50 + 0.01,
+                'salary_to': utm * 70,
+                'factor': 0.135,
+                'amount_to_reduce': utm * 4.49,
+                'indicator_id': self.id
+            })
+
+            self.env['custom.unique.tax'].create({
+                'salary_from': utm * 70 + 0.01,
+                'salary_to': utm * 90,
+                'factor': 0.23,
+                'amount_to_reduce': utm * 11.14,
+                'indicator_id': self.id
+            })
+
+            self.env['custom.unique.tax'].create({
+                'salary_from': utm * 90 + 0.01,
+                'salary_to': utm * 120,
+                'factor': 0.304,
+                'amount_to_reduce': utm * 17.8,
+                'indicator_id': self.id
+            })
+
+            self.env['custom.unique.tax'].create({
+                'salary_from': utm * 120 + 0.01,
+                'salary_to': utm * 310,
+                'factor': 0.35,
+                'amount_to_reduce': utm * 23.32,
+                'indicator_id': self.id
+            })
+
+            self.env['custom.unique.tax'].create({
+                'salary_from': utm * 310 + 0.01,
+                'salary_to': 0,
+                'factor': 0.4,
+                'amount_to_reduce': utm * 38.82,
+                'indicator_id': self.id
+            })
+        else:
+            raise models.ValidationError('Hay un problema con obtener el valor de UTM')
+
+    def clean_unique_tax_registered(self):
+        unique_tax_ids = self.env['custom.unique.tax'].search([('indicator_id', '=', self.id)])
+        if len(unique_tax_ids) > 0:
+            for item in unique_tax_ids:
+                item.unlink()
