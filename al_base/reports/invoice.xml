@@ -465,7 +465,6 @@
                 </table>
               </div>
             </div>
-
             <div style="margin-top: 12px; width:100%; min-height:120px;">
               <div style="width:49%; float:left; ">
                 <div style="width: 100%px; height: 150px; text-align:center;">
@@ -527,9 +526,9 @@
                     de
                     mercaderias o servicio(s) prestado(s) ha(n) sino recibido(s).
                   </p>
-                  <t t-set="l" t-value="l+1"/>
                 </div>
               </t>
+              <t t-set="l" t-value="l+1"/>
               <t t-if="l == range_copies and d.l10n_latam_document_type_id.code != '39'">
                 <div style="float: right; width: 100%; text-align: right; margin-top: 5px;">
                   <span><strong>CEDIBLE</strong></span>
