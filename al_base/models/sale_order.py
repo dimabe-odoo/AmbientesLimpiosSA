@@ -44,7 +44,25 @@ class SaleOrder(models.Model):
                     if client:
                         raise models.ValidationError(
                             f'No puede crear una nota de venta con la oc {values["client_order_ref"]}')
+
         return super(SaleOrder, self).create(values)
+
+    def write(self,values):
+        if isinstance(values, list):
+            for value in values:
+                if 'client_order_ref' in value.keys():
+                    if value['client_order_ref']:
+                        client = self.env['sale.order'].search([('client_order_ref', '=', value['client_order_ref'])])
+                        if client:
+                            raise models.ValidationError(
+                                f'No puede crear una nota de venta con la OC {value["client_order_ref"]}')
+        else:
+            if 'client_order_ref' in values.keys():
+                if values['client_order_ref']:
+                    client = self.env['sale.order'].search([('client_order_ref', '=', values['client_order_ref'])])
+                    if client:
+                        raise models.ValidationError(
+                            f'No puede crear una nota de venta con la oc {values["client_order_ref"]}')
 
     @api.onchange('user_id')
     def on_change_user(self):
@@ -220,7 +238,7 @@ class SaleOrder(models.Model):
 
     def close_orders(self):
         sale_orders = self.env['sale.order'].search([])
-        sale_order_parcial = Enumerable(sale_orders).where(lambda x: len(x.picking_ids) > 1 and x.state != 'done')
+        sale_order_parcial = Enumerable(sale_orders).where(lambda x: len(x.picking_ids) > 1)
         if sale_order_parcial.count() > 0:
             for sale in sale_order_parcial:
                 followers = get_followers(self._inherit, sale.id)
@@ -235,9 +253,10 @@ class SaleOrder(models.Model):
                                       followers, 'stock.picking',
                                       pending.id)
                     pending.action_cancel()
-                sale.write({
-                    'state': 'done'
-                })
+                if sale.state != 'done':
+                    sale.write({
+                        'state': 'done'
+                    })
 
 
 class SaleOrderLine(models.Model):
