@@ -65,7 +65,7 @@ def get_sale_orders():
                             documents.append(doc)
                 else:
                     get_row = False
-            if documents[-1] == last_document:
+            if len(documents) > 0 and documents[-1] == last_document:
                 get_row = False
             page += 10
         
