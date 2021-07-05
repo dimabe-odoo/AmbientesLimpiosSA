@@ -36,7 +36,7 @@
                                 <field name="pdf_file" readonly="1"/>
                                 <field name="comercionet_create_date" readonly="1"/>
                                 <field name="comercionet_dispatched_date" readonly="1"/>
-                                <field name="client_id" attrs="{'readonly':[('have_client','=',True)]}"/>
+                                <field name="client_id"/>
                             </group>
                         </group>
                         <notebook>
