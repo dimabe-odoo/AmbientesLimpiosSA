@@ -129,7 +129,7 @@ class SaleOrder(models.Model):
                 'Usted no tiene los permisos correspondientes para aprobar por Cobranza el Pedido de Venta')
 
         self.confirm_date = datetime.today()
-        res = super(SaleOrder, self).action_confirm()
+        res = super().action_confirm()
         return res
 
     # Grupo Cobranza
