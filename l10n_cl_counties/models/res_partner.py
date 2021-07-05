@@ -31,22 +31,21 @@ class ResPartner(models.Model):
             self.city = self.city_id.name
 
     def action_change_city_province(self, partner):
-        if partner.street2 == '' or partner.street == '':
-            if partner.country_id != self.env.ref('base.cl'):
-                return
-            if partner.city_id.state_id.parent_id:
-                partner.write({
-                    'state_id': partner.city_id.state_id.parent_id
-                })
-            if partner.state_id == self.env.ref('base.state_cl_13'):
-                partner.write({
-                    'real_city': 'Santiago'
-                })
-            else:
-                partner.write({
-                    'real_city': partner.city,
-                    'city': partner.city_id.name,
-                })
+        if partner.country_id != self.env.ref('base.cl'):
+            return
+        if partner.city_id.state_id.parent_id:
+            partner.write({
+                'state_id': partner.city_id.state_id.parent_id
+            })
+        if partner.state_id == self.env.ref('base.state_cl_13'):
+            partner.write({
+                'real_city': 'Santiago'
+            })
+        else:
+            partner.write({
+                'real_city': partner.city,
+                'city': partner.city_id.name,
+            })
         if partner.street:
             partner.geo_localize()
 
