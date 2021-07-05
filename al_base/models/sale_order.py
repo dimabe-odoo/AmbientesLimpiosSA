@@ -128,7 +128,7 @@ class SaleOrder(models.Model):
             raise models.ValidationError(
                 'Usted no tiene los permisos correspondientes para aprobar por Cobranza el Pedido de Venta')
 
-        self.confirm_date = datetime.today()
+
         return super(SaleOrder, self).action_confirm()
 
     # Grupo Cobranza
