@@ -109,10 +109,10 @@ class SaleOrder(models.Model):
         if self.env.user.partner_id.id not in self.get_partner_to() and self.state == 'toconfirm':
             raise models.ValidationError(
                 'Usted no tiene los permisos correspondientes para aprobar por Cobranza el Pedido de Venta')
-        else:
-            res = super(SaleOrder, self).action_confirm()
-            self.confirm_date = datetime.today()
-            return res
+
+        self.confirm_date = datetime.today()
+        res = super(SaleOrder, self).action_confirm()
+        return res
 
     # Grupo Cobranza
     @api.model
@@ -220,7 +220,7 @@ class SaleOrder(models.Model):
 
     def close_orders(self):
         sale_orders = self.env['sale.order'].search([])
-        sale_order_parcial = Enumerable(sale_orders).where(lambda x: len(x.picking_ids) > 1 and x.state != 'done')
+        sale_order_parcial = Enumerable(sale_orders).where(lambda x: len(x.picking_ids) > 1)
         if sale_order_parcial.count() > 0:
             for sale in sale_order_parcial:
                 followers = get_followers(self._inherit, sale.id)
@@ -235,9 +235,10 @@ class SaleOrder(models.Model):
                                       followers, 'stock.picking',
                                       pending.id)
                     pending.action_cancel()
-                sale.write({
-                    'state': 'done'
-                })
+                if sale.state != 'done':
+                    sale.write({
+                        'state': 'done'
+                    })
 
 
 class SaleOrderLine(models.Model):
