@@ -63,6 +63,7 @@ class SaleOrder(models.Model):
                     if client:
                         raise models.ValidationError(
                             f'No puede crear una nota de venta con la oc {values["client_order_ref"]}')
+        return super(SaleOrder, self).write(values)
 
     @api.onchange('user_id')
     def on_change_user(self):
