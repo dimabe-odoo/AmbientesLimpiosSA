@@ -15,7 +15,7 @@ class RouteMapController(http.Controller):
         db_name = request._cr.dbname
         password = request.env['ir.config_parameter'].sudo().search([('key', '=', 'user_admin_pass')]).password
         models = client.ServerProxy('{}/xmlrpc/2/object'.format(url))
-        record = models.execute_kw(db_name, SUPERUSER_ID, password,
+        record = models.execute_kw(db_name, 2, password,
                                    'route.map', 'search_read',
                                    [[['driver_id', '=', driver_id], ('state', '=', 'incoming')]],
                                    {'fields': ['display_name', 'type_of_map'], 'limit': 5})
@@ -27,14 +27,14 @@ class RouteMapController(http.Controller):
         db_name = request._cr.dbname
         password = request.env['ir.config_parameter'].sudo().search([('key', '=', 'user_admin_pass')]).password
         models = client.ServerProxy('{}/xmlrpc/2/object'.format(url))
-        ids = models.execute_kw(db_name, SUPERUSER_ID, password,
+        ids = models.execute_kw(db_name, 2, password,
                                 'route.map', 'search',
                                 [[['id', '=', map_id]]])
         record = models.execute_kw(db_name, SUPERUSER_ID, password,
                                    'route.map', 'read', [ids])[0]
         index = 0
         for dispatch in record['dispatch_ids']:
-            dispatch_read = models.execute_kw(db_name, SUPERUSER_ID, password,
+            dispatch_read = models.execute_kw(db_name, 2, password,
                                               'route.map.line', 'search_read',
                                               [[['id', '=', dispatch]]],
                                               {'fields': ['partner_latitude', 'partner_longitude', 'partner_id',
@@ -84,7 +84,7 @@ class RouteMapController(http.Controller):
         db_name = request._cr.dbname
         models = client.ServerProxy('{}/xmlrpc/2/object'.format(url))
         password = request.env['ir.config_parameter'].sudo().search([('key', '=', 'user_admin_pass')]).password
-        state = models.execute_kw(db_name, SUPERUSER_ID, password, 'ir.model.fields.selection', 'search_read', [
+        state = models.execute_kw(db_name, 2, password, 'ir.model.fields.selection', 'search_read', [
             [['field_id.model_id.name', '=', 'route.map.line'], ['value', '!=', 'to_delivered']]],
                                   {'fields': ['name', 'value']})
         return state
