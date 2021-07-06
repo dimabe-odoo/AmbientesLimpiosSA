@@ -127,10 +127,9 @@ class SaleOrder(models.Model):
         if self.env.user.partner_id.id not in self.get_partner_to() and self.state == 'toconfirm':
             raise models.ValidationError(
                 'Usted no tiene los permisos correspondientes para aprobar por Cobranza el Pedido de Venta')
-        else:
-            res = super(SaleOrder, self).action_confirm()
-            self.confirm_date = datetime.today()
-            return res
+
+
+        return super(SaleOrder, self).action_confirm()
 
     # Grupo Cobranza
     @api.model
