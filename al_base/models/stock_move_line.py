@@ -46,7 +46,7 @@ class StockMoveLine(models.Model):
                 print(test)
                 item.stock_product_qty = quant.sum(lambda x: x.quantity)
             else:
-                quant = item.product_id.stock_quant_ids.filtered(lambda x: x.location_id.id == self.location_id.id)
+                quant = item.product_id.stock_quant_ids.filtered(lambda x: x.location_id.id == item.location_id.id)
                 if item.lot_id:
                     quant = quant.filtered(lambda x: x.lot_id.id == item.lot_id.id)
                 item.stock_product_qty = sum(quant.mapped('quantity'))
