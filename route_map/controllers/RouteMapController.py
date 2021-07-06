@@ -30,7 +30,7 @@ class RouteMapController(http.Controller):
         ids = models.execute_kw(db_name, 2, password,
                                 'route.map', 'search',
                                 [[['id', '=', map_id]]])
-        record = models.execute_kw(db_name, SUPERUSER_ID, password,
+        record = models.execute_kw(db_name, 2, password,
                                    'route.map', 'read', [ids])[0]
         index = 0
         for dispatch in record['dispatch_ids']:
