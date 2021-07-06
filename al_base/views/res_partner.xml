@@ -28,6 +28,16 @@
                 </xpath>
             </field>
         </record>
+        <record id="view_partner_mrp_subcontracting_form_inherit" model="ir.ui.view">
+            <field name="name">Formulario de Stock</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="mrp_subcontracting.view_partner_mrp_subcontracting_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='property_stock_subcontractor']" position="after">
+                    <field name="parent_subcontraction_location_id"/>
+                </xpath>
+            </field>
+        </record>
         <record id="view_partner_dte_form_inherit" model="ir.ui.view">
             <field name="name">Formulario de Contacto DTE</field>
             <field name="model">res.partner</field>

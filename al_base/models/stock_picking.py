@@ -31,7 +31,6 @@ class StockPicking(models.Model):
 
     location_id = fields.Many2one('stock.location', domain=[('usage', '=', 'internal'), ('active', '=', True)])
 
-
     def compute_is_subcontract(self):
         for item in self:
             list = Enumerable(item.move_ids_without_package)
@@ -60,10 +59,21 @@ class StockPicking(models.Model):
                 res = {
                     'domain': {
                         'location_id': [('usage', '=', 'internal')],
-                        'location_dest_id': [('usage', '=', 'internal'),('id','!=',self.location_id.id)]
+                        'location_dest_id': [('usage', '=', 'internal'), ('id', '!=', self.location_id.id)]
                     }
                 }
                 return res
+
+    def action_record_components(self):
+        if self.partner_id.parent_subcontraction_location_id and Enumerable(self.move_ids_without_package).any(
+                lambda x: x.is_subcontract):
+            for move in self.move_lines:
+                production = move.move_orig_ids.production_id
+                production.write({
+                    'location_src_id': self.partner_id.parent_subcontraction_location_id.id,
+                    'location_dest_id': self.partner_id.parent_subcontraction_location_id.id,
+                })
+        return super(StockPicking, self).action_record_components()
 
     def get_ted(self, doc_id):
 
@@ -154,6 +164,14 @@ class StockPicking(models.Model):
         return res
 
     def button_validate(self):
+        if self.partner_id.parent_subcontraction_location_id:
+            if self.picking_type_id.sequence_code == 'OUT':
+                self.move_ids_without_package.sudo().write({
+                    'location_dest_id': self.partner_id.parent_subcontraction_location_id.id
+                })
+                self.move_line_ids_without_package.sudo().write({
+                    'location_dest_id': self.partner_id.parent_subcontraction_location_id.id
+                })
         if (self.partner_id and self.partner_id.picking_warn and self.partner_id.picking_warn == 'block') or (
                 self.partner_id.parent_id and self.partner_id.parent_id.picking_warn and self.partner_id.parent_id.picking_warn == 'block'):
             raise models.ValidationError(
@@ -194,7 +212,6 @@ class StockPicking(models.Model):
 
         return super(StockPicking, self).write(values)
 
-
     def verify_location_equal(self, values):
         location_id = ''
         location_dest_id = ''
@@ -210,14 +227,15 @@ class StockPicking(models.Model):
 
         if location_dest_id != '' and location_id != '':
             if location_dest_id == location_id:
-                raise models.ValidationError(f'La ubicación de Origen no puede ser la misma que la ubicación de destino')
+                raise models.ValidationError(
+                    f'La ubicación de Origen no puede ser la misma que la ubicación de destino')
 
     def filter_lots(self):
         for line in self.move_line_ids_without_package:
-            #quants = self.env['stock.quant'].search([('product_id', '=', line.product_id.id), ('location_id', '=', line.location_id.id), ('quantity', '>', 0)])
+            # quants = self.env['stock.quant'].search([('product_id', '=', line.product_id.id), ('location_id', '=', line.location_id.id), ('quantity', '>', 0)])
             line.show_lot_with_stock()
-            #line.lot_id.update({
+            # line.lot_id.update({
             #    'domain': [('id', 'in', quants.lot_id.ids)]
-            #})
+            # })
 
-            #return {'domain': {'lot_id': [('id', 'in', quants.lot_id.ids)]}}
+            # return {'domain': {'lot_id': [('id', 'in', quants.lot_id.ids)]}}
