@@ -3,19 +3,56 @@
     <data>
 
         <template id="report_picking_inherit" inherit_id="stock.report_picking">
-            <xpath expr="//div[@class='page']//table[1]//tbody//tr//td[6]//span" position="replace">
-                <t t-if="move.product_id.al_dun">
-                    <span>
-                        <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', move.product_id.al_dun, 600, 100)"
-                             style="width:300px;height:50px;"/>
-                    </span>
-                </t>
-                <t t-else="">
-                    <span>
-                        <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', move.product_id.al_sku, 600, 100)"
-                         style="width:300px;height:50px;"/>
-                    </span>
-                </t>
+            <xpath expr="//div[@class='page']//table[1]//tbody" position="replace">
+                <tbody>
+                    <t t-foreach="o.move_ids_without_package" t-as="ml">
+                        <!-- In case you come across duplicated lines, ask NIM or LAP -->
+                        <tr>
+                                <td>
+                                    <span t-field="ml.product_id.display_name"/>
+                                    <br/>
+                                    <span t-field="ml.product_id.description_picking"/>
+                                </td>
+                                <td>
+                                    <span t-if="o.state != 'done'" t-field="ml.product_uom_qty"/>
+                                    <span t-if="o.state == 'done'" t-field="ml.quantity_done"/>
+                                    <span t-field="ml.product_uom" groups="uom.group_uom"/>
+
+                                </td>
+                                <td t-if="o.picking_type_id.code != 'incoming'"
+                                    groups="stock.group_stock_multi_locations">
+                                    <span t-esc="ml.location_id.display_name"/>
+                                </td>
+                                <td t-if="o.picking_type_id.code != 'outgoing'"
+                                    groups="stock.group_stock_multi_locations">
+                                    <div>
+                                        <span t-field="ml.location_dest_id"/>
+                                        <t t-if="ml.result_package_id">
+                                            <span t-field="ml.result_package_id"/>
+                                        </t>
+                                    </div>
+                                </td>
+                                <td class=" text-center h6">
+                                </td>
+                                <td class="text-center" t-if="has_barcode">
+                                    <t t-if="product_barcode != ml.product_id.barcode">
+                                        <t t-if="ml.product_id.al_dun">
+                                            <span>
+                                                <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', ml.product_id.al_dun, 600, 100)"
+                                                     style="width:300px;height:50px;"/>
+                                            </span>
+                                        </t>
+                                        <t t-else="">
+                                            <span>
+                                                <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', ml.product_id.default_code, 600, 100)"
+                                                     style="width:300px;height:50px;"/>
+                                            </span>
+                                        </t>
+                                    </t>
+                                </td>
+                            </tr>
+                    </t>
+                </tbody>
             </xpath>
         </template>
 

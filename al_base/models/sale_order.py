@@ -63,6 +63,8 @@ class SaleOrder(models.Model):
                     if client:
                         raise models.ValidationError(
                             f'No puede crear una nota de venta con la oc {values["client_order_ref"]}')
+                    
+        return super(SaleOrder, self).write(values)
 
     @api.onchange('user_id')
     def on_change_user(self):
@@ -127,9 +129,10 @@ class SaleOrder(models.Model):
         if self.env.user.partner_id.id not in self.get_partner_to() and self.state == 'toconfirm':
             raise models.ValidationError(
                 'Usted no tiene los permisos correspondientes para aprobar por Cobranza el Pedido de Venta')
-
-
-        return super(SaleOrder, self).action_confirm()
+        res = super(SaleOrder, self).action_confirm()
+        for picking in self.picking_ids:
+            picking.do_unreserve()
+        return res
 
     # Grupo Cobranza
     @api.model

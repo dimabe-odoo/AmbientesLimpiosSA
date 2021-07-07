@@ -31,6 +31,11 @@ class StockPicking(models.Model):
 
     location_id = fields.Many2one('stock.location', domain=[('usage', '=', 'internal'), ('active', '=', True)])
 
+    def on_barcode_scanned(self,barcode):
+        res = super(StockPicking, self).on_barcode_scanned(barcode)
+        print(res)
+        return res
+
     def compute_is_subcontract(self):
         for item in self:
             list = Enumerable(item.move_ids_without_package)
