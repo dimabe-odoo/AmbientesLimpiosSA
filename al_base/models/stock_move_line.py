@@ -1,4 +1,5 @@
-from odoo import models, fields, api
+from odoo import _, api, fields, tools, models
+from odoo.exceptions import UserError, ValidationError
 from py_linq import Enumerable
 
 
@@ -14,6 +15,17 @@ class StockMoveLine(models.Model):
     product_quant_ids = fields.Many2many('stock.quant', compute='_compute_stock_product_qty')
 
     product_lot_ids = fields.Many2many('stock.production.lot')
+
+    @api.constrains('lot_id', 'product_id')
+    def _check_lot_product(self):
+        for line in self:
+            if line.lot_id:
+                if line.product_id != line.lot_id.sudo().product_id:
+                    lot_id = self.env['stock.production.lot'].sudo().search(
+                        [('product_id', '=', line.product_id.id), ('name', '=', line.lot_name)])
+                    line.write({
+                        'lot_id': lot_id.id
+                    })
 
     @api.onchange('product_id', 'location_id', 'lot_id')
     def onchange_product_stock(self):
@@ -46,7 +58,7 @@ class StockMoveLine(models.Model):
                 print(test)
                 item.stock_product_qty = quant.sum(lambda x: x.quantity)
             else:
-                quant = item.product_id.stock_quant_ids.filtered(lambda x: x.location_id.id == self.location_id.id)
+                quant = item.product_id.stock_quant_ids.filtered(lambda x: x.location_id.id == item.location_id.id)
                 if item.lot_id:
                     quant = quant.filtered(lambda x: x.lot_id.id == item.lot_id.id)
                 item.stock_product_qty = sum(quant.mapped('quantity'))

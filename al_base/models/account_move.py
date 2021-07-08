@@ -68,20 +68,13 @@ class AccountMove(models.Model):
                 item.l10n_latam_document_number = item.document_number
                 item.name = f'{item.l10n_latam_document_type_id.doc_code_prefix} {item.document_number}'
 
-    def get_ted(self, doc_id):
-
-        doc_xml = base64.b64decode(doc_id.datas)
-        data_dict = xmltodict.parse(doc_xml)
-        if self.l10n_latam_document_type_id.code == '39':
-            json_data = json.dumps(data_dict['EnvioBOLETA']['SetDTE']['DTE']['Documento']['TED'])
-        else:
-            json_data = json.dumps(data_dict['EnvioDTE']['SetDTE']['DTE']['Documento']['TED'])
+    def get_ted(self):
         cols = 12
         while True:
             try:
                 if cols == 31:
                     break
-                codes = encode(json_data, cols)
+                codes = encode(self.l10n_cl_sii_barcode, cols)
                 image = render_image(codes, scale=5, ratio=2)
                 buffered = BytesIO()
                 image.save(buffered, format="JPEG")
@@ -135,12 +128,9 @@ class AccountMove(models.Model):
             if 'l10n_cl_dte_status' in values.keys():
                 if values['l10n_cl_dte_status'] in ['accepted', 'objected']:
                     get_remaining_caf(item.l10n_latam_document_type_id.id)
-            if not item.ted:
-                doc_id = self.env['ir.attachment'].search(
-                    [('res_model', '=', 'account.move'), ('res_id', '=', item.id), ('name', 'like', 'SII')],
-                    order='create_date desc')
-                if doc_id and len(doc_id) > 0:
-                    values['ted'] = item.get_ted(doc_id[0])
+            if self.l10n_cl_sii_barcode:
+                values['ted'] = item.get_ted()
+
             if 'l10n_cl_dte_acceptation_status' in values.keys():
                 message = self.get_message(values['l10n_cl_dte_acceptation_status'])
                 user_group = self.env.ref('al_base.custom_noti_aceptation_dte')
