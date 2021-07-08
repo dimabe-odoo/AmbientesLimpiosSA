@@ -72,7 +72,12 @@
                                             <strong>SEÑORES:</strong>
                                         </td>
                                         <td style="text-align:left;">
-                                            <span style="text-transform: uppercase;" t-field="d.partner_id.name"/>
+                                            <t t-if="not d.partner_id.parent_id">
+                                                <span style="text-transform: uppercase;" t-field="d.partner_id.name"/>
+                                            </t>
+                                            <t t-else="">
+                                                <span style="text-transform: uppercase;" t-field="d.partner_id.parent_id.name"/>
+                                            </t>
                                         </td>
                                         <td style="text-align:left;">
                                             <strong>R.U.T.</strong>

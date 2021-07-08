@@ -17,20 +17,21 @@ class StockPicking(models.Model):
 
     ted = fields.Binary('TED')
 
+    scheduled_date = fields.Datetime(index=True, default=fields.Datetime.now, tracking=True,
+                                     readonly=lambda self: self.uid not in self.ref(
+                                         'stock.group_stock_manager').users.ids)
+
     net_amount = fields.Float('Total Neto', compute="_compute_net_amount")
 
     tax_amount = fields.Float('IVA', compute="_compute_tax_amount")
 
     amount_total = fields.Float('TOTAL', compute="_compute_amount_total")
 
-    # invisible_btn_ted = fields.Boolean(compute="_compute_show_btn_ted", default=True)
-
     is_subcontract = fields.Boolean(compute='compute_is_subcontract')
 
     location_dest_id = fields.Many2one('stock.location', domain=[('usage', '=', 'internal'), ('active', '=', True)])
 
     location_id = fields.Many2one('stock.location', domain=[('usage', '=', 'internal'), ('active', '=', True)])
-
 
     def compute_is_subcontract(self):
         for item in self:

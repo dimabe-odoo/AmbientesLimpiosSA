@@ -15,16 +15,16 @@
                         <div class="col-6" name="div_outgoing_address">
                             <div t-if="o.move_ids_without_package and o.move_ids_without_package[0].partner_id and o.move_ids_without_package[0].partner_id.id != o.partner_id.id">
                                 <span>
-                                    <strong>Delivery Address:</strong>
+                                    <strong>Direccion de Envio:</strong>
                                 </span>
-                                <div t-field="o.move_ids_without_package[0].partner_id"
+                                <div t-field="o.partner_id"
                                      t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True, "phone_icons": True}'/>
                             </div>
                             <div t-if="o.picking_type_id.code != 'internal' and (not o.move_ids_without_package or not o.move_ids_without_package[0].partner_id) and o.picking_type_id.warehouse_id.partner_id">
                                 <span>
-                                    <strong>Warehouse Address:</strong>
+                                    <strong>Bodega:</strong>
                                 </span>
-                                <div t-field="o.picking_type_id.warehouse_id.partner_id"
+                                <div t-field="o.picking_type_id.warehouse_id"
                                      t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True, "phone_icons": True}'/>
                             </div>
                         </div>
@@ -41,14 +41,13 @@
                             </div>
                             <div t-if="o.picking_type_id.code=='outgoing' and o.partner_id">
                                 <span>
-                                    <strong>Customer Address:</strong>
+                                    <strong>Direccion de Envio:</strong>
                                 </span>
                             </div>
-                            <div t-if="o.partner_id" name="partner_header">
-                                <div t-field="o.partner_id"
-                                     t-options='{"widget": "contact", "fields": ["name", "phone"], "no_marker": True, "phone_icons": True}'/>
-                                <p t-if="o.sudo().partner_id.vat"><t
-                                        t-esc="o.company_id.country_id.vat_label or 'Tax ID'"/>:
+                            <div name="partner_header">
+                                <div t-field="o.sale_id.partner_id"/>
+                                <p><t
+                                        t-esc="o.company_id.country_id.vat_label or 'RUT'"/>:
                                     <span t-field="o.sudo().partner_id.vat"/>
                                 </p>
                             </div>
@@ -58,37 +57,33 @@
                     <h1 t-field="o.name" class="mt0 float-left"/>
                     <div class="row mt48 mb32">
                         <div t-if="o.origin" class="col-auto" name="div_origin">
-                            <strong>Order:</strong>
+                            <strong>Pedido:</strong>
                             <p t-field="o.origin"/>
                         </div>
                         <div class="col-auto" name="div_state">
-                            <strong>Status:</strong>
-                            <p t-field="o.state"/>
-                        </div>
-                        <div class="col-auto" name="div_sched_date">
-                            <strong>Scheduled Date:</strong>
-                            <p t-field="o.scheduled_date"/>
+                            <strong>Cliente:</strong>
+                            <p t-field="o.partner_id.parent_id"/>
                         </div>
                     </div>
                     <table class="table table-sm">
                         <thead>
                             <tr>
                                 <th name="th_product">
-                                    <strong>Product</strong>
+                                    <strong>Producto</strong>
                                 </th>
                                 <th>
-                                    <strong>Quantity</strong>
+                                    <strong>Cantidad Solicitada</strong>
                                 </th>
                                 <th name="th_from" t-if="o.picking_type_id.code != 'incoming'" align="left"
                                     groups="stock.group_stock_multi_locations">
-                                    <strong>From</strong>
+                                    <strong>De</strong>
                                 </th>
                                 <th name="th_to" t-if="o.picking_type_id.code != 'outgoing'"
                                     groups="stock.group_stock_multi_locations">
-                                    <strong>To</strong>
+                                    <strong>A</strong>
                                 </th>
                                 <th name="th_barcode" class="text-center" >
-                                    <strong>Product Barcode</strong>
+                                    <strong>Codigo de Barra</strong>
                                 </th>
                             </tr>
                         </thead>
