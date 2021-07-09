@@ -35,7 +35,9 @@
                     <field name="invisible_btn_confirm" invisible="1"/>
                     <button type="object" string="Confirmar" name="order_to_discount_approve" class="oe_highlight"
                             attrs="{'invisible':[('invisible_btn_confirm','=',True)]}"/>
-                    <button name="action_cancel"  groups="al_base.group_order_confirmation" type="object" string="Cancelar" attrs="{'invisible': ['|', ('state', 'not in', ['draft', 'sent','sale','toconfirm']), ('id', '=', False)]}"/>
+                    <button name="action_cancel" groups="al_base.group_order_confirmation" type="object"
+                            string="Cancelar"
+                            attrs="{'invisible': ['|', ('state', 'not in', ['draft', 'sent','sale','toconfirm']), ('id', '=', False)]}"/>
 
                 </xpath>
             </field>
