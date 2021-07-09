@@ -34,7 +34,7 @@ class AccountMoveLine(models.Model):
 
         res = super(AccountMoveLine, self)._l10n_cl_get_line_amounts()
 
-        if self.discount > 0:
+        if self.discount > 0 and self.move_id.l10n_latam_document_type_id.code == '39':
             res['price_item'] = res['price_item'] + (float(res['total_discount']) / self.quantity)
 
         return res
