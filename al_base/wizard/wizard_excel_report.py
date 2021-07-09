@@ -25,6 +25,7 @@ class WizardExcelReport(models.Model):
                 if partner.vat:
                     sheet.write(row, col, partner.vat)
                 row += 1
+                external_id = self.get_external_id()
                 col = 0
         # sheet = workbook.add_worksheet('Total Pedido')
         # sheet = self.set_title(['N°.Pedido', 'Fecha NV', 'N° OC', 'N° Factura', 'RUT', 'Cliente', 'Vendedor', 'Codigo',
