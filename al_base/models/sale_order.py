@@ -48,8 +48,6 @@ class SaleOrder(models.Model):
                             f'No puede crear una nota de venta con la oc {values["client_order_ref"]}')
 
         res = super(SaleOrder, self).create(values)
-        if len(res.order_line) == 0:
-            raise models.ValidationError("No puede crear un pedido sin productos")
         return res
 
     def write(self, values):
