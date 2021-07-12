@@ -50,6 +50,7 @@ class SaleOrder(models.Model):
         res = super(SaleOrder, self).create(values)
         if len(res.order_line) == 0:
             raise models.ValidationError("No puede crear un pedido sin productos")
+        return res
 
     def write(self, values):
         if isinstance(values, list):
