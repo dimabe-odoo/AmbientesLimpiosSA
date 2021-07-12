@@ -66,16 +66,7 @@ class StockPicking(models.Model):
                 }
                 return res
 
-    def action_record_components(self):
-        if self.partner_id.parent_subcontraction_location_id and Enumerable(self.move_ids_without_package).any(
-                lambda x: x.is_subcontract):
-            for move in self.move_lines:
-                production = move.move_orig_ids.production_id
-                production.write({
-                    'location_src_id': self.partner_id.parent_subcontraction_location_id.id,
-                    'location_dest_id': self.partner_id.parent_subcontraction_location_id.id,
-                })
-        return super(StockPicking, self).action_record_components()
+
 
     def get_ted(self, doc_id):
 
