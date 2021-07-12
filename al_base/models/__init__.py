@@ -25,4 +25,3 @@ from . import quality_alert
 from . import l10n_latam_document_type
 from . import account_payment
 from . import account_payment_register
-from . import l10n_cl_edit_util
