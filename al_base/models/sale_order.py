@@ -29,6 +29,10 @@ class SaleOrder(models.Model):
 
     scheduled_date_from_picking = fields.Datetime('Para fecha prevista de picking')
 
+    partner_id = fields.Many2one('res.partner',string='Cliente')
+
+    partner_shipping_id = fields.Many2one('res.partner',string='Direccion de Entrega')
+
     @api.model
     def create(self, values):
         if isinstance(values, list):
@@ -74,12 +78,12 @@ class SaleOrder(models.Model):
     @api.onchange('user_id')
     def on_change_user(self):
         for item in self:
-            clients = self.env['res.partner'].search([('user_id', '=', item.user_id.id)])
+            clients = self.env['res.partner'].sudo().search([('user_id', '=', item.user_id.id)])
             if clients:
                 res = {
                     'domain': {
                         'partner_id': [('user_id', '=', item.user_id.id), ('parent_id', '=', False)],
-                        'partner_shipping_id': [('user_id', '=', item.user_id.id)]
+                        'partner_shipping_id': [('user_id', '=', item.user_id.id)],
                     }
                 }
             else:
