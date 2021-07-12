@@ -105,15 +105,6 @@
                                             groups="stock.group_stock_multi_locations">
                                             <span t-esc="ml.location_id.display_name"/>
                                         </td>
-                                        <td t-if="o.picking_type_id.code != 'outgoing'"
-                                            groups="stock.group_stock_multi_locations">
-                                            <div>
-                                                <span t-field="ml.location_dest_id"/>
-                                                <t t-if="ml.result_package_id">
-                                                    <span t-field="ml.result_package_id"/>
-                                                </t>
-                                            </div>
-                                        </td>
                                         <td class="text-center">
                                             <t t-if="product_barcode != ml.product_id.barcode">
                                                 <span t-if="ml.product_id and ml.product_id.barcode">
