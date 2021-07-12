@@ -10,48 +10,65 @@ class WizardExcelReport(models.Model):
         file = 'total_order.xlsx'
         workbook = xlsxwriter.Workbook(file)
         formats = self.get_formats(workbook)
-        sheet = workbook.add_worksheet('Total Pedido')
-        sheet = self.set_title(['N°.Pedido', 'Fecha NV', 'N° OC', 'N° Factura', 'RUT', 'Cliente', 'Vendedor', 'Codigo',
-                                'Descripcion', 'Precio Unitario', 'Solicitado', 'Despachado', 'Pendiente',
-                                'Monto Pendiente'], sheet)
-        sale_order_line = self.env['sale.order.line'].sudo().search(
-            [('order_id.state', '!=', 'cancel'), ('order_id.invoice_publish_ids', '!=', False)], order='order_id')
+        sheet = workbook.add_worksheet('Contacto con Rut Mal')
+        partners = self.env['res.partner'].search([('vat','!=',False)])
+        sheet.write(0, 0, "Nombre del Contacto")
+        sheet.write(1, 0, "RUT")
         row = 1
         col = 0
-        for line in sale_order_line:
-            qty_remaing = line.product_uom_qty - line.qty_delivered
-            remaing_value = line.price_unit * qty_remaing
-            sheet.write(row, col, line.order_id.name)
-            col += 1
-            sheet.write(row, col, line.order_id.date_order, formats['date_format'])
-            col += 1
-            sheet.write(row, col, line.order_id.client_order_ref if line.order_id.client_order_ref else '')
-            col += 1
-            sheet.write(row, col, ' '.join(
-                line.order_id.invoice_publish_ids.filtered(lambda x: 'refund' not in x.move_type).mapped('name')))
-            col += 1
-            sheet.write(row, col,
-                        line.order_id.partner_shipping_id.vat if line.order_id.partner_shipping_id.vat else '')
-            col += 1
-            sheet.write(row, col, line.order_id.partner_shipping_id.display_name)
-            col += 1
-            sheet.write(row, col, line.order_id.user_id.display_name)
-            col += 1
-            sheet.write(row, col, line.product_id.default_code)
-            col += 1
-            sheet.write(row, col, line.product_id.name)
-            col += 1
-            sheet.write(row, col, line.price_unit)
-            col += 1
-            sheet.write(row, col, line.product_uom_qty)
-            col += 1
-            sheet.write(row, col, line.qty_delivered)
-            col += 1
-            sheet.write(row, col, qty_remaing if qty_remaing > 0 else '-')
-            col += 1
-            sheet.write(row, col, remaing_value if qty_remaing > 0 else '-')
-            col = 0
-            row += 1
+        for partner in partners:
+            try:
+                partner.action_change_city_province(partner)
+            except:
+                sheet.write(row, col, partner.name)
+                col += 1
+                if partner.vat:
+                    sheet.write(row, col, partner.vat)
+                row += 1
+                external_id = self.get_external_id()
+                col = 0
+        # sheet = workbook.add_worksheet('Total Pedido')
+        # sheet = self.set_title(['N°.Pedido', 'Fecha NV', 'N° OC', 'N° Factura', 'RUT', 'Cliente', 'Vendedor', 'Codigo',
+        #                         'Descripcion', 'Precio Unitario', 'Solicitado', 'Despachado', 'Pendiente',
+        #                         'Monto Pendiente'], sheet)
+        # sale_order_line = self.env['sale.order.line'].sudo().search(
+        #     [('order_id.state', '!=', 'cancel'), ('order_id.invoice_publish_ids', '!=', False)], order='order_id')
+        # row = 1
+        # col = 0
+        # for line in sale_order_line:
+        #     qty_remaing = line.product_uom_qty - line.qty_delivered
+        #     remaing_value = line.price_unit * qty_remaing
+        #     sheet.write(row, col, line.order_id.name)
+        #     col += 1
+        #     sheet.write(row, col, line.order_id.date_order, formats['date_format'])
+        #     col += 1
+        #     sheet.write(row, col, line.order_id.client_order_ref if line.order_id.client_order_ref else '')
+        #     col += 1
+        #     sheet.write(row, col, ' '.join(
+        #         line.order_id.invoice_publish_ids.filtered(lambda x: 'refund' not in x.move_type).mapped('name')))
+        #     col += 1
+        #     sheet.write(row, col,
+        #                 line.order_id.partner_shipping_id.vat if line.order_id.partner_shipping_id.vat else '')
+        #     col += 1
+        #     sheet.write(row, col, line.order_id.partner_shipping_id.display_name)
+        #     col += 1
+        #     sheet.write(row, col, line.order_id.user_id.display_name)
+        #     col += 1
+        #     sheet.write(row, col, line.product_id.default_code)
+        #     col += 1
+        #     sheet.write(row, col, line.product_id.name)
+        #     col += 1
+        #     sheet.write(row, col, line.price_unit)
+        #     col += 1
+        #     sheet.write(row, col, line.product_uom_qty)
+        #     col += 1
+        #     sheet.write(row, col, line.qty_delivered)
+        #     col += 1
+        #     sheet.write(row, col, qty_remaing if qty_remaing > 0 else '-')
+        #     col += 1
+        #     sheet.write(row, col, remaing_value if qty_remaing > 0 else '-')
+        #     col = 0
+        #     row += 1
         workbook.close()
         with open(file, "rb") as file:
             file_base64 = base64.b64encode(file.read())

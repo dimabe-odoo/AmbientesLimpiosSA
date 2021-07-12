@@ -9,7 +9,7 @@
                position="after">
           <field name="is_loteable" invisible="1"/>
           <field name="product_lot_ids" invisible="1"/>
-          <field name="supplier_lot" attrs="{'readonly':[('is_loteable','!=',True)]}"/>
+          <field name="supplier_lot" attrs="{'readonly':[('is_loteable','!=',True)],'column_invisible': [('parent.picking_type_code','!=','IN')]}"/>
         </xpath>
         <xpath expr="//field[@name='lot_name']" position="attributes">
           <attribute name="readonly">1</attribute>
@@ -21,6 +21,16 @@
         <xpath expr="//field[@name='lot_id']" position="after">
           <field name="stock_product_qty" readonly="1"/>
         </xpath>
+        <xpath expr="//field[@name='package_id']" position="attributes">
+          <attribute name="optional">hide</attribute>
+        </xpath>
+        <xpath expr="//field[@name='result_package_id']" position="attributes">
+          <attribute name="optional">hide</attribute>
+        </xpath>
+        <xpath expr="//field[@name='owner_id']" position="attributes">
+          <attribute name="optional">hide</attribute>
+        </xpath>
+
       </field>
     </record>
 
@@ -74,10 +84,6 @@
         <xpath expr="//header" position="inside">
           <field name="is_subcontract" invisible="1"/>
         </xpath>
-        <!--<xpath expr="//field[@name='location_dest_id']" position="after">
-            <button type="object" string="Filtrar Lotes con stock" name="filter_lots"
-                  attrs="{'invisible':[('picking_type_id','!=',5)]}" class="oe_highlight"/>
-        </xpath>-->
       </field>
     </record>
   </data>

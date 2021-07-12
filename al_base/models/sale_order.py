@@ -27,6 +27,8 @@ class SaleOrder(models.Model):
 
     amount_discount = fields.Float(compute="_compute_amount_discount")
 
+    scheduled_date_from_picking = fields.Datetime('Para fecha prevista de picking')
+
     @api.model
     def create(self, values):
         if isinstance(values, list):
@@ -45,9 +47,11 @@ class SaleOrder(models.Model):
                         raise models.ValidationError(
                             f'No puede crear una nota de venta con la oc {values["client_order_ref"]}')
 
-        return super(SaleOrder, self).create(values)
+        res = super(SaleOrder, self).create(values)
+        if len(res.order_line) == 0:
+            raise models.ValidationError("No puede crear un pedido sin productos")
 
-    def write(self,values):
+    def write(self, values):
         if isinstance(values, list):
             for value in values:
                 if 'client_order_ref' in value.keys():
@@ -68,19 +72,19 @@ class SaleOrder(models.Model):
     @api.onchange('user_id')
     def on_change_user(self):
         for item in self:
-            clients = self.env['res.partner'].search([('user_id', '=', item.user_id.id)])
+            clients = self.env['res.partner'].sudo().search([('user_id', '=', item.user_id.id)])
             if clients:
                 res = {
                     'domain': {
-                        'partner_id': [('user_id', '=', item.user_id.id)],
-                        'partner_shipping_id': [('user_id', '=', item.user_id.id)]
+                        'partner_id': [('user_id', '=', item.user_id.id), ('parent_id', '=', False)],
+                        'partner_shipping_id': [('user_id', '=', item.user_id.id)],
                     }
                 }
             else:
                 res = {
                     'domain': {
                         'partner_id': ['|', ('company_id', '=', False),
-                                       ('company_id', '=', self.env.user.company_id.id)]
+                                       ('company_id', '=', self.env.user.company_id.id), ('child_ids', '!=', False)]
                     }
                 }
             return res
@@ -90,13 +94,11 @@ class SaleOrder(models.Model):
         for item in self:
             item.amount_discount = (item.amount_undiscounted - (item.amount_total - item.amount_tax))
 
-
     def send_message(self, partner_list, approve_type):
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         body = f'<p>Estimados.<br/><br/>Se ha generado una nueva órden de venta <a href="{base_url}/web#id={self.id}&action=343&model=sale.order&view_type=form&cids=&menu_id=229">{self.name}</a>. La cual requiere aprobación por {approve_type}<br/></p>Atte,<br/>{self.company_id.name}'
         subject = f'Nueva órden de venta - Aprobar por {approve_type}'
         self.message_post(author_id=2, subject=subject, body=body, partner_ids=partner_list)
-
 
     def order_to_discount_approve(self):
         if self.l10n_latam_document_type_id.code == "33":
@@ -110,7 +112,6 @@ class SaleOrder(models.Model):
         else:
             self.action_confirm()
 
-
     def state_to_toconfirm(self):
         if not self.invisible_btn_confirm:
             self.write({
@@ -123,15 +124,23 @@ class SaleOrder(models.Model):
             raise models.ValidationError(
                 'Usted no tiene los permisos correspondientes para aprobar por Descuento el Pedido de Venta')
 
-
     def action_confirm(self):
+        if self.state == 'toconfirm':
+            self.write({
+                'scheduled_date_from_picking': datetime.now()
+            })
         if self.env.user.partner_id.id not in self.get_partner_to() and self.state == 'toconfirm':
             raise models.ValidationError(
                 'Usted no tiene los permisos correspondientes para aprobar por Cobranza el Pedido de Venta')
-        else:
-            res = super(SaleOrder, self).action_confirm()
-            self.confirm_date = datetime.today()
-            return res
+        res = super(SaleOrder, self).action_confirm()
+        for picking in self.picking_ids:
+            if self.scheduled_date_from_picking:
+                picking.write({
+                    'scheduled_date': calculate_business_day_dates(self.scheduled_date_from_picking, 3)
+                })
+            picking.do_unreserve()
+
+        return res
 
     # Grupo Cobranza
     @api.model
@@ -141,7 +150,6 @@ class SaleOrder(models.Model):
             usr.partner_id.id for usr in user_group.users if usr.partner_id
         ]
         return partner_list
-
 
     @api.model
     def _compute_invisible_btn_confirm(self):
@@ -187,7 +195,6 @@ class SaleOrder(models.Model):
             else:
                 item.invisible_btn_confirm = True
 
-
     def get_partners_by_range(self, range):
         user_list = []
         if range.user_configuration == 'leader':
@@ -199,7 +206,6 @@ class SaleOrder(models.Model):
             ]
         return user_list
 
-
     def get_leader_by_vendor(self, vendor):
         team = self.get_team_by_vendor(vendor)
         if team:
@@ -207,7 +213,6 @@ class SaleOrder(models.Model):
                 return team.user_id
         else:
             return False
-
 
     def get_team_by_vendor(self, vendor):
         sale_team_ids = self.env['crm.team'].search([])
@@ -217,22 +222,18 @@ class SaleOrder(models.Model):
                 return team
         return False
 
-
     @api.model
     def get_range_discount(self):
         approve_sale_ids = self.env['custom.range.approve.sale'].sudo().search([])
         return get_range_discount(approve_sale_ids, self.amount_discount)
-
 
     @api.onchange('date_order')
     def _onchange_date_order(self):
         for item in self:
             item.validity_date = calculate_business_day_dates(item.date_order, 2)
 
-
     def roundclp(self, value):
         return round_clp(value)
-
 
     def _get_custom_report_name(self):
         return '%s %s' % ('Nota de Venta - ', self.name)
@@ -271,6 +272,9 @@ class SaleOrderLine(models.Model):
 
         for values in vals_list:
             registered_duplicate = False
+            if 'product_uom_qty' in values.keys():
+                if values['product_uom_qty'] <= 0:
+                    raise models.ValidationError('No se puede ingresar cantidades en cero o negativo')
             if 'order_id' in values.keys():
                 if values['product_id'] in product_to_registered:
                     registered_duplicate = True

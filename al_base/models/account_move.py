@@ -123,6 +123,10 @@ class AccountMove(models.Model):
             else:
                 continue
 
+    def action_post(self):
+        res = super(AccountMove, self).action_post()
+        return res
+
     def write(self, values):
         for item in self:
             if 'l10n_cl_dte_status' in values.keys():

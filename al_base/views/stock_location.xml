@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="stock_location_subcontracting_inherit_view" model="ir.ui.view">
+            <field name="name">Formulacion para Subcontractacion</field>
+            <field name="model">stock.location</field>
+            <field name="inherit_id" ref="stock.view_location_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[]">
+
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

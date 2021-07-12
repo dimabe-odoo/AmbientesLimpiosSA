@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+  <template id="custom_label_lot_product_barcode_unit_by_lot">
+    <t t-call="web.basic_layout">
+      <div class="page">
+        <t t-foreach="docs" t-as="lot">
+          <div style="display: inline-table; width: 100%;">
+            <table t-if="lot.product_id">
+              <tr>
+                <th style="text-align: center">
+                  <span t-esc="lot.product_id.display_name"/>
+                </th>
+              </tr>
+              <t t-if="lot.product_id.tracking != 'none'">
+                <tr>
+                  <td class="text-center align-middle" style="height: 6rem;">
+                    <t t-if="lot.product_id.al_dun">
+                      <img
+                          t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', lot.product_id.al_dun, 600, 150)"
+                          style="width:100%;height:4rem" alt="Barcode"/>
+                      <span t-esc="lot.product_id.al_dun"/>
+                    </t>
+                    <t t-else="">
+                      <span class="text-muted">No DUN available</span>
+                    </t>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="text-center align-middle">
+                    <img
+                        t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', lot.name, 600, 150)"
+                        style="width:100%;height:4rem" alt="Barcode"/>
+                    <span t-esc="lot.name"/>
+                  </td>
+                </tr>
+                <t t-if="lot.product_id.tracking == 'lot'">
+                  <tr>
+                    <td style="text-align: right">
+                      <span style="margin-right: 4px;">VENC:</span>
+                      <t t-set="month"
+                         t-value="lot.expiration_date"/>
+                      <t t-if="month">
+                        <span t-if="month.strftime('%m') == '01'">ENE.</span>
+                        <span t-if="month.strftime('%m') == '02'">FEB.</span>
+                        <span t-if="month.strftime('%m') == '03'">MAR.</span>
+                        <span t-if="month.strftime('%m') == '04'">ABR.</span>
+                        <span t-if="month.strftime('%m') == '05'">MAY.</span>
+                        <span t-if="month.strftime('%m') == '06'">JUN.</span>
+                        <span t-if="month.strftime('%m') == '07'">JUL.</span>
+                        <span t-if="month.strftime('%m') == '08'">AGO.</span>
+                        <span t-if="month.strftime('%m') == '09'">SEP.</span>
+                        <span t-if="month.strftime('%m') == '10'">OCT.</span>
+                        <span t-if="month.strftime('%m') == '11'">NOV.</span>
+                        <span t-if="month.strftime('%m') == '12'">DIC.</span>
+                        <span
+                            t-esc="lot.expiration_date.strftime('%Y')"/>
+                      </t>
+                    </td>
+                  </tr>
+                </t>
+              </t>
+            </table>
+          </div>
+        </t>
+      </div>
+    </t>
+  </template>
+
+
+
+
+  <report id="action_custom_label_lot_product_barcode_unit_by_lot" string="Número de Lote/Serie (PDF) Custom Corrections"
+          model="stock.production.lot" report_type="qweb-pdf" groups="al_base.custom_templates"
+          name="al_base.custom_label_lot_product_barcode_unit_by_lot" menu="True" paperformat="paper_format_100x150_custom"
+  />
+
+
+
+
+</odoo>

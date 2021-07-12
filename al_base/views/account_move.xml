@@ -37,6 +37,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='state']" position="after">
                     <field name="l10n_cl_dte_acceptation_status"/>
+                    <field name="l10n_cl_dte_status"/>
                 </xpath>
             </field>
         </record>

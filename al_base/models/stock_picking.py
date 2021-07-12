@@ -17,20 +17,21 @@ class StockPicking(models.Model):
 
     ted = fields.Binary('TED')
 
+    scheduled_date = fields.Datetime(index=True, default=fields.Datetime.now, tracking=True,
+                                     readonly=lambda self: self.uid not in self.ref(
+                                         'stock.group_stock_manager').users.ids)
+
     net_amount = fields.Float('Total Neto', compute="_compute_net_amount")
 
     tax_amount = fields.Float('IVA', compute="_compute_tax_amount")
 
     amount_total = fields.Float('TOTAL', compute="_compute_amount_total")
 
-    # invisible_btn_ted = fields.Boolean(compute="_compute_show_btn_ted", default=True)
-
     is_subcontract = fields.Boolean(compute='compute_is_subcontract')
 
     location_dest_id = fields.Many2one('stock.location', domain=[('usage', '=', 'internal'), ('active', '=', True)])
 
     location_id = fields.Many2one('stock.location', domain=[('usage', '=', 'internal'), ('active', '=', True)])
-
 
     def compute_is_subcontract(self):
         for item in self:
@@ -60,10 +61,21 @@ class StockPicking(models.Model):
                 res = {
                     'domain': {
                         'location_id': [('usage', '=', 'internal')],
-                        'location_dest_id': [('usage', '=', 'internal'),('id','!=',self.location_id.id)]
+                        'location_dest_id': [('usage', '=', 'internal'), ('id', '!=', self.location_id.id)]
                     }
                 }
                 return res
+
+    def action_record_components(self):
+        if self.partner_id.parent_subcontraction_location_id and Enumerable(self.move_ids_without_package).any(
+                lambda x: x.is_subcontract):
+            for move in self.move_lines:
+                production = move.move_orig_ids.production_id
+                production.write({
+                    'location_src_id': self.partner_id.parent_subcontraction_location_id.id,
+                    'location_dest_id': self.partner_id.parent_subcontraction_location_id.id,
+                })
+        return super(StockPicking, self).action_record_components()
 
     def get_ted(self, doc_id):
 
@@ -194,7 +206,6 @@ class StockPicking(models.Model):
 
         return super(StockPicking, self).write(values)
 
-
     def verify_location_equal(self, values):
         location_id = ''
         location_dest_id = ''
@@ -210,14 +221,15 @@ class StockPicking(models.Model):
 
         if location_dest_id != '' and location_id != '':
             if location_dest_id == location_id:
-                raise models.ValidationError(f'La ubicación de Origen no puede ser la misma que la ubicación de destino')
+                raise models.ValidationError(
+                    f'La ubicación de Origen no puede ser la misma que la ubicación de destino')
 
     def filter_lots(self):
         for line in self.move_line_ids_without_package:
-            #quants = self.env['stock.quant'].search([('product_id', '=', line.product_id.id), ('location_id', '=', line.location_id.id), ('quantity', '>', 0)])
+            # quants = self.env['stock.quant'].search([('product_id', '=', line.product_id.id), ('location_id', '=', line.location_id.id), ('quantity', '>', 0)])
             line.show_lot_with_stock()
-            #line.lot_id.update({
+            # line.lot_id.update({
             #    'domain': [('id', 'in', quants.lot_id.ids)]
-            #})
+            # })
 
-            #return {'domain': {'lot_id': [('id', 'in', quants.lot_id.ids)]}}
+            # return {'domain': {'lot_id': [('id', 'in', quants.lot_id.ids)]}}
