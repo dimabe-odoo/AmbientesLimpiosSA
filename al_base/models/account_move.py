@@ -132,15 +132,10 @@ class AccountMove(models.Model):
 
     def action_post(self):
         res = super(AccountMove, self).action_post()
-        self.l10n_cl_verify_dte_status()
         return res
 
     def write(self, values):
         for item in self:
-            if 'l10n_cl_dte_status' in values.keys():
-                if values['l10n_cl_dte_status'] == '' or not values['l10n_cl_dte_status']:
-                    if self.state == 'posted' or values['state'] == 'posted':
-                        values['l10n_cl_dte_status'] = 'ask_for_status'
             if 'l10n_cl_dte_status' in values.keys():
                 if values['l10n_cl_dte_status'] in ['accepted', 'objected']:
                     get_remaining_caf(item.l10n_latam_document_type_id.id)
