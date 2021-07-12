@@ -29,10 +29,6 @@ class SaleOrder(models.Model):
 
     scheduled_date_from_picking = fields.Datetime('Para fecha prevista de picking')
 
-    partner_id = fields.Many2one('res.partner',string='Cliente')
-
-    partner_shipping_id = fields.Many2one('res.partner',string='Direccion de Entrega')
-
     @api.model
     def create(self, values):
         if isinstance(values, list):

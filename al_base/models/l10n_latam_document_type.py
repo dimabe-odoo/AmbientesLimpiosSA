@@ -94,5 +94,5 @@ class l10n_latam_document_type(models.Model):
                 item.first_caf_loaded = 0
 
 
-    def _is_doc_type_ticket(self):
-        return True
+    # def _is_doc_type_ticket(self):
+    #     return True
