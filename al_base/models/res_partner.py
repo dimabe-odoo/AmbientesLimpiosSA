@@ -5,6 +5,8 @@ from ..utils.rut_helper import RutHelper
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
+    parent_subcontraction_location_id = fields.Many2one('stock.location',string='Ubicacion de stock subcontratista')
+
     @api.model
     def create(self, values):
         if isinstance(values, list):
