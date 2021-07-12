@@ -136,9 +136,10 @@ class SaleOrder(models.Model):
                 'Usted no tiene los permisos correspondientes para aprobar por Cobranza el Pedido de Venta')
         res = super(SaleOrder, self).action_confirm()
         for picking in self.picking_ids:
-            picking.write({
-                'scheduled_date': calculate_business_day_dates(self.scheduled_date_from_picking, 3)
-            })
+            if self.scheduled_date_from_picking:
+                picking.write({
+                    'scheduled_date': calculate_business_day_dates(self.scheduled_date_from_picking, 3)
+                })
             picking.do_unreserve()
 
         return res

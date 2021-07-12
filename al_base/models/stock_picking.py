@@ -166,14 +166,6 @@ class StockPicking(models.Model):
         return res
 
     def button_validate(self):
-        if self.partner_id.parent_subcontraction_location_id:
-            if self.picking_type_id.sequence_code == 'OUT':
-                self.move_ids_without_package.sudo().write({
-                    'location_dest_id': self.partner_id.parent_subcontraction_location_id.id
-                })
-                self.move_line_ids_without_package.sudo().write({
-                    'location_dest_id': self.partner_id.parent_subcontraction_location_id.id
-                })
         if (self.partner_id and self.partner_id.picking_warn and self.partner_id.picking_warn == 'block') or (
                 self.partner_id.parent_id and self.partner_id.parent_id.picking_warn and self.partner_id.parent_id.picking_warn == 'block'):
             raise models.ValidationError(
