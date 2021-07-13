@@ -111,7 +111,7 @@ class StockMoveLine(models.Model):
 
     def verify_stock_move_line(self):
         for item in self:
-            if item.picking_id and item.qty_done and item.qty_done > 0:
+            if item.picking_id and item.qty_done and item.qty_done > 0 and item.state != 'done':
                 if item.picking_id.sale_id and item.picking_id.picking_type_id.sequence_code == 'OUT':
                     line = item.env['sale.order.line'].sudo().search(
                         [('order_id', '=', item.picking_id.sale_id.id), ('product_id', '=', item.product_id.id)])
