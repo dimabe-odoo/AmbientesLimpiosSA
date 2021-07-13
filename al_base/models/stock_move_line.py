@@ -119,7 +119,7 @@ class StockMoveLine(models.Model):
                         if line.product_uom_qty < item.qty_done:
                             raise models.UserError(
                                 f'No puede validar mas {item.product_id.uom_id.name} de {item.product_id.display_name} de los solicitado en la venta')
-                    elif line.qty_delivered != 0:
+                    elif line.qty_delivered != 0 and line.qty_delivered_method != 'stock.move':
                         qty_remaining = line.product_uom_qty - line.qty_delivered
                         if qty_remaining < item.qty_done:
                             raise models.UserError(
