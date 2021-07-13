@@ -83,7 +83,7 @@ class SaleOrder(models.Model):
                 res = {
                     'domain': {
                         'partner_id': ['|', ('company_id', '=', False),
-                                       ('company_id', '=', self.env.user.company_id.id), ('child_ids', '!=', False)]
+                                       ('company_id', '=', self.env.user.company_id.id)]
                     }
                 }
             return res
