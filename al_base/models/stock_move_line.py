@@ -115,6 +115,8 @@ class StockMoveLine(models.Model):
                 if item.picking_id.sale_id and item.picking_id.picking_type_id.sequence_code == 'OUT':
                     line = item.env['sale.order.line'].sudo().search(
                         [('order_id', '=', item.picking_id.sale_id.id), ('product_id', '=', item.product_id.id)])
+                    if line.qty_delivered != 'stock.move':
+                        return
                     if line.qty_delivered == 0:
                         if line.product_uom_qty < item.qty_done:
                             raise models.UserError(
