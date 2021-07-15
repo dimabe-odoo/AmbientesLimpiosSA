@@ -97,7 +97,8 @@ class SaleOrder(models.Model):
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         body = f'<p>Estimados.<br/><br/>Se ha generado una nueva órden de venta <a href="{base_url}/web#id={self.id}&action=343&model=sale.order&view_type=form&cids=&menu_id=229">{self.name}</a>. La cual requiere aprobación por {approve_type}<br/></p>Atte,<br/>{self.company_id.name}'
         subject = f'Nueva órden de venta - Aprobar por {approve_type}'
-        self.message_post(author_id=2, subject=subject, body=body, partner_ids=partner_list)
+        send_notification(subject, body, 2, partner_list, self._inherit, self.id)
+
 
     def order_to_discount_approve(self):
         if self.l10n_latam_document_type_id.code == "33":
