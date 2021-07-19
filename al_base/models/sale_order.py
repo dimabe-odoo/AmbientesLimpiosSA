@@ -260,6 +260,12 @@ class SaleOrder(models.Model):
                                       pending.id)
                     pending.action_cancel()
 
+                for line in sale.order_line:
+                    if line.invoice_status == 'no' and line.qty_delivered == 0:
+                        line.write({
+                            'invoice_status': 'invoiced'
+                                    })
+
                 if sale.state != 'done':
                     followers = get_followers(self._inherit, sale.id)
                     send_notification('Pedido Cerrado', 'Pedido Cerrado por cierre automático del dia', 2, followers,
