@@ -115,11 +115,13 @@ class StockMoveLine(models.Model):
                 if item.picking_id.sale_id and item.picking_id.picking_type_id.sequence_code == 'OUT':
                     line = item.env['sale.order.line'].sudo().search(
                         [('order_id', '=', item.picking_id.sale_id.id), ('product_id', '=', item.product_id.id)])
+                    if line.qty_delivered != 'stock.move':
+                        return
                     if line.qty_delivered == 0:
                         if line.product_uom_qty < item.qty_done:
                             raise models.UserError(
                                 f'No puede validar mas {item.product_id.uom_id.name} de {item.product_id.display_name} de los solicitado en la venta')
-                    elif line.qty_delivered != 0:
+                    elif line.qty_delivered != 0 and line.qty_delivered_method != 'stock.move':
                         qty_remaining = line.product_uom_qty - line.qty_delivered
                         if qty_remaining < item.qty_done:
                             raise models.UserError(

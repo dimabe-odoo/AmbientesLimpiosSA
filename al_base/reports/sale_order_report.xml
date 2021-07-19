@@ -147,16 +147,16 @@
                                     </tr>
                             </table>
                         </div>
-                        <div style="width:100%;margin:0 auto;height:600px;border:1px solid; border-radius: 5px; margin-top:4px;">
+                        <div style="width:100%;margin:0 auto;min-height:600px;border:1px solid; border-radius: 5px; margin-top:4px;">
                             <table style="width:100%;font-size:11px;" cellspacing="0">
                                 <tr>
                                     <th style="width:10%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
                                         CANTIDAD
                                     </th>
-                                    <th style="width:16%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
+                                    <th style="width:14%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
                                         CODIGO
                                     </th>
-                                    <th style="width:50%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
+                                    <th style="width:52%;border-right:1px solid;border-bottom:1px solid; padding-top: 6px;">
                                         DESCRIPCIÓN
                                     </th>
                                     <t t-if="d.is_comercionet">
@@ -178,27 +178,35 @@
                                 </tr>
                                 <t t-foreach="d.order_line" t-as="line">
                                     <tr>
-                                        <td style="border-right:1px solid;border-bottom:1px solid;text-align:right;padding-right:4px;">
-                                            <span t-field="line.product_uom_qty"/>
-                                        </td>
-                                        <td style="border-right:1px solid;border-bottom:1px solid;text-align:left;padding-right:4px;padding-left:4px;">
-                                            <span t-field="line.product_id.default_code"/>
-                                        </td>
-                                        <td style="border-right:1px solid;border-bottom:1px solid;text-align:left;padding-right:4px;padding-left:4px;">
-                                            <span t-field="line.name"/>
-                                        </td>
-                                        <t t-if="d.is_comercionet">
-                                            <td style="border-right:1px solid;border-bottom:1px solid;text-align:right;padding-right:4px;">
-                                                <span t-esc="d.roundclp(line.price_list_comercionet)"/>
+                                        <t t-if="line.display_type">
+                                            <td style="border-bottom:1px solid;"></td>
+                                            <td colspan="4" style="border-bottom:1px solid;text-align:left;">
+                                                <p style="padding: 4px"><i><span t-field="line.name"/></i></p>
                                             </td>
                                         </t>
-                                        <td style="border-right:1px solid;border-bottom:1px solid;text-align:right;padding-right:4px;">
-                                            <span t-esc="d.roundclp(line.price_unit)"/>
-                                        </td>
-                                        <td style="border-bottom:1px solid;text-align:right;padding-right:4px;">
-                                            <!--<span t-field="line.price_subtotal"/>-->
-                                            <span t-esc="d.roundclp(line.price_unit * line.product_uom_qty)"/>
-                                        </td>
+                                        <t t-else="">
+                                            <td style="border-right:1px solid;border-bottom:1px solid;text-align:right;padding-right:4px;">
+                                                <span t-esc="int(line.product_uom_qty)"/>
+                                            </td>
+                                            <td style="border-right:1px solid;border-bottom:1px solid;text-align:left;padding-right:4px;padding-left:4px;">
+                                                <span t-field="line.product_id.default_code"/>
+                                            </td>
+                                            <td style="border-right:1px solid;border-bottom:1px solid;text-align:left;padding-right:4px;padding-left:4px;">
+                                                <span t-field="line.name"/>
+                                            </td>
+                                            <t t-if="d.is_comercionet">
+                                                <td style="border-right:1px solid;border-bottom:1px solid;text-align:right;padding-right:4px;">
+                                                    <span t-esc="d.roundclp(line.price_list_comercionet)"/>
+                                                </td>
+                                            </t>
+                                            <td style="border-right:1px solid;border-bottom:1px solid;text-align:right;padding-right:4px;">
+                                                <span t-esc="d.roundclp(line.price_unit)"/>
+                                            </td>
+                                            <td style="border-bottom:1px solid;text-align:right;padding-right:4px;">
+                                                <!--<span t-field="line.price_subtotal"/>-->
+                                                <span t-esc="d.roundclp(line.price_unit * line.product_uom_qty)"/>
+                                            </td>
+                                        </t>
                                     </tr>
                                 </t>
                             </table>

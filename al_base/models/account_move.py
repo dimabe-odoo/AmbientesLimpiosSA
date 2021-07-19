@@ -132,7 +132,7 @@ class AccountMove(models.Model):
             if 'l10n_cl_dte_status' in values.keys():
                 if values['l10n_cl_dte_status'] in ['accepted', 'objected']:
                     get_remaining_caf(item.l10n_latam_document_type_id.id)
-            if self.l10n_cl_sii_barcode:
+            if item.l10n_cl_sii_barcode:
                 values['ted'] = item.get_ted()
 
             if 'l10n_cl_dte_acceptation_status' in values.keys():
