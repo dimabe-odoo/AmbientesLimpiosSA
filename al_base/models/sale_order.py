@@ -267,18 +267,7 @@ class SaleOrder(models.Model):
 
                     sale.action_done()
 
-                if sale.state == 'done':
-                    sale.action_unlock()
-
-                for line in sale.order_line:
-                    if line.product_uom_qty > line.qty_delivered:
-                        line.write({
-                            'product_uom_qty': line.qty_delivered
-                        })
-
-                if sale.state != 'done':
-                    sale.action_done()
-
+ 
 
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
