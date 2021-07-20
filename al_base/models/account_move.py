@@ -106,18 +106,21 @@ class AccountMove(models.Model):
             report_to_update = report_linq.first_or_default(lambda x: x['id'] == rep.id)
             if report_to_update:
                 new_name = report_to_update['new_name'] if 'new_name' in report_to_update.keys() else rep.name
-                new_template_name = report_to_update['template_new'] if 'template_new' in report_to_update.keys() else rep.report_name
-                paperformat_id = report_to_update['paperformat_id'] if 'paperformat_id' in report_to_update.keys() else rep.paperformat_id
-                print_report_name = report_to_update['print_report_name'] if 'print_report_name' in report_to_update.keys() else rep.print_report_name
+                new_template_name = report_to_update[
+                    'template_new'] if 'template_new' in report_to_update.keys() else rep.report_name
+                paperformat_id = report_to_update[
+                    'paperformat_id'] if 'paperformat_id' in report_to_update.keys() else rep.paperformat_id
+                print_report_name = report_to_update[
+                    'print_report_name'] if 'print_report_name' in report_to_update.keys() else rep.print_report_name
 
                 if rep.report_name != new_template_name or rep.report_file != new_template_name or rep.name != new_name or rep.paperformat_id != paperformat_id or rep.print_report_name != print_report_name:
-                        rep.write({
-                            'report_name': new_template_name,
-                            'report_file': new_template_name,
-                            'name': new_name,
-                            'paperformat_id': paperformat_id,
-                            'print_report_name': print_report_name
-                        })
+                    rep.write({
+                        'report_name': new_template_name,
+                        'report_file': new_template_name,
+                        'name': new_name,
+                        'paperformat_id': paperformat_id,
+                        'print_report_name': print_report_name
+                    })
                 else:
                     continue
             else:
@@ -156,27 +159,22 @@ class AccountMove(models.Model):
 
             return super(AccountMove, item).write(values)
 
-
-
-
     def generate_voucher(self):
-        #payment_id = self.env['account.payment'].search([('ref','=', self.payment_reference)])
-        if self.payment_state == 'paid':
-            report = self.env.ref('al_base.action_custom_payment_voucher_template')
-            ctx = self.env.context.copy()
-            ctx['flag'] = True
-            pdf = report.with_context(ctx)._render_qweb_pdf(self.id)
-            file = base64.b64encode(pdf[0])
-            ir_attachment_id = self.env['ir.attachment'].sudo().create({
-                'name': f'Ingreso de Pago {self.name}',
-                'store_fname': f'Ingreso de Pago {self.name}.pdf',
-                'res_name': f'Ingreso de Pago {self.name}',
-                'res_model': 'account.move',
-                'res_id': self.id,
-                'type': 'binary',
-                'db_datas': file,
-                'datas': file
-            })
+        report = self.env.ref('al_base.action_custom_payment_voucher_template')
+        ctx = self.env.context.copy()
+        ctx['flag'] = True
+        pdf = report.with_context(ctx)._render_qweb_pdf(self.id)
+        file = base64.b64encode(pdf[0])
+        ir_attachment_id = self.env['ir.attachment'].sudo().create({
+            'name': f'Ingreso de Pago {self.name}',
+            'store_fname': f'Ingreso de Pago {self.name}.pdf',
+            'res_name': f'Ingreso de Pago {self.name}',
+            'res_model': 'account.move',
+            'res_id': self.id,
+            'type': 'binary',
+            'db_datas': file,
+            'datas': file
+        })
 
     @api.depends(
         'line_ids.matched_debit_ids.debit_move_id.move_id.payment_id.is_matched',
@@ -194,12 +192,97 @@ class AccountMove(models.Model):
         'line_ids.payment_id.state',
         'line_ids.full_reconcile_id')
     def _compute_amount(self):
-        for item in self:
-            res = super(AccountMove, item)._compute_amount()
 
-            if item.payment_state == 'paid':
-                item.generate_voucher()
+        for move in self:
 
-            return res
+            if move.payment_state == 'invoicing_legacy':
+                # invoicing_legacy state is set via SQL when setting setting field
+                # invoicing_switch_threshold (defined in account_accountant).
+                # The only way of going out of this state is through this setting,
+                # so we don't recompute it here.
+                move.payment_state = move.payment_state
+                continue
 
+            total_untaxed = 0.0
+            total_untaxed_currency = 0.0
+            total_tax = 0.0
+            total_tax_currency = 0.0
+            total_to_pay = 0.0
+            total_residual = 0.0
+            total_residual_currency = 0.0
+            total = 0.0
+            total_currency = 0.0
+            currencies = move._get_lines_onchange_currency().currency_id
 
+            for line in move.line_ids:
+                if move.is_invoice(include_receipts=True):
+                    # === Invoices ===
+
+                    if not line.exclude_from_invoice_tab:
+                        # Untaxed amount.
+                        total_untaxed += line.balance
+                        total_untaxed_currency += line.amount_currency
+                        total += line.balance
+                        total_currency += line.amount_currency
+                    elif line.tax_line_id:
+                        # Tax amount.
+                        total_tax += line.balance
+                        total_tax_currency += line.amount_currency
+                        total += line.balance
+                        total_currency += line.amount_currency
+                    elif line.account_id.user_type_id.type in ('receivable', 'payable'):
+                        # Residual amount.
+                        total_to_pay += line.balance
+                        total_residual += line.amount_residual
+                        total_residual_currency += line.amount_residual_currency
+                else:
+                    # === Miscellaneous journal entry ===
+                    if line.debit:
+                        total += line.balance
+                        total_currency += line.amount_currency
+
+            if move.move_type == 'entry' or move.is_outbound():
+                sign = 1
+            else:
+                sign = -1
+            move.amount_untaxed = sign * (total_untaxed_currency if len(currencies) == 1 else total_untaxed)
+            move.amount_tax = sign * (total_tax_currency if len(currencies) == 1 else total_tax)
+            move.amount_total = sign * (total_currency if len(currencies) == 1 else total)
+            move.amount_residual = -sign * (total_residual_currency if len(currencies) == 1 else total_residual)
+            move.amount_untaxed_signed = -total_untaxed
+            move.amount_tax_signed = -total_tax
+            move.amount_total_signed = abs(total) if move.move_type == 'entry' else -total
+            move.amount_residual_signed = total_residual
+
+            currency = len(currencies) == 1 and currencies or move.company_id.currency_id
+
+            # Compute 'payment_state'.
+            new_pmt_state = 'not_paid' if move.move_type != 'entry' else False
+
+            if move.is_invoice(include_receipts=True) and move.state == 'posted':
+
+                if currency.is_zero(move.amount_residual):
+                    reconciled_payments = move._get_reconciled_payments()
+                    if not reconciled_payments or all(payment.is_matched for payment in reconciled_payments):
+                        new_pmt_state = 'paid'
+                    else:
+                        new_pmt_state = move._get_invoice_in_payment_state()
+                elif currency.compare_amounts(total_to_pay, total_residual) != 0:
+                    new_pmt_state = 'partial'
+
+            if new_pmt_state == 'paid' and move.move_type in ('in_invoice', 'out_invoice', 'entry'):
+                reverse_type = move.move_type == 'in_invoice' and 'in_refund' or move.move_type == 'out_invoice' and 'out_refund' or 'entry'
+                reverse_moves = self.env['account.move'].search(
+                    [('reversed_entry_id', '=', move.id), ('state', '=', 'posted'),
+                     ('move_type', '=', reverse_type)])
+
+                # We only set 'reversed' state in cas of 1 to 1 full reconciliation with a reverse entry; otherwise, we use the regular 'paid' state
+                reverse_moves_full_recs = reverse_moves.mapped('line_ids.full_reconcile_id')
+                if reverse_moves_full_recs.mapped('reconciled_line_ids.move_id').filtered(lambda x: x not in (
+                        reverse_moves + reverse_moves_full_recs.mapped('exchange_move_id'))) == move:
+                    new_pmt_state = 'reversed'
+
+            move.payment_state = new_pmt_state
+
+            if new_pmt_state == 'paid' and move.move_type != 'entry':
+                move.generate_voucher()

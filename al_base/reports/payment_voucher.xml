@@ -64,7 +64,7 @@
                     <tr>
                       <td><strong>Folio</strong></td>
                       <td>:</td>
-                      <td><span t-esc="int(d.l10n_latam_document_number)"/></td>
+                      <td><span t-field="d.l10n_latam_document_number"/></td>
                     </tr>
                     <tr>
                       <td><strong>Mes</strong></td>

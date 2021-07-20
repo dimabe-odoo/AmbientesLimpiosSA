@@ -239,26 +239,38 @@ class SaleOrder(models.Model):
         return '%s %s' % ('Nota de Venta - ', self.name)
 
     def close_orders(self):
-        sale_orders = self.env['sale.order'].search([])
-        sale_order_parcial = Enumerable(sale_orders).where(lambda x: len(x.picking_ids) > 1)
-        if sale_order_parcial.count() > 0:
+        sale_order_parcial = self.env['sale.order'].search([]).filtered(
+            lambda x: x.delivery_count > 1)
+
+        if len(sale_order_parcial) > 0:
             for sale in sale_order_parcial:
-                followers = get_followers(self._inherit, sale.id)
-                send_notification('Pedido Cerrar', 'Pedido Cerrado por cierre automatico del dia', 2, followers,
-                                  self._inherit, sale.id)
-                delivery_pending = Enumerable(sale.picking_ids).where(lambda x: x.state != 'done')
-                if delivery_pending.count() == 0:
+                if any(invoice.state != 'posted' for invoice in sale.invoice_ids):
                     continue
+
+                delivery_pending = sale.mapped('picking_ids').filtered(lambda x: x.state not in ['done', 'cancel'])
+
+                if len(delivery_pending) == 0:
+                    continue
+
                 for pending in delivery_pending:
                     followers = get_followers('stock.picking', pending.id)
-                    send_notification('Pedido Cancelado', 'Pedido Cancelado por cierre automatico del dia', 2,
+                    send_notification('Pedido Cancelado', 'Pedido Cancelado por cierre automático del dia', 2,
                                       followers, 'stock.picking',
                                       pending.id)
                     pending.action_cancel()
+
+                for line in sale.order_line:
+                    if line.invoice_status == 'no' and line.qty_delivered == 0:
+                        line.write({
+                            'invoice_status': 'invoiced'
+                        })
+
                 if sale.state != 'done':
-                    sale.write({
-                        'state': 'done'
-                    })
+                    followers = get_followers(self._inherit, sale.id)
+                    send_notification('Pedido Cerrado', 'Pedido Cerrado por cierre automático del dia', 2, followers,
+                                      self._inherit, sale.id)
+
+                    sale.action_done()
 
 
 class SaleOrderLine(models.Model):
