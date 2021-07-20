@@ -9,7 +9,7 @@
                position="after">
           <field name="is_loteable" invisible="1"/>
           <field name="product_lot_ids" invisible="1"/>
-          <field name="supplier_lot" attrs="{'readonly':[('is_loteable','!=',True)],'column_invisible': [('parent.picking_type_code','!=','IN')]}"/>
+          <field name="supplier_lot" attrs="{'readonly':[('is_loteable','!=',True)]}"/>
         </xpath>
         <xpath expr="//field[@name='lot_name']" position="attributes">
           <attribute name="readonly">1</attribute>
